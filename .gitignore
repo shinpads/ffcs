@@ -102,6 +102,11 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+<<<<<<< Updated upstream
+=======
+.env.development
+.env.production
+>>>>>>> Stashed changes
 .env
 .venv
 env/

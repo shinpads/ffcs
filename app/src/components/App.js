@@ -6,8 +6,7 @@ class App extends Component {
       <div>
         <h1>Test</h1>
         <p>
-          hello hello 123
-          new test!!!
+          hello 1111111111111111111111111111111 
         </p>
       </div>
     );
