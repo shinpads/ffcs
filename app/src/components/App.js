@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
+import {
+  Route, Switch, Redirect, withRouter,
+} from 'react-router-dom';
+
+import Home from './pages/Home';
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <h1>Test</h1>
-        <p>
-          hello 1111111111111111111111111111111 
-        </p>
-      </div>
+      <>
+        <Switch>
+          <Route path="/" component={Home} exact />
+          <Redirect from="*" to="/" />
+        </Switch>
+      </>
     );
   }
 }
 
-export default App
+export default withRouter(App);
