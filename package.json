@@ -4,6 +4,10 @@
   "main": "index.js",
   "repository": "git@github.com:shinpads/federation-of-anime-league.git",
   "license": "MIT",
+  "engines": {
+    "node": "15.4.0",
+    "yarn": "1.22.5"
+  },
   "dependencies": {
     "@material-ui/core": "^3.9.4",
     "@material-ui/icons": "^3.0.2",
@@ -44,7 +48,7 @@
     "raw-loader": "^4.0.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
+    "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.10.1",
     "webpack-node-externals": "^1.7.2"
   },

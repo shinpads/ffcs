@@ -6,3 +6,5 @@ python-dotenv==0.15.0
 pytz==2020.4
 sqlparse==0.4.1
 django-webpack-loader==0.7.0
+gunicorn
+whitenoise

@@ -213,6 +213,6 @@ yarn-debug.log*
 yarn-error.log*
 
 data.json
-package-lock.json
 
 /static
+/app/static
