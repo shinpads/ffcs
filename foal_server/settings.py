@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'arcane-hamlet-40992.herokuapp.com',
+    'foal.herokuapp.com',
     'localhost',
 ]
 
