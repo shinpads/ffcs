@@ -221,3 +221,5 @@ data.json
 
 /static
 /app/static
+
+webpack-stats.json
