@@ -1,8 +1,8 @@
 {
-  "name": "federation-of-anime-league",
+  "name": "ffcs",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:shinpads/federation-of-anime-league.git",
+  "repository": "git@github.com:shinpads/ffcs.git",
   "license": "MIT",
   "engines": {
     "node": "15.4.0",

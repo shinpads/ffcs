@@ -1,1 +1,1 @@
-# federation-of-anime-league
+# For Fun Championship Series
