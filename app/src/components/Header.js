@@ -13,7 +13,6 @@ const styles = createUseStyles({
     color: colors.white,
     alignItems: 'center',
     justifyContent: 'space-between',
-    color: colors.white,
   },
   title: {
     fontWeight: 600,

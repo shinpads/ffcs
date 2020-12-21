@@ -8,8 +8,8 @@ const styles = createUseStyles({
     padding: '1rem',
     margin: '1rem 0 1rem 0',
     border: '1px solid',
-    backgroundColor: colors.white,
-    borderColor: colors.grey,
+    backgroundColor: colors.darkGrey,
+    borderColor: colors.darkestGrey,
     borderRadius: '4px',
   },
   players: {
@@ -21,6 +21,7 @@ const styles = createUseStyles({
     fontWeight: 600,
     fontSize: '24px',
     marginBottom: '2rem',
+    color: colors.primary,
   },
 });
 

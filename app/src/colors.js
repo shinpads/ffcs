@@ -1,10 +1,11 @@
 const colors = {
-  grey: '#737373',
-  darkGrey: '#404040',
-  darkestGrey: '#212121',
+  lightGrey: '#707793',
+  grey: '#43455c',
+  darkGrey: '#3c3f58',
+  darkestGrey: '#2e3047',
   black: '#000',
   white: '#fff',
-  primary: '#fed130',
+  primary: '#3bba9c',
 };
 
 export default colors;

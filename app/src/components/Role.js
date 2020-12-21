@@ -17,7 +17,7 @@ const Role = ({ role }) => {
   };
 
   return (
-    <img alt={role} width={32} src={getImage(roleImageMap[role])} />
+    <img style={{ filter: 'contrast(0)' }} alt={role} width={32} src={getImage(roleImageMap[role])} />
   );
 };
 
