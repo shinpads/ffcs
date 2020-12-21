@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'foal.herokuapp.com',
     'localhost',
+    'www.ffcsleague.com'
 ]
 
 
