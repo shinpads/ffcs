@@ -9,7 +9,7 @@ const styles = createUseStyles({
     display: 'grid',
     gridTemplateColumns: '1fr 3fr 1fr',
     padding: '8px',
-    backgroundColor: colors.darkestGrey,
+    backgroundColor: colors.header,
     color: colors.white,
     alignItems: 'center',
     justifyContent: 'space-between',

@@ -1,5 +1,7 @@
+import color from '@material-ui/core/colors/amber';
 import React from 'react';
 import { createUseStyles } from 'react-jss';
+import colors from '../colors';
 import Role from './Role';
 
 const styles = createUseStyles({
@@ -11,7 +13,8 @@ const styles = createUseStyles({
   },
   playerName: {
     fontWeight: 500,
-    fontSize: '20px'
+    fontSize: '20px',
+    color: colors.white,
   },
 });
 
