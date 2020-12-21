@@ -1,20 +1,140 @@
+from ..models import Player, Team, Season
+from ..serializers.teamserializer import TeamSerializer
+from ..serializers.playerserializer import PlayerSerializer
 from django.http import JsonResponse
-from ..models import Player
-import json
+from django.views import View
+from django.db import IntegrityError
+from dotenv import load_dotenv
+import json, os
+import requests
 
+load_dotenv()
 
-def post_player(request, data):
-    data = json.loads(data)
+def get_riot_account_id(username):
+    url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
+    url = url + username + "?api_key=" + os.getenv('RIOT_API_KEY')
+    res = json.loads(requests.get(url).text)
+    account_id = res['accountId']
     
-    p = Player()
-    username = data['username']
-    team_name = data['team']
-    
+    return account_id
 
 
-    response = JsonResponse({
-        "message": "successfully added player to database."
-        "data": {}
-    }, status=200)
+class AssignPlayerToTeam(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        out_data = {}
+        username = data['username']
+        season_num = data['season']
+        team_name = data['team_name']
+        try:
+            account_id = get_riot_account_id(username)
+        except:
+            response = JsonResponse({
+                "message": "error finding player in Riot API.",
+                "data": {},
+            }, status=500)
+            return response
 
-    return response
+        player = Player.objects.filter(account_id=account_id).first()
+        if player == None:
+            response = JsonResponse({
+                "message": "could not find player in database.",
+                "data": {},
+            }, status=500)
+            return response
+
+        season = Season.objects.filter(number=season_num).first()
+        if season == None:
+            response = JsonResponse({
+                "message": "could not find season with given number.",
+                "data": {},
+            }, status=500)
+            return response
+
+        team = season.team_set.filter(name=team_name).first()
+        if team == None:
+            response = JsonResponse({
+                "message": "could not find team in the given season.",
+                "data": {},
+            }, status=500)
+            return response
+
+        player.team = team
+        player.save()
+
+        out_data = TeamSerializer(team).data
+
+        response = JsonResponse({
+            "message": "successfully added player to team.",
+            "data": out_data,
+        })
+
+        return response
+
+
+class PlayerView(View):
+
+    def get(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        out_data = {}
+        username = data['username']
+        try:
+            account_id = get_riot_account_id(username)
+        except:
+            response = JsonResponse({
+                "message": "error finding player in Riot API.",
+                "data": {},
+            }, status=500)
+            return response
+
+        player = Player.objects.filter(account_id=account_id).first()
+        if player == None:
+            response = JsonResponse({
+                "message": "could not find player in database.",
+                "data": {},
+            }, status=500)
+            return response
+
+        out_data = PlayerSerializer(player).data
+
+        response = JsonResponse({
+            "message": "successfully retrieved player from database.",
+            "data": out_data,
+        }, status=200)
+
+        return response
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        out_data = {}
+        username = data['username']
+        try:
+            account_id = get_riot_account_id(username)
+        except:
+            response = JsonResponse({
+                "message": "error finding player in Riot API.",
+                "data": {},
+            }, status=500)
+            return response
+
+        new_player = Player()
+        new_player.username = str(username)
+        new_player.account_id = str(account_id)
+        try:
+            new_player.save()
+        except IntegrityError as e:
+            response = JsonResponse({
+                "message": "That player already exists.",
+                "error": e.args[0],
+                "data": {},
+            }, status=500)
+            return response
+
+        out_data = PlayerSerializer(new_player).data
+
+        response = JsonResponse({
+            "message": "successfully added player to database.",
+            "data": out_data,
+        }, status=200)
+
+        return response
