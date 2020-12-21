@@ -6,4 +6,7 @@ body {
   margin: 0;
   height: 100%;
   overscroll-behavior: contain;
+  font-family: 'Roboto', sans-serif;
+  background-color: #707793;
+  color: white;
 }
