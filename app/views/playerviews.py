@@ -19,6 +19,62 @@ def get_riot_account_id(username):
     return account_id
 
 
+class ChangePlayerRole(view):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        out_data = {}
+        role = data['role']
+
+        if 'username' in data:
+            username = data['username']
+            try:
+                account_id = get_riot_account_id(username)
+            except:
+                response = JsonResponse({
+                    "message": "error finding player in Riot API.",
+                    "data": {},
+                }, status=500)
+                return response
+
+            player = Player.objects.filter(account_id=account_id).first()
+            if player == None:
+                response = JsonResponse({
+                    "message": "could not find player in database.",
+                    "data": {},
+                }, status=500)
+                return response
+        
+        elif 'player_id' in data:
+            player_id = data['player_id']
+            player = Player.objects.get(pk=team_id)
+            if player == None:
+                response = JsonResponse({
+                    "message": "could not find player in database.",
+                    "data": {},
+                }, status=500)
+                return response
+        
+        else:
+            response = JsonResponse({
+                "message": "please request with 'player_id' or 'username'.",
+                "data": {},
+            }, status=500)
+            return response
+
+        player.role = role
+        player.save()
+
+
+        player_data = PlayerSerializer(player).data
+
+        response = JsonResponse({
+            "message": "successfully changed player role.",
+            "data": out_data,
+        })
+
+        return response
+
+
 class AssignPlayerToTeam(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
@@ -163,6 +219,8 @@ class PlayerView(View):
         new_player = Player()
         new_player.username = str(username)
         new_player.account_id = str(account_id)
+        if 'role' in data:
+            new_player.role = data['role']
         try:
             new_player.save()
         except IntegrityError as e:

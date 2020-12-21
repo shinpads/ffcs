@@ -44,6 +44,7 @@ class Player(models.Model):
     username = models.CharField(max_length=20)
     account_id = models.CharField(max_length=70, unique=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
+    role = models.CharField(max_length=10, blank=True)
 
     class Meta:
         indexes = [
