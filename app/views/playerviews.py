@@ -23,41 +23,72 @@ class AssignPlayerToTeam(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         out_data = {}
-        username = data['username']
-        season_num = data['season']
-        team_name = data['team_name']
-        try:
-            account_id = get_riot_account_id(username)
-        except:
+
+        if 'username' in data:
+            username = data['username']
+            try:
+                account_id = get_riot_account_id(username)
+            except:
+                response = JsonResponse({
+                    "message": "error finding player in Riot API.",
+                    "data": {},
+                }, status=500)
+                return response
+
+            player = Player.objects.filter(account_id=account_id).first()
+            if player == None:
+                response = JsonResponse({
+                    "message": "could not find player in database.",
+                    "data": {},
+                }, status=500)
+                return response
+        
+        elif 'player_id' in data:
+            player_id = data['player_id']
+            player = Player.objects.get(pk=team_id)
+            if player == None:
+                response = JsonResponse({
+                    "message": "could not find player in database.",
+                    "data": {},
+                }, status=500)
+                return response
+        
+        else:
             response = JsonResponse({
-                "message": "error finding player in Riot API.",
+                "message": "please request with 'player_id' or 'username'.",
                 "data": {},
             }, status=500)
             return response
 
-        player = Player.objects.filter(account_id=account_id).first()
-        if player == None:
-            response = JsonResponse({
-                "message": "could not find player in database.",
-                "data": {},
-            }, status=500)
-            return response
+        if 'team_id' in data:
+            team_id = data['team_id']
+            team = Team.objects.get(pk=team_id)
+            if team == None:
+                response = JsonResponse({
+                    "message": "could not find the team specified.",
+                    "data": {},
+                }, status=500)
+                return response
 
-        season = Season.objects.filter(number=season_num).first()
-        if season == None:
-            response = JsonResponse({
-                "message": "could not find season with given number.",
-                "data": {},
-            }, status=500)
-            return response
+        elif 'season' in data and 'team_name' in data:
+            season_num = data['season']
+            team_name = data['team_name']
 
-        team = season.team_set.filter(name=team_name).first()
-        if team == None:
-            response = JsonResponse({
-                "message": "could not find team in the given season.",
-                "data": {},
-            }, status=500)
-            return response
+            season = Season.objects.filter(number=season_num).first()
+            if season == None:
+                response = JsonResponse({
+                    "message": "could not find season with given number.",
+                    "data": {},
+                }, status=500)
+                return response
+
+            team = season.team_set.filter(name=team_name).first()
+            if team == None:
+                response = JsonResponse({
+                    "message": "could not find team in the given season.",
+                    "data": {},
+                }, status=500)
+                return response
 
         player.team = team
         player.save()
@@ -77,23 +108,35 @@ class PlayerView(View):
     def get(self, request, *args, **kwargs):
         data = json.loads(request.body)
         out_data = {}
-        username = data['username']
-        try:
-            account_id = get_riot_account_id(username)
-        except:
-            response = JsonResponse({
-                "message": "error finding player in Riot API.",
-                "data": {},
-            }, status=500)
-            return response
 
-        player = Player.objects.filter(account_id=account_id).first()
-        if player == None:
-            response = JsonResponse({
-                "message": "could not find player in database.",
-                "data": {},
-            }, status=500)
-            return response
+        if 'id' in data:
+            player_id = data["id"]
+            player = Player.objects.get(pk=player_id)
+            if player == None:
+                response = JsonResponse({
+                    "message": "could not find the player specified.",
+                    "data": {},
+                }, status=500)
+                return response
+
+        if 'username' in data:
+            username = data['username']
+            try:
+                account_id = get_riot_account_id(username)
+            except:
+                response = JsonResponse({
+                    "message": "error finding player in Riot API.",
+                    "data": {},
+                }, status=500)
+                return response
+
+            player = Player.objects.filter(account_id=account_id).first()
+            if player == None:
+                response = JsonResponse({
+                    "message": "could not find player in database.",
+                    "data": {},
+                }, status=500)
+                return response
 
         out_data = PlayerSerializer(player).data
 
