@@ -8,9 +8,8 @@ import json
 class SeasonView(View):
 
     def get(self, request, *args, **kwargs):
-        data = json.loads(request.body)
         out_data = {}
-        season_num = data['season']
+        season_num = request.GET["season"]
 
         season = Season.objects.filter(number=season_num).first()
         if season == None:
@@ -19,7 +18,7 @@ class SeasonView(View):
                 "data": {},
             }, status=500)
             return response
-        
+
         out_data = SeasonSerializer(season).data
 
         response = JsonResponse({
@@ -27,12 +26,12 @@ class SeasonView(View):
             "data": out_data,
         }, status=200)
         return response
-    
+
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         out_data = {}
         season_num = data['season']
-        
+
         season = Season()
         season.number = season_num
         try:
@@ -44,7 +43,7 @@ class SeasonView(View):
                 "data": {},
             }, status=500)
             return response
-        
+
         out_data = SeasonSerializer(season).data
 
         response = JsonResponse({

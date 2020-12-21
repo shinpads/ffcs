@@ -3,6 +3,14 @@ import { createUseStyles } from 'react-jss';
 import Player from './Player';
 import colors from '../colors';
 
+const sortIndex = {
+  support: 0,
+  bottom: 1,
+  middle: 2,
+  jungle: 3,
+  top: 4,
+};
+
 const styles = createUseStyles({
   team: {
     padding: '1rem',
@@ -27,6 +35,9 @@ const styles = createUseStyles({
 
 const Team = ({ team }) => {
   const classes = styles();
+
+  team.players.sort((a,b) => sortIndex[b.role] - sortIndex[a.role]);
+
   return (
     <div className={classes.team}>
       <div className={classes.teamName}>{team.name}</div>

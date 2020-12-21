@@ -20,7 +20,7 @@ const Player = ({ player }) => {
 
   return (
     <div className={classes.player}>
-      <div className={classes.playerName}>{player.name}</div>
+      <div className={classes.playerName}>{player.username}</div>
       <Role role={player.role} />
     </div>
   );

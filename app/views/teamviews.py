@@ -7,9 +7,9 @@ from django.db import IntegrityError
 import json
 
 class TeamView(View):
-    
+
     def get(self, request, *args, **kwargs):
-        data = json.loads(request.body)
+        data = request.GET
 
         if "id" in data:
             team_id = data["id"]
@@ -20,7 +20,7 @@ class TeamView(View):
                     "data": {},
                 }, status=500)
                 return response
-        
+
         elif "team_name" in data and "season_num" in data:
             team_name = data['team_name']
             season_num = data['season']
@@ -41,7 +41,7 @@ class TeamView(View):
                     "data": {},
                 }, status=500)
                 return response
-        
+
         else:
             response = JsonResponse({
                 "message": ("Invalid request. Please specify "

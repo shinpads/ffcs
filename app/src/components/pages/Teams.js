@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
 import Team from '../Team';
+import { getSeason } from '../../api';
 
 const styles = createUseStyles({
   container: {
@@ -9,61 +10,20 @@ const styles = createUseStyles({
   },
 });
 
-const teams = [
-  {
-    name: 'Tesla Giga Horse',
-    players: [
-      {
-        name: 'Quan Jovi',
-        role: 'top',
-      },
-      {
-        name: 'DamonteFanboi',
-        role: 'jungle',
-      },
-      {
-        name: 'DaTranboi',
-        role: 'middle',
-      },
-      {
-        name: 'Fenryn',
-        role: 'bottom',
-      },
-      {
-        name: 'shinpads',
-        role: 'support',
-      },
-    ],
-  },
-  {
-    name: 'Team 2',
-    players: [
-      {
-        name: 'marshmelllo',
-        role: 'top',
-      },
-      {
-        name: 'piggy',
-        role: 'jungle',
-      },
-      {
-        name: 'shinpads',
-        role: 'middle',
-      },
-      {
-        name: 'doublelift',
-        role: 'bottom',
-      },
-      {
-        name: 'corejj',
-        role: 'support',
-      },
-    ],
-  },
-];
-
 const Teams = () => {
   const classes = styles();
+  const [teams, setTeams] = useState([]);
+  useEffect(() => {
+    async function getTeams() {
+      console.log('calling');
+      const season = await getSeason(1);
+      console.log(season.teams);
+      if (season && season.teams) {
+        setTeams(season.teams);
+      }
+    }
+    getTeams();
+  }, []);
   return (
     <div className={classes.container}>
       {teams.map(team => <Team team={team} />)}

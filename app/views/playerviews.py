@@ -15,7 +15,7 @@ def get_riot_account_id(username):
     url = url + username + "?api_key=" + os.getenv('RIOT_API_KEY')
     res = json.loads(requests.get(url).text)
     account_id = res['accountId']
-    
+
     return account_id
 
 
@@ -43,7 +43,7 @@ class ChangePlayerRole(View):
                     "data": {},
                 }, status=500)
                 return response
-        
+
         elif 'player_id' in data:
             player_id = data['player_id']
             player = Player.objects.get(pk=team_id)
@@ -53,7 +53,7 @@ class ChangePlayerRole(View):
                     "data": {},
                 }, status=500)
                 return response
-        
+
         else:
             response = JsonResponse({
                 "message": "please request with 'player_id' or 'username'.",
@@ -98,7 +98,7 @@ class AssignPlayerToTeam(View):
                     "data": {},
                 }, status=500)
                 return response
-        
+
         elif 'player_id' in data:
             player_id = data['player_id']
             player = Player.objects.get(pk=team_id)
@@ -108,7 +108,7 @@ class AssignPlayerToTeam(View):
                     "data": {},
                 }, status=500)
                 return response
-        
+
         else:
             response = JsonResponse({
                 "message": "please request with 'player_id' or 'username'.",
@@ -162,7 +162,7 @@ class AssignPlayerToTeam(View):
 class PlayerView(View):
 
     def get(self, request, *args, **kwargs):
-        data = json.loads(request.body)
+        data = request.GET
         out_data = {}
 
         if 'id' in data:
