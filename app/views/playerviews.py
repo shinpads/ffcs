@@ -19,7 +19,7 @@ def get_riot_account_id(username):
     return account_id
 
 
-class ChangePlayerRole(view):
+class ChangePlayerRole(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         out_data = {}

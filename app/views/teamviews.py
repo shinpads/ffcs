@@ -44,11 +44,11 @@ class TeamView(View):
         
         else:
             response = JsonResponse({
-                    "message": ("Invalid request. Please specify "
-                                "an 'id', or a 'team_name' and 'season'."),
-                    "data": {},
-                }, status=500)
-                return response
+                "message": ("Invalid request. Please specify "
+                            "an 'id', or a 'team_name' and 'season'."),
+                "data": {},
+            }, status=500)
+            return response
 
         out_data = TeamSerializer(team).data
 
