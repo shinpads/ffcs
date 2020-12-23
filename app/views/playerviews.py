@@ -1,4 +1,5 @@
 from ..models import Player, Team, Season
+from ..utils import get_riot_account_id
 from ..serializers.teamserializer import TeamSerializer
 from ..serializers.playerserializer import PlayerSerializer
 from django.http import JsonResponse
@@ -7,16 +8,6 @@ from django.db import IntegrityError
 from dotenv import load_dotenv
 import json, os
 import requests
-
-load_dotenv()
-
-def get_riot_account_id(username):
-    url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
-    url = url + username + "?api_key=" + os.getenv('RIOT_API_KEY')
-    res = json.loads(requests.get(url).text)
-    account_id = res['accountId']
-
-    return account_id
 
 
 class ChangePlayerRole(View):
@@ -207,18 +198,9 @@ class PlayerView(View):
         data = json.loads(request.body)
         out_data = {}
         username = data['username']
-        try:
-            account_id = get_riot_account_id(username)
-        except:
-            response = JsonResponse({
-                "message": "error finding player in Riot API.",
-                "data": {},
-            }, status=500)
-            return response
 
         new_player = Player()
         new_player.username = str(username)
-        new_player.account_id = str(account_id)
         if 'role' in data:
             new_player.role = data['role']
         try:
