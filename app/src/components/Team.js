@@ -13,30 +13,28 @@ const sortIndex = {
 
 const styles = createUseStyles({
   team: {
-    padding: '1rem',
-    margin: '1rem 0 1rem 0',
-    border: '1px solid',
+    padding: '8px',
+    margin: '1rem 4px 1rem 4px',
     backgroundColor: colors.darkGrey,
-    borderColor: colors.darkestGrey,
     borderRadius: '4px',
+    flexBasis: '150px',
+    boxShadow: `1px 1px 2px ${colors.black}`,
   },
   players: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
   },
   teamName: {
     textAlign: 'center',
     fontWeight: 600,
-    fontSize: '24px',
-    marginBottom: '2rem',
-    color: colors.primary,
+    marginBottom: '8px',
+    paddingBottom: '8px',
+    textTransform: 'uppercase',
   },
 });
 
 const Team = ({ team }) => {
   const classes = styles();
 
-  team.players.sort((a,b) => sortIndex[b.role] - sortIndex[a.role]);
+  team.players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
 
   return (
     <div className={classes.team}>

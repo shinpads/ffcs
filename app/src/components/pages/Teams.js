@@ -4,9 +4,10 @@ import Team from '../Team';
 import { getSeason } from '../../api';
 
 const styles = createUseStyles({
-  container: {
-    maxWidth: '900px',
-    margin: '0 auto',
+  teamsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
 });
 
@@ -25,7 +26,7 @@ const Teams = () => {
     getTeams();
   }, []);
   return (
-    <div className={classes.container}>
+    <div className={classes.teamsContainer}>
       {teams.map(team => <Team team={team} />)}
     </div>
   );

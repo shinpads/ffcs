@@ -1,10 +1,11 @@
 const colors = {
-  background: '#0B0C10',
+  background: '#15191c',
   darkGrey: '#1F2833',
   darkestGrey: '#0f0f0f',
-  header: '#15191c',
+  header: '#0f0f0f',
   black: '#000',
   white: '#fff',
+  offwhite: '#5c6269',
   primary: '#66FCF1',
   secondary: '#C5C6C7',
 };

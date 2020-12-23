@@ -13,20 +13,22 @@ const styles = createUseStyles({
     color: colors.white,
     alignItems: 'center',
     justifyContent: 'space-between',
+    textTransform: 'uppercase',
+    boxShadow: `1px 1px 2px ${colors.black}`,
   },
   title: {
     fontWeight: 600,
-    fontSize: '32px',
+    fontSize: '24px',
     textAlign: 'center',
   },
 });
 
-const Header = (props) => {
+const Header = () => {
   const classes = styles();
 
   return (
     <header className={classes.header}>
-      <img alt="" width={64} src={getImage(logo)} />
+      <img alt="" width={48} src={getImage(logo)} />
       <div className={classes.title}>For Fun Championship Series</div>
       <div style={{ paddingRight: '1rem', textAlign: 'right' }}>Starting January 2021</div>
     </header>
