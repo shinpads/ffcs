@@ -4,11 +4,11 @@ import Player from './Player';
 import colors from '../colors';
 
 const sortIndex = {
-  support: 0,
-  bottom: 1,
-  middle: 2,
-  jungle: 3,
-  top: 4,
+  SUPP: 0,
+  ADC: 1,
+  MID: 2,
+  JG: 3,
+  TOP: 4,
 };
 
 const styles = createUseStyles({

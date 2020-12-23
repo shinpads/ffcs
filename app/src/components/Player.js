@@ -9,8 +9,8 @@ const styles = createUseStyles({
     padding: '4px',
     cursor: 'pointer',
     '&:hover': {
-      borderLeft: '4px solid white'
-    }
+      borderLeft: '4px solid white',
+    },
   },
   playerName: {
     fontWeight: 500,

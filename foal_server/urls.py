@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream:foal_server/urls.py
 """foal_server URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -24,3 +25,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls'))
 ]
+=======
+from django.urls import path
+from foal_server_app import views
+
+urlpatterns = [
+    path('api/get_team/<str:data>/', views.teamviews.get_team),
+    path('api/post_team/<str:data>/', views.teamviews.post_team),
+]
+>>>>>>> Stashed changes:server/foal_server/foal_server/urls.py
