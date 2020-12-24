@@ -1,14 +1,15 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
+import { Fade } from '@material-ui/core';
 import Player from './Player';
 import colors from '../colors';
 
 const sortIndex = {
-  support: 0,
-  bottom: 1,
-  middle: 2,
-  jungle: 3,
-  top: 4,
+  SUPP: 0,
+  ADC: 1,
+  MID: 2,
+  JG: 3,
+  TOP: 4,
 };
 
 const styles = createUseStyles({
@@ -37,12 +38,14 @@ const Team = ({ team }) => {
   team.players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
 
   return (
-    <div className={classes.team}>
-      <div className={classes.teamName}>{team.name}</div>
-      <div className={classes.players}>
-        {team.players.map(player => <Player player={player} />)}
+    <Fade in timeout={window.viewed ? 1000 : 0}>
+      <div className={classes.team}>
+        <div className={classes.teamName}>{team.name}</div>
+        <div className={classes.players}>
+          {team.players.map(player => <Player player={player} />)}
+        </div>
       </div>
-    </div>
+    </Fade>
   );
 };
 
