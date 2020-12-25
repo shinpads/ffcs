@@ -1,19 +1,19 @@
 import React from 'react';
 
 import { getImage } from '../helpers';
-import top from '../../public/top.png';
-import jungle from '../../public/jungle.png';
-import middle from '../../public/middle.png';
-import bottom from '../../public/bottom.png';
-import support from '../../public/support.png';
+import TOP from '../../public/top.png';
+import JG from '../../public/jg.png';
+import MID from '../../public/mid.png';
+import ADC from '../../public/adc.png';
+import SUPP from '../../public/supp.png';
 
 const Role = ({ role }) => {
   const roleImageMap = {
-    top,
-    jungle,
-    middle,
-    bottom,
-    support,
+    TOP,
+    JG,
+    MID,
+    ADC,
+    SUPP,
   };
 
   return (

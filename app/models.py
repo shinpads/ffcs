@@ -84,7 +84,7 @@ class Player(models.Model):
         blank=True,
         choices=ROLE_CHOICES
     )
-    account_id = models.CharField(max_length=70, unique=True, blank=True)
+    account_id = models.CharField(max_length=70, blank=True)
 
     @property
     def get_account_id(self):

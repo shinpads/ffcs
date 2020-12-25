@@ -31,9 +31,9 @@ const Home = () => {
       <div className={classes.container}>
         <div className={classes.title}>Teams are here</div>
         <div className={classes.description}>
-          Here are the teams for the upcoming FFCS Season 1! Each team will play one game a week starting January. It will be up to the two teams playing to schedule their game at any time during that week.
+          ffcsleague.com will feature the ffcs match schedule, along with ffcs match history, player stats, and more! These will be coming in the following weeks, but for now, please view your teams!
           <br /> <br />
-          The schedule will be posted on this website along with detailed stats for each player and game so check back here soon!
+          You will be assigned a team to face once a week starting January. You will schedule with the other team what day/time the match will take place, as long as it is in the designated week.
         </div>
         <Teams />
       </div>
