@@ -91,7 +91,9 @@ class Player(models.Model):
         return get_riot_account_id(self.username)
 
     def save(self, *args, **kwargs):
-        self.account_id = self.get_account_id
+        account_id = self.get_account_id
+        if (account_id != None):
+            self.account_id = account_id
         super(Player, self).save(*args, **kwargs)
 
     class Meta:
