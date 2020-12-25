@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Fade } from 'react-reveal';
 import { createUseStyles } from 'react-jss';
 import colors from '../colors';
 import Role from './Role';
@@ -9,8 +10,8 @@ const styles = createUseStyles({
     padding: '4px',
     cursor: 'pointer',
     '&:hover': {
-      borderLeft: '4px solid white'
-    }
+      borderLeft: '4px solid white',
+    },
   },
   playerName: {
     fontWeight: 500,
@@ -19,14 +20,16 @@ const styles = createUseStyles({
   },
 });
 
-const Player = ({ player }) => {
+const Player = ({ player, viewed, delay }) => {
   const classes = styles();
 
   return (
-    <div className={classes.player}>
-      <Role role={player.role} />
-      <div className={classes.playerName}>{player.username}</div>
-    </div>
+    <Fade duration={viewed ? 0 : 1200} delay={viewed ? 0 : delay}>
+      <div className={classes.player}>
+        <Role role={player.role} />
+        <div className={classes.playerName}>{player.username}</div>
+      </div>
+    </Fade>
   );
 };
 
