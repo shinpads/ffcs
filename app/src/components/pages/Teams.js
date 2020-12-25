@@ -24,14 +24,12 @@ const Teams = () => {
 
   useEffect(() => {
     async function getTeams() {
-      console.log('calling');
       const season = await getSeason(1);
-      console.log(season.teams);
       if (season && season.teams) {
         teamCards = season.teams.map((team, index) => (
           <Team
             team={team}
-            delay={index * 6000}
+            delay={index * 8000}
             viewed={localStorage.getItem('viewed')}
           />
         ));

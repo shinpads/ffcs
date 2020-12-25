@@ -42,7 +42,7 @@ const Team = ({ team, viewed, delay }) => {
       <div className={classes.team}>
         <div className={classes.teamName}>{team.name}</div>
         <div className={classes.players}>
-          {team.players.map((player, index) => <Player viewed={viewed} player={player} delay={(((delay / 6000) * 6) + index + 1) * 1000} />)}
+          {team.players.map((player, index) => <Player viewed={viewed} player={player} delay={delay + (index + 1) * (8000 / 6)} />)}
         </div>
       </div>
     </Fade>
