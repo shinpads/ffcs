@@ -10,6 +10,7 @@ const styles = createUseStyles({
     fontWeight: 500,
     padding: '1rem',
     textAlign: 'center',
+    textTransform: 'uppercase',
   },
   description: {
     textAlign: 'center',
@@ -28,9 +29,11 @@ const Home = () => {
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.title}>TITLE SOMETHING TITLE</div>
+        <div className={classes.title}>Teams are here</div>
         <div className={classes.description}>
-          Some text here and there and stuff Some text here and there and stuff Some text here and there and stuff Some text here and there and stuff Some text here and there and stuff Some text here and there and stuff Some text here and there and stuff Some text here and there and stuff Some text here and there and stuff
+          Here are the teams for the upcoming FFCS Season 1! Each team will play one game a week starting January. It will be up to the two teams playing to schedule their game at any time during that week.
+          <br /> <br />
+          The schedule will be posted on this website along with detailed stats for each player and game so check back here soon!
         </div>
         <Teams />
       </div>
