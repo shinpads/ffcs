@@ -4,6 +4,8 @@ from django.core import serializers
 import json
 
 class Season(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     number = models.IntegerField(unique=True)
     name = models.CharField(max_length=20, blank=True)
 
@@ -12,7 +14,7 @@ class Season(models.Model):
         indexes = [
             models.Index(fields=['number'])
         ]
-    
+
     def __str__(self):
         if self.name != '':
             string = self.name + " (season " + str(self.number) + ")"
@@ -22,6 +24,8 @@ class Season(models.Model):
 
 
 class Team(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=25)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
 
@@ -31,12 +35,14 @@ class Team(models.Model):
         ]
 
         unique_together = ('name', 'season')
-    
+
     def __str__(self):
         return self.name + ", season: " + str(self.season)
 
 
 class Match(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     match_format = models.IntegerField()  # 1 for bo1, 3 for bo3, etc
     winner = models.ForeignKey(
         Team,
@@ -64,7 +70,8 @@ class Player(models.Model):
         (ADC, "ADC"),
         (SUPPORT, "Support"),
     ]
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     username = models.CharField(max_length=20)
     team = models.ForeignKey(
         Team,
@@ -82,20 +89,22 @@ class Player(models.Model):
     @property
     def get_account_id(self):
         return get_riot_account_id(self.username)
-    
+
     def save(self, *args, **kwargs):
         self.account_id = self.get_account_id
         super(Player, self).save(*args, **kwargs)
-    
+
     class Meta:
         indexes = [
             models.Index(fields=['account_id'])
         ]
-    
+
     def __str__(self):
         return self.username
 
 class Game(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     game_id = models.CharField(max_length=100)
     players = models.ManyToManyField(Player, related_name='games')
     winner = models.ForeignKey(
