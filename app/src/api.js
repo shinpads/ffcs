@@ -8,6 +8,13 @@ export async function getSeason(season, cb) {
   return result;
 }
 
+export async function getMatches() {
+  const response = await axios.get('/api/matches/');
+  const result = response.data.data || [];
+
+  return result;
+}
+
 export async function getTeam() {
   throw new Error('not done');
 }
