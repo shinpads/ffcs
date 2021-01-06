@@ -1,9 +1,29 @@
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed
+from .utils import get_riot_account_id, register_tournament_provider
 from django.db import models
 from django.core import serializers
 import json
-from .utils import get_riot_account_id
+
+class Provider(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    provider_id = models.CharField(max_length=70, blank=True)
+
+    @property
+    def register_provider(self):
+        return register_tournament_provider()
+
+    def save(self, *args, **kwargs):
+        if self.provider_id == None or self.provider_id == '':
+            provider_id = self.register_provider
+            if (provider_id != None):
+                self.provider_id = provider_id
+        super(Provider, self).save(*args, **kwargs)
+    
+    def __str__(self):
+        return "provider ID: " + self.provider_id
+
 
 class Season(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

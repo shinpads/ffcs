@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Season, Team, Match, Player, Game
+from .models import Season, Team, Match, Player, Game, Provider
 
 admin.site.register(Game)
 
@@ -62,3 +62,18 @@ class MatchAdmin(admin.ModelAdmin):
     list_display = ('week', 'scheduled_for', 'get_id')
 
     filter_horizontal = ('teams',)
+
+@admin.register(Provider)
+class ProviderAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+    
+    get_id.short_description = 'ID'
+
+    list_display = ('provider_id', 'get_id')
+
+    fieldsets = (
+        (None, {
+            'fields': ()
+        }),
+    )

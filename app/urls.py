@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import views, teamviews, playerviews, seasonviews, matchviews
+from .views import views, teamviews, playerviews, seasonviews, matchviews, gameviews
 
 urlpatterns = [
   path('api/season/', seasonviews.SeasonView.as_view()),
@@ -10,4 +10,5 @@ urlpatterns = [
   path('api/admin/player/assignteam/', playerviews.AssignPlayerToTeam.as_view()),
   path('api/admin/player/assignrole/', playerviews.ChangePlayerRole.as_view()),
   path('', views.index),
+  path('api/tournamentcallback/', gameviews.CallbackView.as_view())
 ]
