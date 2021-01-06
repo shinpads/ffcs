@@ -36,7 +36,13 @@ class SeasonAdmin(admin.ModelAdmin):
 
     get_id.short_description = 'ID'
 
-    list_display = ('number', 'name', 'get_id')
+    list_display = ('number', 'name', 'tournament_id', 'get_id')
+
+    fieldsets = (
+        (None, {
+            'fields': ('number', 'name', 'provider')
+        }),
+    )
 
 class MatchForm(forms.ModelForm):
     class Meta:
