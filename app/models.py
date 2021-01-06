@@ -1,4 +1,4 @@
-from .utils import get_riot_account_id, register_tournament_provider
+from .utils import get_riot_account_id, register_tournament_provider, register_tournament
 from django.db import models
 from django.core import serializers
 import json
@@ -10,7 +10,10 @@ class Provider(models.Model):
 
     @property
     def register_provider(self):
-        return register_tournament_provider()
+        if self.provider_id == None or self.provider_id == '':
+            return register_tournament_provider()
+        else:
+            return None
 
     def save(self, *args, **kwargs):
         if self.provider_id == None or self.provider_id == '':
@@ -28,7 +31,22 @@ class Season(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     number = models.IntegerField(unique=True)
     name = models.CharField(max_length=20, blank=True)
+    provider = models.ForeignKey(Provider, on_delete=models.SET_NULL, null=True)
+    tournament_id = models.CharField(max_length=70, blank=True)
 
+    @property
+    def register_tournament(self):
+        if self.tournament_id == None or self.tournament_id == '':
+            return register_tournament(self.name, self.provider.provider_id)
+        else:
+            return None
+    
+    def save(self, *args, **kwargs):
+        if self.tournament_id == None or self.tournament_id == '':
+            tournament_id = self.register_tournament
+            if (tournament_id != None):
+                self.tournament_id = tournament_id
+        super(Season, self).save(*args, **kwargs)
 
     class Meta:
         indexes = [

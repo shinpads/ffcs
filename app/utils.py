@@ -35,3 +35,23 @@ def register_tournament_provider():
         return None
 
     return str(res.text)
+
+def register_tournament(name, provider_id):
+    print(provider_id)
+    debug = os.getenv('DEBUG')
+    if debug == "on":
+        url = "https://americas.api.riotgames.com/lol/tournament-stub/v4/tournaments"
+    else:
+        url = "https://americas.api.riotgames.com/lol/tournament/v4/tournaments"
+    url = url + "?api_key=" + os.getenv('RIOT_API_KEY')
+    data = {
+        "name": name,
+        "providerId": int(provider_id)
+    }
+
+    res = (requests.post(url, data=json.dumps(data)))
+    print(res.text)
+    if res.status_code != 200:
+        return None
+    
+    return str(res.text)
