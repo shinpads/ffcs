@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.db.models.signals import m2m_changed
 from .utils import get_riot_account_id, register_tournament_provider
 from django.db import models
 from django.core import serializers
@@ -67,13 +69,19 @@ class Match(models.Model):
     winner = models.ForeignKey(
         Team,
         on_delete=models.CASCADE,
-        related_name='winning_matches'
+        related_name='winning_matches',
+        null=True
     )
     loser = models.ForeignKey(
         Team,
         on_delete=models.CASCADE,
-        related_name='losing_matches'
+        related_name='losing_matches',
+        null=True
     )
+
+    teams           = models.ManyToManyField(Team, related_name="matches")
+    week            = models.IntegerField(default=1)
+    scheduled_for   = models.DateTimeField(null=True, blank=True)
 
 
 class Player(models.Model):
