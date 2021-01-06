@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Season, Team, Match, Player, Game
+from .models import Season, Team, Match, Player, Game, Provider
 
 admin.site.register(Match)
 admin.site.register(Game)
@@ -37,3 +37,18 @@ class SeasonAdmin(admin.ModelAdmin):
     get_id.short_description = 'ID'
 
     list_display = ('number', 'name', 'get_id')
+
+@admin.register(Provider)
+class ProviderAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+    
+    get_id.short_description = 'ID'
+
+    list_display = ('provider_id', 'get_id')
+
+    fieldsets = (
+        (None, {
+            'fields': ()
+        }),
+    )
