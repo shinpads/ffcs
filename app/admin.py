@@ -2,7 +2,6 @@ from django.contrib import admin
 from django import forms
 from .models import Season, Team, Match, Player, Game, Provider
 
-admin.site.register(Game)
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
@@ -16,7 +15,7 @@ class PlayerAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('username', 'team', 'role')
+            'fields': ('username', 'team', 'role', 'caster')
         }),
     )
 
@@ -59,15 +58,39 @@ class MatchAdmin(admin.ModelAdmin):
     def get_id(self, obj):
         return obj.pk
 
+    def get_teams(self, obj):
+        return " VS ".join([team.name for team in obj.teams.all()])
+
     form = MatchForm
 
     get_id.short_description = 'ID'
+    get_teams.short_description = 'Teams'
 
-    exclude = ('winner', 'loser')
-
-    list_display = ('week', 'scheduled_for', 'get_id')
+    list_display = ('week', 'scheduled_for', 'get_teams', 'winner', 'get_id')
 
     filter_horizontal = ('teams',)
+
+@admin.register(Game)
+class GameAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+    
+    get_id.short_description = 'ID'
+
+    list_display = (
+        'match',
+        'game_in_series',
+        'winner',
+        'tournament_code',
+        'game_id',
+        'get_id'
+    )
+
+    fieldsets = (
+        (None, {
+            'fields': ('winner',)
+        }),
+    )
 
 @admin.register(Provider)
 class ProviderAdmin(admin.ModelAdmin):

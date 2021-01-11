@@ -1,9 +1,12 @@
-from .utils import get_riot_account_id, register_tournament_provider, register_tournament
+from .utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code
 from django.core.exceptions import ValidationError
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, post_save
+from django.dispatch import receiver
 from django.db import models
 from django.core import serializers
 import json
+import math
+import secrets
 
 class Provider(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -81,25 +84,57 @@ class Team(models.Model):
 
 
 class Match(models.Model):
+    BO1 = 1
+    BO3 = 3
+
+    FORMAT_CHOICES = [
+        (BO1, "Best of 1"),
+        (BO3, "Best of 3"),
+    ]
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    match_format = models.IntegerField()  # 1 for bo1, 3 for bo3, etc
-    winner = models.ForeignKey(
-        Team,
-        on_delete=models.CASCADE,
-        related_name='winning_matches',
-        null=True
-    )
-    loser = models.ForeignKey(
-        Team,
-        on_delete=models.CASCADE,
-        related_name='losing_matches',
-        null=True
-    )
+    match_format = models.IntegerField(choices=FORMAT_CHOICES)
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
 
     teams           = models.ManyToManyField(Team, related_name="matches")
     week            = models.IntegerField(default=1)
     scheduled_for   = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def wins(self):
+        wins_dict = {team.name: 0 for team in self.teams.all()}
+        games = self.games.all()
+        for game in games:
+            if game.winner != None:
+                wins_dict[game.winner.name] += 1
+
+        return wins_dict
+    
+    @property
+    def winner(self):
+        wins_dict = self.wins
+        for key in wins_dict.keys():
+            if wins_dict[key] >= math.ceil(self.match_format / 2):
+                for team in self.teams.all():
+                    if team.name == key:
+                        return team
+        
+        return None
+    
+    def finished_game(self, game_in_series):
+        if self.winner == None:
+            new_game = Game()
+            new_game.match = self
+            new_game.game_in_series = game_in_series + 1
+            new_game.save()
+
+    def __str__(self):
+        return (
+            " VS ".join([team.name for team in self.teams.all()]) + \
+            ", week " + str(self.week) + \
+            ", " + self.season.__str__()
+        )
 
 
 class Player(models.Model):
@@ -119,11 +154,11 @@ class Player(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     username = models.CharField(max_length=20)
+    caster = models.BooleanField(default=False)
     team = models.ForeignKey(
         Team,
         on_delete=models.CASCADE,
-        blank=True,
-        null=True
+        blank=True, null=True
     )
     role = models.CharField(
         max_length=10,
@@ -137,14 +172,16 @@ class Player(models.Model):
         return get_riot_account_id(self.username)
 
     def save(self, *args, **kwargs):
-        account_id = self.get_account_id
-        if (account_id != None):
-            self.account_id = account_id
+        if self.account_id == '':
+            account_id = self.get_account_id
+            if account_id != None:
+                self.account_id = account_id
         super(Player, self).save(*args, **kwargs)
 
     class Meta:
         indexes = [
-            models.Index(fields=['account_id'])
+            models.Index(fields=['account_id']),
+            models.Index(fields=['caster'])
         ]
 
     def __str__(self):
@@ -153,20 +190,67 @@ class Player(models.Model):
 class Game(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    game_id = models.CharField(max_length=100)
-    players = models.ManyToManyField(Player, related_name='games')
+    game_id = models.CharField(max_length=100, blank=True)
+    tournament_code = models.CharField(max_length=50, blank=True)
+    game_in_series = models.IntegerField()
+    meta_key = models.CharField(max_length=100, blank=True, unique=True)
     winner = models.ForeignKey(
         Team,
+        related_name='won_games',
         on_delete=models.CASCADE,
-        related_name='winning_games'
-    )
-    loser = models.ForeignKey(
-        Team,
-        on_delete=models.CASCADE,
-        related_name='losing_games'
+        null=True
     )
     match = models.ForeignKey(
         Match,
         on_delete=models.CASCADE,
         related_name='games'
     )
+
+    @property
+    def create_meta_key(self):
+        return secrets.token_urlsafe(16)
+
+    @property
+    def create_tournament_code(self):
+        return generate_tournament_code(self, Player)
+    
+    def save(self, *args, **kwargs):
+        if self.meta_key == '':
+            meta_key = self.create_meta_key
+            if meta_key != None:
+                self.meta_key = meta_key
+        
+        if self.tournament_code == '' and self.game_in_series != 1:
+            tournament_code = self.create_tournament_code
+            if tournament_code != None:
+                self.tournament_code = tournament_code
+        
+        super(Game, self).save(*args, **kwargs)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['meta_key'])
+        ]
+
+
+@receiver(post_save, sender=Match)
+def match_handler(sender, instance, **kwargs):
+    if len(instance.games.all()) == 0:
+        new_game = Game()
+        new_game.match = instance
+        new_game.game_in_series = 1
+        new_game.save()
+    
+    if instance.scheduled_for != None and instance.scheduled_for != '':
+        for game in instance.games.all():
+            if game.game_in_series == 1 and game.tournament_code == '':
+                tournament_code = generate_tournament_code(game, Player)
+                if tournament_code != None:
+                    game.tournament_code = tournament_code
+                    game.save()
+
+@receiver(post_save, sender=Game)
+def game_handler(sender, instance, **kwargs):
+    if instance.winner != None:
+        instance.match.finished_game(instance.game_in_series)
+    
