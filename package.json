@@ -56,7 +56,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "start:dev": "NODE_ENV=development DEBUG=cosel:* yarn run build:dev & python3 manage.py runserver",
+    "start:dev": "NODE_ENV=development yarn run build:dev & python3 manage.py runserver",
     "start": "yarn run build",
     "build": "webpack --mode production --config webpack.prod.config.js",
     "build:dev": "webpack --mode development --config webpack.dev.config.js",
