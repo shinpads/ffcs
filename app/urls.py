@@ -10,6 +10,6 @@ urlpatterns = [
   path('api/admin/player/assignteam/', playerviews.AssignPlayerToTeam.as_view()),
   path('api/admin/player/assignrole/', playerviews.ChangePlayerRole.as_view()),
   path('', views.index),
-  path('riot.txt', views.riot),
+  path('/riot.txt', views.riot),
   path('api/tournamentcallback/', gameviews.CallbackView.as_view())
 ]
