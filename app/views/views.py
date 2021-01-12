@@ -6,7 +6,7 @@ def index(request):
 
 def riot(request):
   filename = "riot.txt"
-  content = 'aewrhbaw'
+  content = 'ac65f8e0-a217-46d7-a8e3-6fc4a8b576b7'
   response = HttpResponse(content, content_type='text/plain')
   response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
   return response
