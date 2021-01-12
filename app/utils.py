@@ -30,8 +30,6 @@ def register_tournament_provider():
         "url": "https://www.ffcsleague.com/api/tournamentcallback/"
     }
 
-    print(url)
-
     res = (requests.post(url, data=json.dumps(data)))
     if res.status_code != 200:
         print(json.dumps(res.json()))
@@ -44,6 +42,7 @@ def register_tournament(name, provider_id):
         int(provider_id)
     except:
         return None
+
     debug = os.getenv('DEBUG')
     if debug == "on":
         url = "https://americas.api.riotgames.com/lol/tournament-stub/v4/tournaments"
