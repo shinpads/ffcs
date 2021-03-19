@@ -11,7 +11,6 @@ def get_riot_account_id(username):
 
     res = requests.get(url)
     if res.status_code != 200:
-        raise Exception(res.text)
         return None
 
     body = json.loads(res.text)
@@ -108,7 +107,6 @@ def generate_tournament_code(game, all_players):
 
     if res.status_code != 200:
         print(res.text)
-        raise Exception(res.text)
         return None
 
     code = json.loads(str(res.text))[0]
