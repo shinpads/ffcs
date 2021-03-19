@@ -11,6 +11,7 @@ def get_riot_account_id(username):
 
     res = requests.get(url)
     if res.status_code != 200:
+        raise Exception(res.text)
         return None
 
     body = json.loads(res.text)
