@@ -107,6 +107,7 @@ def generate_tournament_code(game, all_players):
 
     if res.status_code != 200:
         print(res.text)
+        raise Exception(res.text)
         return None
 
     code = json.loads(str(res.text))[0]
