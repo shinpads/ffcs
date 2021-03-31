@@ -30,8 +30,7 @@ const Home = () => {
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.title}>Matches</div>
-        <Matches />
+        <div className={classes.title}>Season 2 Regestration Coming Soon</div>
       </div>
     </>
   );

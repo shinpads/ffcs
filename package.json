@@ -6,7 +6,7 @@
   "license": "MIT",
   "engines": {
     "node": "15.4.0",
-    "yarn": "1.22.5"
+    "yarn": "1.22.10"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.2",

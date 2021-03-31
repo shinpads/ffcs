@@ -30,7 +30,7 @@ const Header = () => {
     <header className={classes.header}>
       <img alt="" width={48} src={getImage(logo)} />
       <div className={classes.title}>For Fun Championship Series</div>
-      <div style={{ paddingRight: '1rem', textAlign: 'right' }}>Starting January 2021</div>
+      <div style={{ paddingRight: '1rem', textAlign: 'right' }}>Season 2</div>
     </header>
   );
 };
