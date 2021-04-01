@@ -6,6 +6,9 @@ from ..models import User, Season, RegistrationForm
 import json
 import requests
 import os
+import logging
+
+logger = logging.getLogger('discordview')
 
 DISCORD_AUTH_URL = os.getenv('DISCORD_AUTH_URL')
 DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID')
@@ -20,11 +23,12 @@ def discord_login(request: HttpRequest):
 
 def login_redirect(request: HttpRequest):
     code = request.GET['code']
-    print('\n\n\n\nGOT CODE', code, '\n\n\n\n')
+    logger.error('\n\n\n\nGOT CODE')
+    logger.error(code)
     discord_user_data = exchange_code(code)
 
     user = authenticate(request, user=discord_user_data)
-    print(user)
+    logger.error(user)
     login(request, user, backend='app.auth.DiscordAuthenticationBackend')
 
     current_season = Season.objects.get(number=2)
@@ -60,6 +64,6 @@ def exchange_code(code: str):
 
     response = requests.get('https://discord.com/api/v6/users/@me', headers=headers)
 
-    print(response.json())
+    logger.error(response.json())
 
     return response.json()
