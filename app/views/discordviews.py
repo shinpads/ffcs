@@ -7,7 +7,7 @@ import json
 import requests
 import os
 
-DISCORD_AUTH_URL = 'https://discord.com/api/oauth2/authorize?client_id=826893696040960080&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify%20email'
+DISCORD_AUTH_URL = os.getenv('DISCORD_AUTH_URL')
 DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID')
 DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET')
 DISCORD_REDIRECT_URI = os.getenv('DISCORD_REDIRECT_URI')
