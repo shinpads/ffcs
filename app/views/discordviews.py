@@ -8,7 +8,7 @@ import requests
 import os
 import logging
 
-logger = logging.getLogger('discordview')
+logger = logging.getLogger(__name__)
 
 DISCORD_AUTH_URL = os.getenv('DISCORD_AUTH_URL')
 DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID')

@@ -176,7 +176,7 @@ LOGGING = {
         }
     },
     'loggers': {
-        'testlogger': {
+        'app': {
             'handlers': ['console'],
             'level': 'INFO',
         }
