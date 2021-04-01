@@ -17,6 +17,13 @@ const styles = createUseStyles({
     textAlign: 'center',
     textTransform: 'uppercase',
   },
+  subtitle: {
+    fontSize: '22px',
+    fontWeight: 500,
+    padding: '1rem',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
   description: {
     textAlign: 'center',
     color: colors.offwhite,
@@ -56,7 +63,7 @@ const Home = () => {
             <img  alt="discord" width={32} src={getImage(discordLogo)} />
           </Button>
         </div>
-
+        <div className={classes.subtitle}>Watch season 1 finals</div>
         <iframe
             src="https://player.twitch.tv/?video=965802464&parent=localhost&muted=true&autoplay=true&time=17m3s"
             width="900"
