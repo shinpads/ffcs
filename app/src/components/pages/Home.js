@@ -55,7 +55,7 @@ const Home = () => {
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.title}>Register for season 2 now open</div>
+        <div className={classes.title}>Registration for season 2 now open</div>
 
         <div className={classes.signin}>
           <Button variant="contained" color="secondary" onClick={openLogin}>
