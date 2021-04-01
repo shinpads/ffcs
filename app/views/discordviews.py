@@ -58,5 +58,5 @@ def exchange_code(code: str):
     }
 
     response = requests.get('https://discord.com/api/v6/users/@me', headers=headers)
-
+    raise error(response)
     return response.json()
