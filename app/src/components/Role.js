@@ -14,6 +14,11 @@ const Role = ({ role }) => {
     MID,
     ADC,
     SUPP,
+    top: TOP,
+    jungle: JG,
+    mid: MID,
+    bot: ADC,
+    support: SUPP,
   };
 
   return (

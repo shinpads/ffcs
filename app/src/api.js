@@ -18,3 +18,12 @@ export async function getMatches() {
 export async function getTeam() {
   throw new Error('not done');
 }
+
+export async function discordLogin() {
+  const response = await axios.get('/oauth2/login/');
+}
+
+export async function signup(data) {
+  const response = await axios.post('/api/signup/', data);
+  return response.data;
+}

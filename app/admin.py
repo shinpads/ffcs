@@ -2,6 +2,9 @@ from django.contrib import admin
 from django import forms
 from .models import Season, Team, Match, Player, Game, Provider
 
+class DontLog:
+    def log_addition(self, *args):
+        return
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
@@ -74,7 +77,7 @@ class MatchAdmin(admin.ModelAdmin):
 class GameAdmin(admin.ModelAdmin):
     def get_id(self, obj):
         return obj.pk
-    
+
     get_id.short_description = 'ID'
 
     list_display = (
@@ -96,7 +99,7 @@ class GameAdmin(admin.ModelAdmin):
 class ProviderAdmin(admin.ModelAdmin):
     def get_id(self, obj):
         return obj.pk
-    
+
     get_id.short_description = 'ID'
 
     list_display = ('provider_id', 'get_id')

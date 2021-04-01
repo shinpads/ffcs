@@ -34,6 +34,12 @@ ALLOWED_HOSTS = [
     'www.ffcsleague.com'
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'app.auth.DiscordAuthenticationBackend',
+]
+
+AUTH_USER_MODEL = 'app.User'
 
 # Application definition
 

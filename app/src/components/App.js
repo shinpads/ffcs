@@ -5,6 +5,7 @@ import {
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import colors from '../colors';
 import Home from './pages/Home';
+import Signup from './pages/Signup';
 
 const theme = createMuiTheme({
   palette: {
@@ -33,6 +34,7 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <Switch>
           <Route path="/" component={Home} exact />
+          <Route path="/signup" component={Signup} exact />
           <Redirect from="*" to="/" />
         </Switch>
       </MuiThemeProvider>

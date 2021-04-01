@@ -1,8 +1,17 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import login_required
+from ..models import RegistrationForm, Season
+import json
 
 def index(request):
   return render(request, 'index.html')
+
+@login_required(login_url="/")
+def signup_index(request):
+    return render(request, 'index.html')
+
+
 
 def riot(request):
   filename = "riot.txt"

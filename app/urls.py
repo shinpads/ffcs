@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import views, teamviews, playerviews, seasonviews, matchviews, gameviews
+from .views import views, teamviews, playerviews, seasonviews, matchviews, gameviews, discordviews, registrationviews
 
 urlpatterns = [
   path('api/season/', seasonviews.SeasonView.as_view()),
@@ -9,7 +9,11 @@ urlpatterns = [
   path('api/matches/', matchviews.MatchesView.as_view()),
   path('api/admin/player/assignteam/', playerviews.AssignPlayerToTeam.as_view()),
   path('api/admin/player/assignrole/', playerviews.ChangePlayerRole.as_view()),
+  path('api/signup/', registrationviews.signup),
   path('', views.index),
+  path('signup', views.signup_index),
   path('/riot.txt', views.riot),
-  path('api/tournamentcallback/', gameviews.CallbackView.as_view())
+  path('api/tournamentcallback/', gameviews.CallbackView.as_view()),
+  path('oauth2/login/', discordviews.discord_login, name='oauth_login'),
+  path('oauth2/login/redirect/', discordviews.login_redirect, name='oauth_login_redirect'),
 ]

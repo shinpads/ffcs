@@ -15,6 +15,8 @@ const styles = createUseStyles({
     justifyContent: 'space-between',
     textTransform: 'uppercase',
     boxShadow: `1px 1px 2px ${colors.black}`,
+    position: 'fixed',
+    width: '100%',
   },
   title: {
     fontWeight: 600,
