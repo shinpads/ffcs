@@ -17,6 +17,7 @@ const styles = createUseStyles({
     boxShadow: `1px 1px 2px ${colors.black}`,
     position: 'fixed',
     width: '100%',
+    zIndex: 99999,
   },
   title: {
     fontWeight: 600,
