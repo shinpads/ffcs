@@ -92,6 +92,7 @@ const Signup = () => {
 
   const [submitted, setSubmitted] = useState(false)
   const [message, setMessage] = useState('')
+  const [heardFrom, setHeardFrom] = useState('')
 
 
   const submit = async (e) => {
@@ -101,6 +102,7 @@ const Signup = () => {
       firstName,
       rank,
       rankShouldBe,
+      heardFrom,
       firstRole: rolePrefrences[0].role,
       secondRole: rolePrefrences[1].role,
       thirdRole: rolePrefrences[2].role,
@@ -136,12 +138,12 @@ const Signup = () => {
         <form className={classes.form} onSubmit={submit}>
 
           <div className={classes.question}>What is your summoner name? (Must be exact)</div>
-          <TextField value={summonerName} onChange={(e) => setSummonerName(e.target.value)} variant="filled" color="secondary" label="SUMMONER NAME"/>
+          <TextField value={summonerName} onChange={(e) => setSummonerName(e.target.value)} variant="filled" color="secondary" label="SUMMONER NAME" inputProps={{ maxLength: 32 }} />
 
           <div className={classes.question}>What is your first name? (optional)</div>
-          <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} variant="filled" color="secondary" label="FIRST NAME"/>
+          <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} variant="filled" color="secondary" label="FIRST NAME" inputProps={{ maxLength: 32 }}/>
 
-          <div className={classes.question}>Please sort the roles in order of prefrence</div>
+          <div className={classes.question}>Please order the roles in order of preference ()</div>
           <div className={classes.rolesContainer}>
             <Sortable
               animation={150}
@@ -158,9 +160,12 @@ const Signup = () => {
             </Sortable>
           </div>
           <div className={classes.question}>What is your current rank?</div>
-          <TextField value={rank} onChange={(e) => setRank(e.target.value)} variant="filled" color="secondary" label="RANK"/>
+          <TextField value={rank} onChange={(e) => setRank(e.target.value)} variant="filled" color="secondary" label="RANK" inputProps={{ maxLength: 32 }} />
           <div className={classes.question}>What rank do you think you should be? (honest opinion)</div>
-          <TextField value={rankShouldBe} onChange={(e) => setRankShouldBe(e.target.value)} variant="filled" color="secondary" label="RANK"/>
+          <TextField value={rankShouldBe} onChange={(e) => setRankShouldBe(e.target.value)} variant="filled" color="secondary" label="RANK" inputProps={{ maxLength: 32 }} />
+
+          <div className={classes.question}>How did you hear of FFCS? (if a friend introduced you to FFCS, please type their name)</div>
+          <TextField value={heardFrom} onChange={(e) => setHeardFrom(e.target.value)} variant="filled" color="secondary" label="RANK" inputProps={{ maxLength: 32 }} />
 
           <Button className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>
             <div className={classes.buttonText}>Submit</div>

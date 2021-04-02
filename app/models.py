@@ -287,6 +287,9 @@ class RegistrationForm(models.Model):
 
     current_rank = models.CharField(max_length=32)
     rank_should_be = models.CharField(max_length=32)
+    heard_from = models.CharField(max_length=64)
+    summoner_name = models.CharField(max_length=32)
+
 
     def clean(self):
         if len(Set([self.first_role, self.second_role, self.third_role, self.fourth_role, self.fifth_role])) < 5:

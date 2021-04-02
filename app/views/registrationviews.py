@@ -25,7 +25,9 @@ def signup(request):
         fourth_role=json_data['fourthRole'],
         fifth_role=json_data['fifthRole'],
         current_rank=json_data['rank'],
-        rank_should_be=json_data['rankShouldBe']
+        rank_should_be=json_data['rankShouldBe'],
+        heard_from=json_data['heardFrom'],
+        summoner_name=json_data['summonerName']
     )
     form.save()
     return JsonResponse({ "message": "Registration Complete" });
