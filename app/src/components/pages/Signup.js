@@ -143,7 +143,7 @@ const Signup = () => {
           <div className={classes.question}>What is your first name? (optional)</div>
           <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} variant="filled" color="secondary" label="FIRST NAME" inputProps={{ maxLength: 32 }}/>
 
-          <div className={classes.question}>Please order the roles in order of preference ()</div>
+          <div className={classes.question}>Please order the roles in order of preference (Drag to move)</div>
           <div className={classes.rolesContainer}>
             <Sortable
               animation={150}
