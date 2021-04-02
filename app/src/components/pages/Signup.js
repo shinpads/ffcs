@@ -165,7 +165,7 @@ const Signup = () => {
           <TextField value={rankShouldBe} onChange={(e) => setRankShouldBe(e.target.value)} variant="filled" color="secondary" label="RANK" inputProps={{ maxLength: 32 }} />
 
           <div className={classes.question}>How did you hear of FFCS? (if a friend introduced you to FFCS, please type their name)</div>
-          <TextField value={heardFrom} onChange={(e) => setHeardFrom(e.target.value)} variant="filled" color="secondary" label="RANK" inputProps={{ maxLength: 32 }} />
+          <TextField value={heardFrom} onChange={(e) => setHeardFrom(e.target.value)} variant="filled" color="secondary" label="" inputProps={{ maxLength: 32 }} />
 
           <Button className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>
             <div className={classes.buttonText}>Submit</div>
