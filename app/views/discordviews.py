@@ -23,12 +23,9 @@ def discord_login(request: HttpRequest):
 
 def login_redirect(request: HttpRequest):
     code = request.GET['code']
-    logger.error('\n\n\n\nGOT CODE')
-    logger.error(code)
     discord_user_data = exchange_code(code)
-
+    return JsonResponse(discord_user_data)
     user = authenticate(request, user=discord_user_data)
-    logger.error(user)
     login(request, user, backend='app.auth.DiscordAuthenticationBackend')
 
     current_season = Season.objects.get(number=2)
@@ -63,7 +60,5 @@ def exchange_code(code: str):
     }
 
     response = requests.get('https://discord.com/api/v6/users/@me', headers=headers)
-
-    logger.error(response.json())
 
     return response.json()
