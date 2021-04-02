@@ -248,7 +248,7 @@ class User(AbstractBaseUser):
     discord_user_id = models.BigIntegerField()
 
     # League stuff
-    summoner_name = models.CharField(max_length=32, unique=True)
+    summoner_name = models.CharField(max_length=32)
 
     # last_login = models.DateTimeField(null=True)\
 
