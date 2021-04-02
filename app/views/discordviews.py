@@ -23,8 +23,8 @@ def discord_login(request: HttpRequest):
 
 def login_redirect(request: HttpRequest):
     code = request.GET['code']
+    return JsonResponse({"code": code})
     discord_user_data = exchange_code(code)
-    return JsonResponse(discord_user_data)
     user = authenticate(request, user=discord_user_data)
     login(request, user, backend='app.auth.DiscordAuthenticationBackend')
 
@@ -53,7 +53,6 @@ def exchange_code(code: str):
 
     response = requests.post('https://discord.com/api/oauth2/token', data=data, headers=headers)
     credentials = response.json();
-    return credentials
     access_token = credentials['access_token']
 
     headers = {
