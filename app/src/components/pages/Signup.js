@@ -41,7 +41,7 @@ const styles = createUseStyles({
     fontSize: '22px',
     display: 'grid',
     gridTemplateColumns: '1fr 3fr 1fr',
-    cursor: 'grab',
+    cursor: 'pointer',
     backgroundColor: colors.darkestGrey,
     margin: '0.5rem 0rem',
     padding: '0.5rem',
