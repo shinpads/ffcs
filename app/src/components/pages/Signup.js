@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { ReactSortable as Sortable } from 'react-sortablejs';
 import { Button, TextField } from '@material-ui/core';
+import { connect } from 'react-redux';
 import Teams from './Teams';
 import Matches from '../Matches';
 import Header from '../Header';
@@ -10,6 +11,7 @@ import { signup } from '../../api';
 import colors from '../../colors';
 import { getImage } from '../../helpers';
 import discordLogo from '../../../public/discord.png';
+import DiscordUser from '../discord/DiscordUser';
 
 const styles = createUseStyles({
   title: {
@@ -81,19 +83,20 @@ const ROLES = [
   { role: 'support', id: 5 }
 ]
 
-const Signup = () => {
+const Signup = (props) => {
   const classes = styles();
 
   const [summonerName, setSummonerName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [rolePrefrences, setRolePrefrences] = useState(ROLES);
   const [rank, setRank] = useState('');
-  const [rankShouldBe, setRankShouldBe] = useState('')
+  const [rankShouldBe, setRankShouldBe] = useState('');
 
-  const [submitted, setSubmitted] = useState(false)
-  const [message, setMessage] = useState('')
-  const [heardFrom, setHeardFrom] = useState('')
+  const [submitted, setSubmitted] = useState(false);
+  const [message, setMessage] = useState('');
+  const [heardFrom, setHeardFrom] = useState('');
 
+  const { loaded: userLoaded, user } = props.user;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -137,6 +140,9 @@ const Signup = () => {
         <div className={classes.title}>Season 2 signup form</div>
         <form className={classes.form} onSubmit={submit}>
 
+          <div>Registering as:</div>
+          <DiscordUser user={user} />
+
           <div className={classes.question}>What is your summoner name? (Must be exact)</div>
           <TextField value={summonerName} onChange={(e) => setSummonerName(e.target.value)} variant="filled" color="secondary" label="SUMMONER NAME" inputProps={{ maxLength: 32 }} />
 
@@ -176,4 +182,10 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+function mapStateToProps(state) {
+  return {
+    user: state.user,
+  };
+}
+
+export default connect(mapStateToProps)(Signup);

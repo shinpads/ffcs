@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {
   Route, Switch, Redirect, withRouter,
 } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import colors from '../colors';
+import { getUser } from '../actions/userActions';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 
@@ -26,7 +28,10 @@ const theme = createMuiTheme({
 
 class App extends Component {
   componentDidMount() {
+    const { dispatch } = this.props;
+
     document.body.style.backgroundColor = colors.background;
+    dispatch(getUser());
   }
 
   render() {
@@ -42,4 +47,4 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+export default withRouter(connect()(App));
