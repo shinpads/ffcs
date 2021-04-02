@@ -53,6 +53,7 @@ def exchange_code(code: str):
 
     response = requests.post('https://discord.com/api/oauth2/token', data=data, headers=headers)
     credentials = response.json();
+    return credentials
     access_token = credentials['access_token']
 
     headers = {
