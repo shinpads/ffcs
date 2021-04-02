@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Season, Team, Match, Player, Game, Provider
+from .models import Season, Team, Match, Player, Game, Provider, User, RegistrationForm
 
 class DontLog:
     def log_addition(self, *args):
@@ -109,3 +109,22 @@ class ProviderAdmin(admin.ModelAdmin):
             'fields': ()
         }),
     )
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+
+    get_id.short_description = 'ID'
+
+    list_display = ('discord_username', 'email', 'summoner_name')
+
+@admin.register(RegistrationForm)
+class RegistrationFormAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+
+    get_id.short_description = 'ID'
+
+    list_display = ('created_at', 'summoner_name', 'first_name', 'first_role', 'second_role', 'third_role', 'fourth_role', 'fifth_role', 'current_rank', 'rank_should_be', 'heard_from')
