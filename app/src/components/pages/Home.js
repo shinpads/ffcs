@@ -65,7 +65,7 @@ const Home = (props) => {
 
         <div className={classes.subtitle}>Watch season 1 finals</div>
         <iframe
-            src="https://player.twitch.tv/?video=965802464&parent=www.ffcsleague.com&muted=true&autoplay=true&time=17m3s"
+            src="https://player.twitch.tv/?video=974287088&parent=www.ffcsleague.com&muted=true&autoplay=true&time=17m3s"
             width="100%"
             height="507"
             allowFullScreen={true}>
