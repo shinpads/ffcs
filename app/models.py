@@ -242,13 +242,13 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
 
     # Stuff from discord
-    discord_username = models.CharField(max_length=32, unique=True)
+    discord_username = models.CharField(max_length=64, unique=True)
     email = models.CharField(max_length=254, unique=True)
-    avatar = models.CharField(max_length=32)
+    avatar = models.CharField(max_length=64)
     discord_user_id = models.BigIntegerField()
 
     # League stuff
-    summoner_name = models.CharField(max_length=32)
+    summoner_name = models.CharField(max_length=64)
 
     # last_login = models.DateTimeField(null=True)\
 
