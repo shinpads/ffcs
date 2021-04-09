@@ -10,12 +10,9 @@ def signup(request):
     json_data = json.loads(request.body)
     current_season = Season.objects.get(number=2)
 
-    submitted_form = RegistrationForm.objects.filter(season=current_season, user=request.user)
+    form = RegistrationForm.objects.get_or_create(season=current_season, user=request.user)
 
-    if len(submitted_form) > 0:
-        return JsonResponse({ "message": "Already submitted for this season" })
-
-    form = RegistrationForm(
+    form.update(
         season=current_season,
         user=request.user,
         first_name=json_data['firstName'],
