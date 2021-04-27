@@ -38,6 +38,7 @@ class Season(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     number = models.IntegerField(unique=True)
     name = models.CharField(max_length=20, blank=True)
+    is_mock = models.BooleanField(default=False)
     provider = models.ForeignKey(Provider, on_delete=models.SET_NULL, null=True)
     tournament_id = models.CharField(max_length=70, blank=True)
 
@@ -49,7 +50,7 @@ class Season(models.Model):
             return None
 
     def save(self, *args, **kwargs):
-        if self.tournament_id == None or self.tournament_id == '':
+        if (self.tournament_id == None or self.tournament_id == '') and self.is_mock == False:
             tournament_id = self.register_tournament
             if (tournament_id != None):
                 self.tournament_id = tournament_id
@@ -138,6 +139,46 @@ class Match(models.Model):
             ", " + self.season.__str__()
         )
 
+class User(AbstractBaseUser):
+    objects = DiscordUserOAuthManager()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_admin = models.BooleanField(default=False)
+
+    # Stuff from discord
+    discord_username = models.CharField(max_length=64, unique=True)
+    email = models.CharField(max_length=254, unique=True)
+    avatar = models.CharField(max_length=64)
+    discord_user_id = models.BigIntegerField()
+
+    # League stuff
+    summoner_name = models.CharField(max_length=64)
+
+    # last_login = models.DateTimeField(null=True)\
+
+    REQUIRED_FIELDS = []
+
+    USERNAME_FIELD = 'email'
+
+    is_authenticated = True
+    is_anonymous = False
+
+    def is_active(self, request):
+        return True
+
+    def is_staff(self, request):
+        return self.is_admin
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return self.is_admin
+
+    def __str__(self):
+        return self.discord_username
+
 
 class Player(models.Model):
     TOP = "TOP"
@@ -153,9 +194,13 @@ class Player(models.Model):
         (ADC, "ADC"),
         (SUPPORT, "Support"),
     ]
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    username = models.CharField(max_length=20)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
     caster = models.BooleanField(default=False)
     team = models.ForeignKey(
         Team,
@@ -171,7 +216,7 @@ class Player(models.Model):
 
     @property
     def get_account_id(self):
-        return get_riot_account_id(self.username)
+        return get_riot_account_id(self.user.summoner_name)
 
     def save(self, *args, **kwargs):
         if self.account_id == '':
@@ -187,7 +232,21 @@ class Player(models.Model):
         ]
 
     def __str__(self):
-        return self.username
+        return self.user.discord_username
+
+
+class Vote(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    season = models.ForeignKey(
+        Season,
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
 
 class Game(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -233,43 +292,6 @@ class Game(models.Model):
         indexes = [
             models.Index(fields=['meta_key'])
         ]
-
-class User(AbstractBaseUser):
-    objects = DiscordUserOAuthManager()
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_admin = models.BooleanField(default=False)
-
-    # Stuff from discord
-    discord_username = models.CharField(max_length=64, unique=True)
-    email = models.CharField(max_length=254, unique=True)
-    avatar = models.CharField(max_length=64)
-    discord_user_id = models.BigIntegerField()
-
-    # League stuff
-    summoner_name = models.CharField(max_length=64)
-
-    # last_login = models.DateTimeField(null=True)\
-
-    REQUIRED_FIELDS = []
-
-    USERNAME_FIELD = 'email'
-
-    is_authenticated = True
-    is_anonymous = False
-
-    def is_active(self, request):
-        return True
-
-    def is_staff(self, request):
-        return self.is_admin
-
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-      return self.is_admin
 
 class RegistrationForm(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

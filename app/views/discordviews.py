@@ -27,13 +27,6 @@ def login_redirect(request: HttpRequest):
     user = authenticate(request, user=discord_user_data)
     login(request, user, backend='app.auth.DiscordAuthenticationBackend')
 
-    current_season = Season.objects.get(number=2)
-
-    submitted_form = RegistrationForm.objects.filter(season=current_season, user=request.user)
-
-    if len(submitted_form) == 0:
-        return redirect('/signup')
-
     return redirect('/')
 
 def exchange_code(code: str):

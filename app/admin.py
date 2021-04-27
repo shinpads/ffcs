@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Season, Team, Match, Player, Game, Provider, User, RegistrationForm
+from .models import Season, Team, Match, Player, Game, Provider, User, RegistrationForm, Vote
 
 class DontLog:
     def log_addition(self, *args):
@@ -12,13 +12,18 @@ class PlayerAdmin(admin.ModelAdmin):
     def get_id(self, obj):
         return obj.pk
 
+    def get_summoner_name(self, obj):
+        return obj.user.summoner_name
+    
+    get_summoner_name.short_description = 'Summoner Name'
+
     get_id.short_description = 'ID'
 
-    list_display = ('username', 'team', 'role', 'get_id')
+    list_display = ('user', 'get_summoner_name', 'team', 'role', 'account_id', 'get_id')
 
     fieldsets = (
         (None, {
-            'fields': ('username', 'team', 'role', 'caster')
+            'fields': ('user', 'team', 'role', 'caster')
         }),
     )
 
@@ -38,11 +43,11 @@ class SeasonAdmin(admin.ModelAdmin):
 
     get_id.short_description = 'ID'
 
-    list_display = ('number', 'name', 'tournament_id', 'get_id')
+    list_display = ('number', 'name', 'is_mock', 'tournament_id', 'get_id')
 
     fieldsets = (
         (None, {
-            'fields': ('number', 'name', 'provider')
+            'fields': ('number', 'name', 'provider', 'is_mock')
         }),
     )
 
@@ -110,6 +115,20 @@ class ProviderAdmin(admin.ModelAdmin):
         }),
     )
 
+@admin.register(Vote)
+class VoteAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+
+    get_id.short_description = 'ID'
+
+    list_display = ('season', 'user')
+
+    fieldsets = (
+        (None, {
+            'fields': ('season', 'user',)
+        }),
+    )
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
