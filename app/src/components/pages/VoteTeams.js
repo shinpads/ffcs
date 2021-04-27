@@ -62,7 +62,7 @@ const Teams = () => {
               {mockSeason1.teams.map((team, index) => (
                 <Team
                   team={team}
-                  delay={index * 8000}
+                  delay={index * 5000}
                   viewed={existingVote}
                 />
               ))}
