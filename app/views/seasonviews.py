@@ -9,9 +9,13 @@ class SeasonView(View):
 
     def get(self, request, *args, **kwargs):
         out_data = {}
-        season_num = request.GET["season"]
-
-        season = Season.objects.filter(number=season_num).first()
+        season_num  = request.GET.get('season', None)
+        season_name = request.GET.get('season_name', None)
+        season = None
+        if season_num != None:
+            season = Season.objects.filter(number=season_num).first()
+        elif season_name != None:
+            season = Season.objects.filter(name=season_name).first()
         if season == None:
             response = JsonResponse({
                 "message": "could not find season with given number.",

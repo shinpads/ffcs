@@ -4,7 +4,7 @@ from ..models import Vote, Season, User
 from django.views import View
 import json
 
-def VoteView(View):
+class VoteView(View):
     def post(self, request, *args, **kwargs):
         user = request.user
         json_data = json.loads(request.body)
@@ -25,6 +25,6 @@ def VoteView(View):
 
         if Vote.objects.filter(user=user).exists():
             return JsonResponse({"message": "User already submitted vote", "data": True})
-        
+
         else:
             return JsonResponse({"message": "User has not submitted a vote", "data": False})

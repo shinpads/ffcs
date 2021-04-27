@@ -8,6 +8,26 @@ export async function getSeason(season, cb) {
   return result;
 }
 
+export async function getSeasonByName(name, cb) {
+  const response = await axios.get('/api/season/', { params: { season_name: name } });
+  const result = response.data.data || [];
+  if (cb) cb(result);
+
+  return result;
+}
+
+export async function submitVote(season) {
+  const response = await axios.post('/api/vote/', { season });
+
+  return response.data;
+}
+
+export async function getVote() {
+  const response  = await axios.get('/api/vote/');
+
+  return response.data.data || false;
+}
+
 export async function getMatches() {
   const response = await axios.get('/api/matches/');
   const result = response.data.data || [];

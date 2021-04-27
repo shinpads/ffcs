@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
 import { connect } from 'react-redux';
-import Teams from './Teams';
+import VoteTeams from './VoteTeams';
 import Matches from '../Matches';
 import Header from '../Header';
 import colors from '../../colors';
@@ -24,6 +24,7 @@ const styles = createUseStyles({
     padding: '1rem',
     textAlign: 'center',
     textTransform: 'uppercase',
+    color: colors.offwhite,
   },
   description: {
     textAlign: 'center',
@@ -56,26 +57,38 @@ const Home = (props) => {
 
   const { loaded: userLoaded, user } = props.user;
 
+  if (userLoaded && !user.id) {
+    return (
+      <>
+        <Header />
+        <div className={classes.container}>
+          <div className={classes.title}>Sign-in to proceed</div>
+          <SignIn user={user} />
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.title}>Registration for season 2 now open</div>
-        {userLoaded && <SignIn user={user} />}
+        <div className={classes.title}>Vote on teams</div>
+        <div className={classes.subtitle}>{'voting will be open for 24 hours\nPlease vote on which teams you would prefer'}</div>
 
-        <div className={classes.subtitle}>Watch season 1 finals</div>
-        <iframe
-            src="https://player.twitch.tv/?video=974287088&parent=www.ffcsleague.com&muted=true&autoplay=true&time=17m3s"
-            width="100%"
-            height="507"
-            allowFullScreen={true}>
-        </iframe>
-
-
+        <hr />
+        <VoteTeams />
       </div>
     </>
   );
 };
+
+// <iframe
+//     src="https://player.twitch.tv/?video=974287088&parent=www.ffcsleague.com&muted=true&autoplay=true&time=17m3s"
+//     width="100%"
+//     height="507"
+//     allowFullScreen={true}>
+// </iframe>
 
 const SignIn = ({ user }) => {
   const classes = styles();

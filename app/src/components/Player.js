@@ -27,7 +27,7 @@ const Player = ({ player, viewed, delay }) => {
     <Fade duration={viewed ? 0 : 1200} delay={viewed ? 0 : delay}>
       <div className={classes.player}>
         <Role role={player.role} />
-        <div className={classes.playerName}>{player.username}</div>
+        <div className={classes.playerName}>{player.user.summoner_name}</div>
       </div>
     </Fade>
   );
