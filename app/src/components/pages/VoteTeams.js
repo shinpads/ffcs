@@ -38,9 +38,9 @@ const Teams = () => {
     setTeamsDisplay2(teamCards2);
   }
 
-  const voteForOption = (number) => () => {
-    submitVote(number);
-    setVoted(true);
+  const voteForOption = (number) => async () => {
+    await submitVote(number);
+    window.location.reload();
   }
 
   const MOCK_SEASON_1_ID = 21;
@@ -63,7 +63,7 @@ const Teams = () => {
                 <Team
                   team={team}
                   delay={index * 8000}
-                  viewed={localStorage.getItem('viewed')}
+                  viewed={existingVote}
                 />
               ))}
             </div>
@@ -72,6 +72,7 @@ const Teams = () => {
                 style={{ margin: 10 }}
                 variant="contained"
                 onClick={voteForOption(MOCK_SEASON_1_ID)}
+                fullWidth
               >
                 Vote Option 1
               </Button>
@@ -89,7 +90,7 @@ const Teams = () => {
                 <Team
                   team={team}
                   delay={index * 8000}
-                  viewed={localStorage.getItem('viewed')}
+                  viewed={existingVote}
                 />
               ))}
             </div>
@@ -98,6 +99,7 @@ const Teams = () => {
                 style={{ margin: 10 }}
                 variant="contained"
                 onClick={voteForOption(MOCK_SEASON_2_ID)}
+                fullWidth
               >
                 Vote Option 2
               </Button>

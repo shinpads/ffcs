@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { connect } from 'react-redux';
 import VoteTeams from './VoteTeams';
@@ -9,6 +9,7 @@ import { getImage } from '../../helpers';
 import { Button } from '@material-ui/core';
 import discordLogo from '../../../public/discord.png';
 import DiscordUser from '../discord/DiscordUser';
+import { getVote } from '../../api';
 
 const styles = createUseStyles({
   title: {
@@ -51,6 +52,16 @@ const styles = createUseStyles({
 const Home = (props) => {
   const classes = styles();
 
+  const [voted, setVoted] = useState(false);
+
+  useEffect(() => {
+    async function start() {
+      const existingVote = await getVote();
+      setVoted(existingVote);
+    }
+    start();
+  }, []);
+
   const openLogin = () => {
       window.location.href = window.location.origin + '/oauth2/login';
   }
@@ -73,8 +84,18 @@ const Home = (props) => {
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.title}>Vote on teams</div>
-        <div className={classes.subtitle}>{'voting will be open for 24 hours\nPlease vote on which teams you would prefer'}</div>
+        {!voted && (
+          <>
+            <div className={classes.title}>Vote on teams</div>
+            <div className={classes.subtitle}>{'voting will be open for 24 hours\nPlease vote on which teams you would prefer'}</div>
+          </>
+        )}
+        {voted && (
+          <>
+            <div className={classes.title}>You have voted for season 2 teams</div>
+            <div className={classes.subtitle}>The final teams will be announced tomorrow!</div>
+          </>
+        )}
 
         <hr />
         <VoteTeams />
