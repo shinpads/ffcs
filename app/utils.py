@@ -7,7 +7,7 @@ load_dotenv()
 
 def get_riot_account_id(username):
     url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
-    url = url + username + "?api_key=" + os.getenv('RIOT_API_KEY')
+    url = url + username.strip() + "?api_key=" + os.getenv('RIOT_API_KEY')
 
     res = requests.get(url)
     if res.status_code != 200:
