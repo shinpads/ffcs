@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { connect } from 'react-redux';
-import VoteTeams from './VoteTeams';
+import Teams from './Teams';
 import Matches from '../Matches';
 import Header from '../Header';
 import colors from '../../colors';
@@ -84,21 +84,9 @@ const Home = (props) => {
     <>
       <Header />
       <div className={classes.container}>
-        {!voted && (
-          <>
-            <div className={classes.title}>Vote on teams</div>
-            <div className={classes.subtitle}>{'voting will be open for 24 hours\nPlease vote on which teams you would prefer'}</div>
-          </>
-        )}
-        {voted && (
-          <>
-            <div className={classes.title}>You have voted for season 2 teams</div>
-            <div className={classes.subtitle}>The final teams will be announced tomorrow!</div>
-          </>
-        )}
-
+        <div className={classes.title}>Schedule will be posted soon</div>
         <hr />
-        <VoteTeams />
+        <Teams />
       </div>
     </>
   );

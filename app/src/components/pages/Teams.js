@@ -24,29 +24,17 @@ const Teams = () => {
 
   useEffect(() => {
     async function getTeams() {
-      const season = await getSeason(1);
+      const season = await getSeason(2);
       if (season && season.teams) {
         teamCards = season.teams.map((team, index) => (
           <Team
             team={team}
             delay={index * 8000}
-            viewed={localStorage.getItem('viewed')}
+            viewed
           />
         ));
       }
-      if (!localStorage.getItem('viewed')) {
-        setTeamsDisplay(
-          <Button
-            style={{ margin: 10 }}
-            variant="contained"
-            onClick={revealTeams}
-          >
-            Reveal Teams
-          </Button>,
-        );
-      } else {
-        setTeamsDisplay(teamCards);
-      }
+      setTeamsDisplay(teamCards);
     }
     getTeams();
   }, []);
