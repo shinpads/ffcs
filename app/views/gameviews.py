@@ -12,7 +12,7 @@ class CallbackView(View):
 
         game_id = data["gameId"]
 
-        meta_key = data["metaData"]["key"]
+        meta_key = json.loads(data["metaData"]["key"].replace("\'", "\""))
         
         game = Game.objects.filter(meta_key=meta_key).first()
         if game == None:
