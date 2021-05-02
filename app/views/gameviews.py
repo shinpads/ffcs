@@ -11,7 +11,7 @@ class CallbackView(View):
         out_data = {}
 
         game_id = data["gameId"]
-        print(data["metaData"])
+        print(data)
         meta_key = json.loads(data["metaData"])["key"]
         
         game = Game.objects.filter(meta_key=meta_key).first()
