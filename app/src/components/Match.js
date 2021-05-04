@@ -11,7 +11,7 @@ const styles = createUseStyles({
     margin: '1rem 4px 1rem 4px',
     backgroundColor: colors.darkGrey,
     borderRadius: '4px',
-    flexBasis: '300px',
+    flexBasis: '400px',
     boxShadow: `1px 1px 2px ${colors.black}`,
   },
   topContainer: {
@@ -21,8 +21,9 @@ const styles = createUseStyles({
     color: colors.offwhite,
   },
   bottomContainer: {
-    display: 'flex',
-    justifyContent: 'space-around',
+    display: 'grid',
+    gridTemplateColumns: '3fr 1fr 3fr',
+    textAlign: 'center',
     fontSize: '18px',
   }
 });

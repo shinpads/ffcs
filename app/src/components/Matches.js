@@ -47,7 +47,7 @@ const Matches = () => {
       {loading && 'LOADING...'}
       {!loading && (
         <div className={classes.container}>
-          {Object.keys(matchesByWeek).sort().map(weekNum => (
+          {Object.keys(matchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (
             <>
               <h2 className={classes.weekNum}>Week {weekNum}</h2>
               {matchesByWeek[weekNum].map(match => <Match match={match} />)}

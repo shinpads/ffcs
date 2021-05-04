@@ -38,7 +38,7 @@ const styles = createUseStyles({
     paddingTop: '5rem',
   },
   splitContainer: {
-    maxWidth: '900px',
+    maxWidth: '1000px',
     margin: '0 auto',
     paddingTop: '5rem',
     display: 'grid',
