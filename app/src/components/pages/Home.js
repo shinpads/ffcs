@@ -36,6 +36,13 @@ const styles = createUseStyles({
     margin: '0 auto',
     paddingTop: '5rem',
   },
+  splitContainer: {
+    maxWidth: '900px',
+    margin: '0 auto',
+    paddingTop: '5rem',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+  },
   buttonText: {
     color: colors.black,
   },
@@ -83,10 +90,11 @@ const Home = (props) => {
   return (
     <>
       <Header />
-      <div className={classes.container}>
-        <div className={classes.title}>Schedule will be posted soon</div>
-        <hr />
-        <Teams />
+      <div className={classes.splitContainer}>
+        <Matches />
+        <div>
+          <h1 style={{ textAlign: 'center', margin: 0 }}>STANDINGS</h1>
+        </div>
       </div>
     </>
   );

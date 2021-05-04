@@ -5,6 +5,7 @@ from ..models import Match
 
 class MatchSerializer(serializers.ModelSerializer):
     teams = serializers.SerializerMethodField('get_teams')
+    winner = TeamSerializer()
 
     class Meta:
         model = Match
