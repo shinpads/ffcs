@@ -10,17 +10,31 @@ const styles = createUseStyles({
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
+  weekNum: {
+    width: '100%',
+    textTransform: 'uppercase',
+    textAlign: 'center',
+  }
 });
 
 const Matches = () => {
   const classes = styles();
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [matchesByWeek, setMatchesByWeek] = useState({});
 
   useEffect(() => {
     async function getAllMatches() {
       const allMatches = await getMatches(2);
-      console.log(allMatches);
+      const newMatchesByWeek = {}
+      allMatches.forEach(match => {
+        if (!newMatchesByWeek[match.week]) {
+          newMatchesByWeek[match.week] = [];
+        }
+        newMatchesByWeek[match.week].push(match);
+      });
+      console.log(newMatchesByWeek);
+      setMatchesByWeek(newMatchesByWeek);
       setMatches(allMatches);
       setLoading(false);
     }
@@ -28,29 +42,20 @@ const Matches = () => {
   }, []);
 
   return (
-    <Tabs>
-      <TabList>
-        <Tab>Upcoming</Tab>
-        <Tab>Results</Tab>
-      </TabList>
-
-      <TabPanel>
-        {loading && 'LOADING...'}
-        {!loading && (
-          <div className={classes.container}>
-            {matches.filter(m => !m.winner).map(match => <Match match={match} />)}
-          </div>
-        )}
-      </TabPanel>
-      <TabPanel>
+    <div>
+      <h1 style={{ textAlign: 'center', margin: 0 }}>MATCHES</h1>
       {loading && 'LOADING...'}
       {!loading && (
         <div className={classes.container}>
-          {matches.filter(m => m.winner).map(match => <Match match={match} />)}
+          {Object.keys(matchesByWeek).sort().map(weekNum => (
+            <>
+              <h2 className={classes.weekNum}>Week {weekNum}</h2>
+              {matchesByWeek[weekNum].map(match => <Match match={match} />)}
+            </>
+          ))}
         </div>
       )}
-      </TabPanel>
-    </Tabs>
+    </div>
   );
 };
 

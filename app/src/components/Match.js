@@ -11,7 +11,7 @@ const styles = createUseStyles({
     margin: '1rem 4px 1rem 4px',
     backgroundColor: colors.darkGrey,
     borderRadius: '4px',
-    flexBasis: '250px',
+    flexBasis: '300px',
     boxShadow: `1px 1px 2px ${colors.black}`,
   },
   topContainer: {

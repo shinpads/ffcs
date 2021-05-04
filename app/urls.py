@@ -12,6 +12,7 @@ urlpatterns = [
   path('api/signup/', registrationviews.signup),
   path('api/vote/', voteviews.VoteView.as_view()),
   path('api/user/from-session/', userviews.get_from_session, name='get_user_from_session'),
+  path('api/season/standings/', seasonviews.standings, name='season_standings'),
   path('', views.index),
   path('signup', views.signup_index),
   path('riot.txt', views.riot),

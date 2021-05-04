@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss';
 import { connect } from 'react-redux';
 import Teams from './Teams';
 import Matches from '../Matches';
+import Standings from '../Standings';
 import Header from '../Header';
 import colors from '../../colors';
 import { getImage } from '../../helpers';
@@ -92,9 +93,7 @@ const Home = (props) => {
       <Header />
       <div className={classes.splitContainer}>
         <Matches />
-        <div>
-          <h1 style={{ textAlign: 'center', margin: 0 }}>STANDINGS</h1>
-        </div>
+        <Standings />
       </div>
     </>
   );

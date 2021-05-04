@@ -47,3 +47,8 @@ export async function signup(data) {
   const response = await axios.post('/api/signup/', data);
   return response.data;
 }
+
+export async function getStandings(season=2) {
+  const response = await axios.get('/api/season/standings/', { params: { season } });
+  return response.data.data;
+}
