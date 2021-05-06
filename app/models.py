@@ -103,6 +103,7 @@ class Match(models.Model):
     teams           = models.ManyToManyField(Team, related_name="matches")
     week            = models.IntegerField(default=1)
     scheduled_for   = models.DateTimeField(null=True, blank=True)
+    twitch_vod      = models.CharField(max_length=120, blank=True)
 
     @property
     def wins(self):
@@ -194,7 +195,7 @@ class Player(models.Model):
         (ADC, "ADC"),
         (SUPPORT, "Support"),
     ]
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(

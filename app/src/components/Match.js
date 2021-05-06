@@ -2,9 +2,10 @@ import React from 'react';
 import moment from 'moment';
 import { Fade } from 'react-reveal';
 import { createUseStyles } from 'react-jss';
-import { Paper } from '@material-ui/core';
+import { Paper, Button } from '@material-ui/core';
 import colors from '../colors';
 import TeamName from './TeamName';
+import { copyTextToClipboard } from '../helpers';
 
 const styles = createUseStyles({
   container: {
@@ -21,12 +22,16 @@ const styles = createUseStyles({
     marginBottom: '8px',
     color: colors.offwhite,
   },
-  bottomContainer: {
+  middleContainer: {
     display: 'grid',
     gridTemplateColumns: '3fr 1fr 3fr',
     textAlign: 'center',
     fontSize: '18px',
-  }
+    marginBottom: '1rem',
+  },
+  bottomContainer: {
+
+  },
 });
 
 const Match = ({ match }) => {
@@ -36,6 +41,7 @@ const Match = ({ match }) => {
     date = moment(match.scheduled_for).format('MMM Do h:mm a')
   }
 
+  console.log(match);
 
   if (match.teams.length != 2) return <div />
 
@@ -48,10 +54,15 @@ const Match = ({ match }) => {
         <div>{date}</div>
         <div>BEST OF {match.match_format}</div>
       </div>
-      <div className={classes.bottomContainer}>
+      <div className={classes.middleContainer}>
         <TeamName team={team1} />
         <div>VS.</div>
         <TeamName team={team2} />
+      </div>
+      <div className={classes.bottomContainer}>
+        {match.games.filter(game => game.tournament_code).map(game => (
+          <Button style={{ fontSize: '12px', float: 'right' }} onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Tournament Code</Button>
+        ))}
       </div>
     </div>
   );
