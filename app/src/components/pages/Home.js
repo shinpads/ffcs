@@ -43,6 +43,7 @@ const styles = createUseStyles({
     paddingTop: '5rem',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
+    gridGap: '4rem',
   },
   buttonText: {
     color: colors.black,

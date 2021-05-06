@@ -3,6 +3,8 @@ import { createUseStyles } from 'react-jss';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { getStandings } from '../api';
 import Match from './Match';
+import TeamName from './TeamName';
+import Spinner from './Spinner';
 
 const styles = createUseStyles({
   container: {
@@ -17,6 +19,8 @@ const styles = createUseStyles({
     gridTemplateColumns: '2fr 1fr 1fr 1fr',
     textAlign: 'center',
     fontSize: '20px',
+    padding: '8px 0px',
+    borderBottom: '1px solid',
   }
 });
 
@@ -38,7 +42,7 @@ const Standings = () => {
   return (
     <div>
       <h1 style={{ textAlign: 'center', margin: 0 }}>STANDINGS</h1>
-      {loading && 'LOADING...'}
+      {loading && <Spinner />}
       {!loading && (
         <div className={classes.container}>
           <div className={classes.standing} style={{ fontSize: '24px', fontWeight: 'bold' }}>
@@ -49,7 +53,7 @@ const Standings = () => {
           </div>
           {standings.map(standing => (
             <div className={classes.standing}>
-              <div>{standing.team.name}</div>
+              <TeamName team={standing.team} />
               <div>{standing.gp}</div>
               <div>{standing.w}</div>
               <div>{standing.l}</div>

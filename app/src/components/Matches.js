@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { getMatches } from '../api';
 import Match from './Match';
+import Spinner from './Spinner';
 
 const styles = createUseStyles({
   container: {
@@ -33,7 +34,6 @@ const Matches = () => {
         }
         newMatchesByWeek[match.week].push(match);
       });
-      console.log(newMatchesByWeek);
       setMatchesByWeek(newMatchesByWeek);
       setMatches(allMatches);
       setLoading(false);
@@ -44,7 +44,7 @@ const Matches = () => {
   return (
     <div>
       <h1 style={{ textAlign: 'center', margin: 0 }}>MATCHES</h1>
-      {loading && 'LOADING...'}
+      {loading && <Spinner />}
       {!loading && (
         <div className={classes.container}>
           {Object.keys(matchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (

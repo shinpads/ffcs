@@ -4,6 +4,7 @@ import { Fade } from 'react-reveal';
 import { createUseStyles } from 'react-jss';
 import { Paper } from '@material-ui/core';
 import colors from '../colors';
+import TeamName from './TeamName';
 
 const styles = createUseStyles({
   container: {
@@ -48,9 +49,9 @@ const Match = ({ match }) => {
         <div>BEST OF {match.match_format}</div>
       </div>
       <div className={classes.bottomContainer}>
-        <div>{team1.name}</div>
+        <TeamName team={team1} />
         <div>VS.</div>
-        <div>{team2.name}</div>
+        <TeamName team={team2} />
       </div>
     </div>
   );
