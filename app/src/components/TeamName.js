@@ -31,7 +31,7 @@ const styles = createUseStyles({
   }
 });
 
-const TeamName = ({ team }) => {
+const TeamName = ({ team, nameClass }) => {
   const classes = styles();
   team.players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
   return (
@@ -40,7 +40,7 @@ const TeamName = ({ team }) => {
         {team.players.map((player, index) => <Player player={player} />)}
       </div>
     }>
-      <div className={classes.name}>
+      <div className={`${classes.name} ${nameClass}`}>
         {team.name}
       </div>
     </DarkTooltip>

@@ -6,6 +6,8 @@ import { Paper, Button } from '@material-ui/core';
 import colors from '../colors';
 import TeamName from './TeamName';
 import { copyTextToClipboard } from '../helpers';
+import twitchLogo from '../../public/twitch.png';
+import { getImage } from '../helpers';
 
 const styles = createUseStyles({
   container: {
@@ -20,6 +22,7 @@ const styles = createUseStyles({
     display: 'flex',
     justifyContent: 'space-between',
     marginBottom: '8px',
+    padding: '6px 8px',
     color: colors.offwhite,
   },
   middleContainer: {
@@ -30,7 +33,13 @@ const styles = createUseStyles({
     marginBottom: '1rem',
   },
   bottomContainer: {
-
+    padding: '6px 8px',
+  },
+  winningTeam: {
+    fontWeight: 600,
+  },
+  losingTeam: {
+    opacity: 0.5,
   },
 });
 
@@ -39,6 +48,21 @@ const Match = ({ match }) => {
   let date = `WEEK ${match.week}`;
   if (match.scheduled_for) {
     date = moment(match.scheduled_for).format('MMM Do h:mm a')
+  }
+
+  let winner = null;
+
+  if (match.games.filter(game => game.winner).length === match.match_format) {
+    const gamesWon = {};
+    match.games.forEach(game => {
+      if (!gamesWon[game.winner]) {
+        gamesWon[game.winner] = 0;
+      }
+      gamesWon[game.winner] += 1;
+      if (gamesWon[game.winner] == Math.ceil(match.match_format / 2)) {
+        winner = game.winner;
+      }
+    });
   }
 
   console.log(match);
@@ -55,14 +79,19 @@ const Match = ({ match }) => {
         <div>BEST OF {match.match_format}</div>
       </div>
       <div className={classes.middleContainer}>
-        <TeamName team={team1} />
+        <TeamName key={team1.id} team={team1} nameClass={winner === team1.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')} />
         <div>VS.</div>
-        <TeamName team={team2} />
+        <TeamName key={team2.id} team={team2} nameClass={winner === team2.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')} />
       </div>
+      {!winner && match.games.filter(game => game.tournament_code).map(game => (
+        <Button style={{ fontSize: '12px', float: 'right' }} onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Tournament Code</Button>
+      ))}
       <div className={classes.bottomContainer}>
-        {match.games.filter(game => game.tournament_code).map(game => (
-          <Button style={{ fontSize: '12px', float: 'right' }} onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Tournament Code</Button>
-        ))}
+        {winner && match.twitch_vod && (
+          <a href={match.twitch_vod}>
+            <img  alt="Watch on Twitch" target="_blank" width={24} src={getImage(twitchLogo)} />
+          </a>
+        )}
       </div>
     </div>
   );
