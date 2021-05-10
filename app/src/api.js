@@ -35,6 +35,14 @@ export async function getMatches() {
   return result;
 }
 
+export async function getMatch(matchId) {
+  const response = await axios.get(`/api/match/${matchId}`);
+
+  const result = response.data.data;
+
+  return result;
+}
+
 export async function getTeam() {
   throw new Error('not done');
 }

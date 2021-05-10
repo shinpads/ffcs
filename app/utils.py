@@ -58,7 +58,7 @@ def register_tournament(name, provider_id):
     if res.status_code != 200:
         print(res.text)
         return None
-    
+
     return str(res.text)
 
 def generate_tournament_code(game, all_players):
@@ -82,18 +82,18 @@ def generate_tournament_code(game, all_players):
         return None
     else:
         metadata["key"] = game.meta_key
-    
+
     for team in game.match.teams.all():
         for player in team.player_set.all():
             summoners.append(player.account_id)
-    
+
     if len(summoners) < 10:
         return None
-    
+
     for player in all_players.objects.filter(caster=True):
         if player.account_id not in summoners:
             summoners.append(player.account_id)
-    
+
     data = {
         "allowedSummonerIds": summoners,
         "mapType": map_type,
@@ -112,3 +112,15 @@ def generate_tournament_code(game, all_players):
     code = json.loads(str(res.text))[0]
 
     return code
+
+def get_game(gameid, tournament_code):
+    url = "https://na1.api.riotgames.com/lol/match/v4/matches/"
+    url = url + gameid + "/by-tournament-code/" + tournament_code + "?api_key=" + os.getenv('RIOT_API_KEY')
+    print(url)
+    res = requests.get(url)
+    if res.status_code != 200:
+        print(res)
+        return None
+
+    body = json.loads(res.text)
+    return body

@@ -8,6 +8,7 @@ import colors from '../colors';
 import { getUser } from '../actions/userActions';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
+import Match from './pages/Match';
 
 const theme = createMuiTheme({
   palette: {
@@ -40,6 +41,7 @@ class App extends Component {
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/signup" component={Signup} exact />
+          <Route path="/match/:id" component={Match} exact />
           <Redirect from="*" to="/" />
         </Switch>
       </MuiThemeProvider>

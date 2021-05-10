@@ -65,8 +65,6 @@ const Match = ({ match }) => {
     });
   }
 
-  console.log(match);
-
   if (match.teams.length != 2) return <div />
 
   let team1 = match.teams[0];
@@ -83,14 +81,17 @@ const Match = ({ match }) => {
         <div>VS.</div>
         <TeamName key={team2.id} team={team2} nameClass={winner === team2.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')} />
       </div>
-      {!winner && match.games.filter(game => game.tournament_code).map(game => (
-        <Button style={{ fontSize: '12px', float: 'right' }} onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Tournament Code</Button>
-      ))}
       <div className={classes.bottomContainer}>
+        {!winner && match.games.filter(game => game.tournament_code).map(game => (
+          <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Tournament Code</Button>
+        ))}
         {winner && match.twitch_vod && (
           <a href={match.twitch_vod}>
             <img  alt="Watch on Twitch" target="_blank" width={24} src={getImage(twitchLogo)} />
           </a>
+        )}
+        {winner && (
+          <Button href={`/match/${match.id}`} style={{ float: 'right', fontSize: '12px' }} variant="outlined">View Results</Button>
         )}
       </div>
     </div>
