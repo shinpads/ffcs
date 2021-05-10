@@ -12,6 +12,6 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def all_players(self, obj):
         players_list = []
-        for x in obj.player_set.all():
+        for x in obj.player_set.all().select_related('user'):
             players_list.append(PlayerSerializer(x).data)
         return players_list
