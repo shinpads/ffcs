@@ -16,7 +16,7 @@ const styles = createUseStyles({
   },
   standing: {
     display: 'grid',
-    gridTemplateColumns: '2fr 1fr 1fr 1fr',
+    gridTemplateColumns: '2fr 1fr 1fr',
     textAlign: 'center',
     fontSize: '20px',
     padding: '8px 0px',
@@ -47,14 +47,12 @@ const Standings = () => {
         <div className={classes.container}>
           <div className={classes.standing} style={{ fontSize: '24px', fontWeight: 'bold' }}>
             <div>Team</div>
-            <div>GP</div>
             <div>W</div>
             <div>L</div>
           </div>
           {standings.map(standing => (
             <div className={classes.standing}>
               <TeamName team={standing.team} />
-              <div>{standing.gp}</div>
               <div>{standing.w}</div>
               <div>{standing.l}</div>
             </div>
