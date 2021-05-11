@@ -14,7 +14,7 @@ class PlayerAdmin(admin.ModelAdmin):
 
     def get_summoner_name(self, obj):
         return obj.user.summoner_name
-    
+
     get_summoner_name.short_description = 'Summoner Name'
 
     get_id.short_description = 'ID'
@@ -86,17 +86,18 @@ class GameAdmin(admin.ModelAdmin):
     get_id.short_description = 'ID'
 
     list_display = (
+        'get_id',
+        'game_id',
         'match',
         'game_in_series',
         'winner',
+        'mvp',
         'tournament_code',
-        'game_id',
-        'get_id'
     )
 
     fieldsets = (
         (None, {
-            'fields': ('winner',)
+            'fields': ('winner', 'mvp')
         }),
     )
 

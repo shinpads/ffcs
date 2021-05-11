@@ -267,6 +267,13 @@ class Game(models.Model):
         on_delete=models.CASCADE,
         related_name='games'
     )
+    mvp = models.ForeignKey(
+        Player,
+        on_delete=models.CASCADE,
+        related_name='mvps',
+        null=True,
+        blank=True,
+    )
 
     @property
     def create_meta_key(self):

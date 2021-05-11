@@ -102,7 +102,7 @@ const Match = (props) => {
         </div>
 
         <br />
-        
+
         {matchData.match.games.map(game => {
           const gameData      = matchData.game_datas.find(gameData => gameData.gameId == game.game_id);
           const gameWinner    = matchData.match.teams.find(team => team.id === game.winner);
@@ -163,18 +163,20 @@ const Match = (props) => {
                     {[0, 1, 2, 3, 4].map(index => {
                       const team1Participant = team1Participants[index];
                       const team1ParticipantIdentity = gameData.participantIdentities.find(identity => team1Participant.participantId === identity.participantId) || {};
+                      const team1Player = team1.players.find(player => player.account_id === team1ParticipantIdentity.player.summonerId);
                       const team2Participant = team2Participants[index];
                       const team2ParticipantIdentity = gameData.participantIdentities.find(identity => team2Participant.participantId === identity.participantId) || {};
+                      const team2Player = team2.players.find(player => player.account_id === team2ParticipantIdentity.player.summonerId);
                       return (
                         <TableRow>
-                          <TableCell align="left" component="th" scope="row">
-                            <Participant participant={team1Participant} player={team1ParticipantIdentity.player} />
+                          <TableCell style={{ width: '30%' }} align="left" component="th" scope="row">
+                            <Participant mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1ParticipantIdentity.player} />
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">{team1Participant.stats.kills} / {team1Participant.stats.deaths} / {team1Participant.stats.assists}</TableCell>
                           <TableCell align="center" component="th" scope="row"><Role role={ROLES[index].role} /></TableCell>
                           <TableCell align="center" component="th" scope="row">{team2Participant.stats.kills} / {team2Participant.stats.deaths} / {team2Participant.stats.assists}</TableCell>
-                          <TableCell align="right" component="th" scope="row">
-                            <Participant reverse participant={team2Participant} player={team2ParticipantIdentity.player} />
+                          <TableCell style={{ width: '30%' }} align="right" component="th" scope="row">
+                            <Participant mvp={game.mvp === team2Player.id} reverse participant={team2Participant} player={team2ParticipantIdentity.player} />
                           </TableCell>
                         </TableRow>
                       );

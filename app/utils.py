@@ -32,7 +32,6 @@ def register_tournament_provider():
 
     res = (requests.post(url, data=json.dumps(data)))
     if res.status_code != 200:
-        print(json.dumps(res.json()))
         return None
 
     return str(res.text)
@@ -56,7 +55,6 @@ def register_tournament(name, provider_id):
 
     res = (requests.post(url, data=json.dumps(data)))
     if res.status_code != 200:
-        print(res.text)
         return None
 
     return str(res.text)
@@ -106,7 +104,6 @@ def generate_tournament_code(game, all_players):
     res = (requests.post(url, data=json.dumps(data)))
 
     if res.status_code != 200:
-        print(res.text)
         return None
 
     code = json.loads(str(res.text))[0]
@@ -116,10 +113,8 @@ def generate_tournament_code(game, all_players):
 def get_game(gameid, tournament_code):
     url = "https://na1.api.riotgames.com/lol/match/v4/matches/"
     url = url + gameid + "/by-tournament-code/" + tournament_code + "?api_key=" + os.getenv('RIOT_API_KEY')
-    print(url)
     res = requests.get(url)
     if res.status_code != 200:
-        print(res)
         return None
 
     body = json.loads(res.text)

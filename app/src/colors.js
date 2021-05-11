@@ -8,6 +8,7 @@ const colors = {
   offwhite: '#5c6269',
   primary: '#66FCF1',
   secondary: '#C5C6C7',
+  mvp: '#e19205',
 };
 
 export default colors;
