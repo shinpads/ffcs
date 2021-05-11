@@ -23,7 +23,7 @@ const styles = createUseStyles({
   }
 });
 
-const Participant = ({ participant, player, mvp, reverse }) => {
+const Participant = ({ participant, player, mvp,  reverse }) => {
   const classes = styles();
 
   return (

@@ -23,6 +23,7 @@ const theme = createMuiTheme({
     },
     background: {
       paper: colors.darkGrey,
+      linearProgress: colors.darkGrey,
     },
   },
 });

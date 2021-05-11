@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
 import { Button, TextField } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,6 +10,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import Teams from './Teams';
 import Matches from '../Matches';
@@ -21,6 +22,19 @@ import Spinner from '../Spinner';
 import Participant from '../League/Participant';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
+
+const ProgressBar = withStyles((theme) => ({
+  root: {
+    background: colors.darkestGrey,
+  },
+  colorPrimary: {
+    backgroundColor: colors.darkestGrey,
+  },
+  bar: {
+    borderRadius: 5,
+    backgroundColor: colors.primary,
+  },
+}))(LinearProgress);
 
 const styles = createUseStyles({
   title: {
@@ -46,6 +60,9 @@ const styles = createUseStyles({
   },
   losingTeam: {
   },
+  damage: {
+    color: colors.secondary,
+  }
 });
 
 const ROLES = [
@@ -116,6 +133,8 @@ const Match = (props) => {
           const team2Kills    = team2Participants.reduce((acc, cur) => acc + cur.stats.kills, 0);
           const team2Deaths   = team2Participants.reduce((acc, cur) => acc + cur.stats.deaths, 0);
           const team2Assists  = team2Participants.reduce((acc, cur) => acc + cur.stats.assists, 0);
+          const mostDamage    = gameData.participants.reduce((acc, cur) => Math.max(acc, cur.stats.totalDamageDealtToChampions), 0)
+          console.log(mostDamage);
           return (
             <div>
               <div>Game {game.game_in_series} of {matchData.match.games.length} - <b>Winner: {gameWinner.name}</b> in {Math.floor(gameData.gameDuration / 60)}m</div>
@@ -153,9 +172,11 @@ const Match = (props) => {
                   <TableHead>
                     <TableRow>
                       <TableCell align="left"><TeamName team={team1}/></TableCell>
+                      <TableCell align="center">Damage</TableCell>
                       <TableCell align="center">{team1Kills} / {team1Deaths} / {team1Assists}</TableCell>
                       <TableCell align="center">vs</TableCell>
                       <TableCell align="center">{team2Kills} / {team2Deaths} / {team2Assists}</TableCell>
+                      <TableCell align="center">Damage</TableCell>
                       <TableCell align="right"><TeamName team={team2}/></TableCell>
                     </TableRow>
                   </TableHead>
@@ -164,18 +185,29 @@ const Match = (props) => {
                       const team1Participant = team1Participants[index];
                       const team1ParticipantIdentity = gameData.participantIdentities.find(identity => team1Participant.participantId === identity.participantId) || {};
                       const team1Player = team1.players.find(player => player.account_id === team1ParticipantIdentity.player.summonerId);
+                      const team1PlayerDamagePercent = (team1Participant.stats.totalDamageDealtToChampions / mostDamage) * 100;
                       const team2Participant = team2Participants[index];
                       const team2ParticipantIdentity = gameData.participantIdentities.find(identity => team2Participant.participantId === identity.participantId) || {};
                       const team2Player = team2.players.find(player => player.account_id === team2ParticipantIdentity.player.summonerId);
+                      const team2PlayerDamagePercent = (team2Participant.stats.totalDamageDealtToChampions / mostDamage) * 100;
+
                       return (
                         <TableRow>
-                          <TableCell style={{ width: '30%' }} align="left" component="th" scope="row">
+                          <TableCell style={{ width: '20%' }} align="left" component="th" scope="row">
                             <Participant mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1ParticipantIdentity.player} />
+                          </TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className={classes.damage}>{team1Participant.stats.totalDamageDealtToChampions}</div>
+                            <ProgressBar variant="determinate" value={team1PlayerDamagePercent} />
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">{team1Participant.stats.kills} / {team1Participant.stats.deaths} / {team1Participant.stats.assists}</TableCell>
                           <TableCell align="center" component="th" scope="row"><Role role={ROLES[index].role} /></TableCell>
                           <TableCell align="center" component="th" scope="row">{team2Participant.stats.kills} / {team2Participant.stats.deaths} / {team2Participant.stats.assists}</TableCell>
-                          <TableCell style={{ width: '30%' }} align="right" component="th" scope="row">
+                          <TableCell align="center" component="th" scope="row">
+                            <div className={classes.damage}>{team2Participant.stats.totalDamageDealtToChampions}</div>
+                            <ProgressBar variant="determinate" value={team2PlayerDamagePercent} />
+                          </TableCell>
+                          <TableCell style={{ width: '20%' }} align="right" component="th" scope="row">
                             <Participant mvp={game.mvp === team2Player.id} reverse participant={team2Participant} player={team2ParticipantIdentity.player} />
                           </TableCell>
                         </TableRow>
