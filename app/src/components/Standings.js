@@ -6,6 +6,14 @@ import Match from './Match';
 import TeamName from './TeamName';
 import Spinner from './Spinner';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
 const styles = createUseStyles({
   container: {
     display: 'flex',
@@ -32,6 +40,7 @@ const Standings = () => {
   useEffect(() => {
     async function start() {
       const newStandings = await getStandings(2);
+      newStandings.sort((a, b) => a.l - b.l)
       newStandings.sort((a, b) => b.w - a.w)
       setStandings(newStandings);
       setLoading(false);
@@ -42,22 +51,29 @@ const Standings = () => {
   return (
     <div>
       <h1 style={{ textAlign: 'center', margin: 0 }}>STANDINGS</h1>
+      <br />
       {loading && <Spinner />}
       {!loading && (
-        <div className={classes.container}>
-          <div className={classes.standing} style={{ fontSize: '24px', fontWeight: 'bold' }}>
-            <div>Team</div>
-            <div>W</div>
-            <div>L</div>
-          </div>
-          {standings.map(standing => (
-            <div className={classes.standing}>
-              <TeamName team={standing.team} />
-              <div>{standing.w}</div>
-              <div>{standing.l}</div>
-            </div>
-          ))}
-        </div>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">Team</TableCell>
+                <TableCell align="left">W</TableCell>
+                <TableCell align="left">L</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {standings.map(standing => (
+                <TableRow key={standing.team.id}>
+                  <TableCell component="th" scope="row"><TeamName team={standing.team} /></TableCell>
+                  <TableCell component="th" scope="row">{standing.w}</TableCell>
+                  <TableCell component="th" scope="row">{standing.l}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </div>
   );

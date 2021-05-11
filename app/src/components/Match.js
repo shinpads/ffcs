@@ -36,10 +36,9 @@ const styles = createUseStyles({
     padding: '6px 8px',
   },
   winningTeam: {
-    fontWeight: 600,
+    textDecoration: 'underline',
   },
   losingTeam: {
-    opacity: 0.5,
   },
 });
 
