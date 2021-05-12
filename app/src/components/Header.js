@@ -23,6 +23,7 @@ const styles = createUseStyles({
     fontWeight: 600,
     fontSize: '24px',
     textAlign: 'center',
+    cursor: 'pointer',
   },
 });
 
@@ -32,7 +33,7 @@ const Header = () => {
   return (
     <header className={classes.header}>
       <img alt="" width={48} src={getImage(logo)} />
-      <div className={classes.title}>For Fun Championship Series</div>
+      <a href="/"><div className={classes.title}>For Fun Championship Series</div></a>
       <div style={{ paddingRight: '1rem', textAlign: 'right' }}>Season 2</div>
     </header>
   );
