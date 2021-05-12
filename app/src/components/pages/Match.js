@@ -62,6 +62,10 @@ const styles = createUseStyles({
   },
   damage: {
     color: colors.secondary,
+    fontSize: '12px',
+  },
+  kda: {
+    fontSize: '12px',
   }
 });
 
@@ -172,11 +176,11 @@ const Match = (props) => {
                   <TableHead>
                     <TableRow>
                       <TableCell align="left"><TeamName team={team1}/></TableCell>
-                      <TableCell align="center">Damage</TableCell>
-                      <TableCell align="center">{team1Kills} / {team1Deaths} / {team1Assists}</TableCell>
+                      <TableCell align="center"><div className={classes.damage}>Damage</div></TableCell>
+                      <TableCell align="center"><div className={classes.kda}>{team1Kills} / {team1Deaths} / {team1Assists}</div></TableCell>
                       <TableCell align="center">vs</TableCell>
-                      <TableCell align="center">{team2Kills} / {team2Deaths} / {team2Assists}</TableCell>
-                      <TableCell align="center">Damage</TableCell>
+                      <TableCell align="center"><div className={classes.kda}>{team2Kills} / {team2Deaths} / {team2Assists}</div></TableCell>
+                      <TableCell align="center"><div className={classes.damage}>Damage</div></TableCell>
                       <TableCell align="right"><TeamName team={team2}/></TableCell>
                     </TableRow>
                   </TableHead>
@@ -186,10 +190,13 @@ const Match = (props) => {
                       const team1ParticipantIdentity = gameData.participantIdentities.find(identity => team1Participant.participantId === identity.participantId) || {};
                       const team1Player = team1.players.find(player => player.account_id === team1ParticipantIdentity.player.summonerId);
                       const team1PlayerDamagePercent = (team1Participant.stats.totalDamageDealtToChampions / mostDamage) * 100;
+                      const team1PlayerKp = Math.round(((team1Participant.stats.kills + team1Participant.stats.assists) / (team1Kills)) * 100);
+
                       const team2Participant = team2Participants[index];
                       const team2ParticipantIdentity = gameData.participantIdentities.find(identity => team2Participant.participantId === identity.participantId) || {};
                       const team2Player = team2.players.find(player => player.account_id === team2ParticipantIdentity.player.summonerId);
                       const team2PlayerDamagePercent = (team2Participant.stats.totalDamageDealtToChampions / mostDamage) * 100;
+                      const team2PlayerKp = Math.round(((team2Participant.stats.kills + team2Participant.stats.assists) / (team2Kills)) * 100);
 
                       return (
                         <TableRow>
@@ -200,9 +207,17 @@ const Match = (props) => {
                             <div className={classes.damage}>{team1Participant.stats.totalDamageDealtToChampions}</div>
                             <ProgressBar variant="determinate" value={team1PlayerDamagePercent} />
                           </TableCell>
-                          <TableCell align="center" component="th" scope="row">{team1Participant.stats.kills} / {team1Participant.stats.deaths} / {team1Participant.stats.assists}</TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className={classes.kda}>
+                              {team1Participant.stats.kills} / {team1Participant.stats.deaths} / {team1Participant.stats.assists} ({team1PlayerKp}%)
+                            </div>
+                          </TableCell>
                           <TableCell align="center" component="th" scope="row"><Role role={ROLES[index].role} /></TableCell>
-                          <TableCell align="center" component="th" scope="row">{team2Participant.stats.kills} / {team2Participant.stats.deaths} / {team2Participant.stats.assists}</TableCell>
+                          <TableCell align="center" component="th" scope="row">
+                            <div className={classes.kda}>
+                              {team2Participant.stats.kills} / {team2Participant.stats.deaths} / {team2Participant.stats.assists} ({team2PlayerKp}%)
+                            </div>
+                          </TableCell>
                           <TableCell align="center" component="th" scope="row">
                             <div className={classes.damage}>{team2Participant.stats.totalDamageDealtToChampions}</div>
                             <ProgressBar variant="determinate" value={team2PlayerDamagePercent} />
