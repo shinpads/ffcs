@@ -8,6 +8,7 @@ import TeamName from './TeamName';
 import { copyTextToClipboard } from '../helpers';
 import twitchLogo from '../../public/twitch.png';
 import { getImage } from '../helpers';
+import StartingSide from './StartingSide';
 
 const styles = createUseStyles({
   container: {
@@ -40,6 +41,11 @@ const styles = createUseStyles({
   },
   losingTeam: {
   },
+  teamContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 
 const Match = ({ match }) => {
@@ -76,9 +82,23 @@ const Match = ({ match }) => {
         <div>BEST OF {match.match_format}</div>
       </div>
       <div className={classes.middleContainer}>
-        <TeamName key={team1.id} team={team1} nameClass={winner === team1.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')} />
+        <div className={classes.teamContainer}>
+          <StartingSide side={match.blue_side === team1.id ? 'blue' : (match.blue_side ? 'red' : null)} />
+          <TeamName
+            key={team1.id}
+            team={team1}
+            nameClass={winner === team1.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')}
+          />
+        </div>
         <div>VS.</div>
-        <TeamName key={team2.id} team={team2} nameClass={winner === team2.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')} />
+        <div className={classes.teamContainer}>
+          <TeamName
+            key={team2.id}
+            team={team2}
+            nameClass={winner === team2.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')}
+          />
+          <StartingSide side={match.blue_side === team2.id ? 'blue' : (match.blue_side ? 'red' : null)} />
+        </div>
       </div>
       <div className={classes.bottomContainer}>
         {!winner && match.games.filter(game => game.tournament_code).map(game => (

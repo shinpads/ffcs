@@ -8,7 +8,7 @@ import colors from '../colors';
 const DarkTooltip = withStyles((theme) => ({
   tooltip: {
     backgroundColor: colors.header,
-    color: 'rgba(0, 0, 0, 0.87)',
+    color: 'rgba(0, 0, 0, 1)',
     boxShadow: theme.shadows[1],
   },
 }))(Tooltip);

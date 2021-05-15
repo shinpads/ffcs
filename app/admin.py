@@ -74,7 +74,7 @@ class MatchAdmin(admin.ModelAdmin):
     get_id.short_description = 'ID'
     get_teams.short_description = 'Teams'
 
-    list_display = ('week', 'scheduled_for', 'get_teams', 'winner', 'get_id')
+    list_display = ('get_id', 'week', 'scheduled_for', 'get_teams', 'winner', 'blue_side')
 
     filter_horizontal = ('teams',)
 

@@ -104,6 +104,7 @@ class Match(models.Model):
     week            = models.IntegerField(default=1)
     scheduled_for   = models.DateTimeField(null=True, blank=True)
     twitch_vod      = models.CharField(max_length=120, blank=True)
+    blue_side       = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
 
     @property
     def wins(self):
