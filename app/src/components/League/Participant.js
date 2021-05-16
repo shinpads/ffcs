@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import ChampionIcon from './ChampionIcon';
 import Chip from '@material-ui/core/Chip';
+import Item from './Item';
 import colors from '../../colors';
 
 const MVPChip = withStyles((theme) => ({
@@ -20,17 +21,30 @@ const styles = createUseStyles({
   },
   summonerName: {
     margin: '0px 8px',
+  },
+  itemsContainer: {
+    marginTop: '4px',
   }
 });
 
-const Participant = ({ participant, player, mvp,  reverse }) => {
+const Participant = ({ participant, player, mvp, reverse }) => {
   const classes = styles();
 
   return (
-    <div className={classes.root} style={reverse ? { flexDirection: 'row-reverse' } : {}}>
-      <ChampionIcon championId={participant.championId} />
-      <div className={classes.summonerName}>{player.summonerName}</div>
-      {mvp && <MVPChip label="MVP" />}
+    <div>
+      <div className={classes.root} style={reverse ? { flexDirection: 'row-reverse' } : {}}>
+        <ChampionIcon championId={participant.championId} />
+        <div className={classes.summonerName}>{player.summonerName}</div>
+        {mvp && <MVPChip label="MVP" />}
+      </div>
+      <div className={classes.itemsContainer}>
+        {[0, 1, 2, 3, 4, 5, 6].map(itemNum => {
+          const key = `item${itemNum}`;
+            return (
+              <Item itemId={participant.stats[key]} />
+            )
+        })}
+      </div>
     </div>
   );
 }

@@ -200,7 +200,7 @@ const Match = (props) => {
 
                       return (
                         <TableRow>
-                          <TableCell style={{ width: '20%' }} align="left" component="th" scope="row">
+                          <TableCell style={{ width: '25%' }} align="left" component="th" scope="row">
                             <Participant mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1ParticipantIdentity.player} />
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
@@ -222,7 +222,7 @@ const Match = (props) => {
                             <div className={classes.damage}>{team2Participant.stats.totalDamageDealtToChampions}</div>
                             <ProgressBar variant="determinate" value={team2PlayerDamagePercent} />
                           </TableCell>
-                          <TableCell style={{ width: '20%' }} align="right" component="th" scope="row">
+                          <TableCell style={{ width: '25%' }} align="right" component="th" scope="row">
                             <Participant mvp={game.mvp === team2Player.id} reverse participant={team2Participant} player={team2ParticipantIdentity.player} />
                           </TableCell>
                         </TableRow>
