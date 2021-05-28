@@ -1,4 +1,4 @@
-from ..models import Player, Team, Season
+from ..models import Player, Team, Season, PlayerStats
 from ..utils import get_riot_account_id
 from ..serializers.teamserializer import TeamSerializer
 from ..serializers.playerserializer import PlayerSerializer
@@ -221,3 +221,14 @@ class PlayerView(View):
         }, status=200)
 
         return response
+
+
+def get_players(request):
+    players = Player.objects.all().prefetch_related('user').prefetch_related('stats')
+
+    data = [PlayerSerializer(player).data for player in players]
+
+    return JsonResponse({
+        "message": "success",
+        "data": data,
+    }, status=200)

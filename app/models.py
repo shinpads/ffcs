@@ -248,6 +248,8 @@ class PlayerStats(models.Model):
     vision_per_min  = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     cc_per_game     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     cs_per_min      = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    kp_per_game     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    damage_per_min  = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

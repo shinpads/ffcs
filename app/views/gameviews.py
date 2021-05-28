@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views import View
 from ..models import Game, Player
 from ..utils import get_riot_account_id
+from ..scripts import player_stats
 import json
 
 class CallbackView(View):
@@ -14,7 +15,7 @@ class CallbackView(View):
 
         temp_meta = eval(data["metaData"])
         meta_key = temp_meta["key"]
-        
+
         game = Game.objects.filter(meta_key=meta_key).first()
         if game == None:
             response = JsonResponse({
@@ -32,7 +33,7 @@ class CallbackView(View):
                 "data": out_data,
             }, status=500)
             return response
-        
+
         winner_team = winner_player.team
         if winner_team == None:
             response = JsonResponse({
@@ -51,11 +52,12 @@ class CallbackView(View):
         game.winner = winner_team
         game.game_id = game_id
         game.save()
-        
+
+        # update player stats with new data
+        player_stats.calculate_player_stats()
 
         response = JsonResponse({
             "message": "Successfully recieved callback.",
             "data": out_data,
         }, status=200)
         return response
-

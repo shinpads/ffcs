@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Teams from './Teams';
 import Matches from '../Matches';
 import Standings from '../Standings';
+import Leaderboard from '../Leaderboard';
 import Header from '../Header';
 import colors from '../../colors';
 import { getImage } from '../../helpers';
@@ -94,7 +95,10 @@ const Home = (props) => {
       <Header />
       <div className={classes.splitContainer}>
         <Matches />
-        <Standings />
+        <div>
+          <Standings />
+          <Leaderboard />
+        </div>
       </div>
     </>
   );

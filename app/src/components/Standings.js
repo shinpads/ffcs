@@ -75,6 +75,7 @@ const Standings = () => {
           </Table>
         </TableContainer>
       )}
+      <br />
     </div>
   );
 };

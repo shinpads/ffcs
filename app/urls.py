@@ -5,6 +5,7 @@ urlpatterns = [
   path('api/season/', seasonviews.SeasonView.as_view()),
   path('api/team/', teamviews.TeamView.as_view()),
   path('api/player/', playerviews.PlayerView.as_view()),
+  path('api/players/', playerviews.get_players),
   path('api/matches/', matchviews.MatchesView.as_view()),
   path('api/match/<match_id>', matchviews.get_match),
   path('api/admin/player/assignteam/', playerviews.AssignPlayerToTeam.as_view()),
