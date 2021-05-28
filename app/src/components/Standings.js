@@ -16,11 +16,7 @@ import Paper from '@material-ui/core/Paper';
 
 const styles = createUseStyles({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    marginTop: '2rem',
+    boxShadow: '1px 1px 2px #000 !important',
   },
   standing: {
     display: 'grid',
@@ -50,11 +46,10 @@ const Standings = () => {
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>STANDINGS</h1>
-      <br />
+      <h1 style={{ textAlign: 'center', margin: 0, marginBottom: '1rem' }}>STANDINGS</h1>
       {loading && <Spinner />}
       {!loading && (
-        <TableContainer component={Paper}>
+        <TableContainer classes={{ root: classes.container }} component={Paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>

@@ -23,10 +23,12 @@ const Matches = () => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [matchesByWeek, setMatchesByWeek] = useState({});
+  const [currentWeek, setCurrentWeek] = useState(-1);
 
   useEffect(() => {
     async function getAllMatches() {
       const allMatches = await getMatches(2);
+      console.log(allMatches);
       const newMatchesByWeek = {}
       allMatches.forEach(match => {
         if (!newMatchesByWeek[match.week]) {
@@ -34,6 +36,15 @@ const Matches = () => {
         }
         newMatchesByWeek[match.week].push(match);
       });
+      let newCurrentWeek = -1;
+      Object.keys(newMatchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).forEach(week => {
+        if (newMatchesByWeek[week].filter(match => !match.winner).length > 0) {
+          if (newCurrentWeek === -1) {
+            newCurrentWeek = week;
+          }
+        }
+      })
+      setCurrentWeek(newCurrentWeek);
       setMatchesByWeek(newMatchesByWeek);
       setMatches(allMatches);
       setLoading(false);
@@ -41,13 +52,17 @@ const Matches = () => {
     getAllMatches();
   }, []);
 
+
   return (
     <div>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>MATCHES</h1>
+      <h1 style={{ textAlign: 'center', margin: 0 }}>THIS WEEK'S MATCHES</h1>
       {loading && <Spinner />}
       {!loading && (
         <div className={classes.container}>
-          {Object.keys(matchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (
+          <>
+            {matchesByWeek[currentWeek].map(match => <Match match={match} />)}
+          </>
+          {Object.keys(matchesByWeek).filter(week => week != currentWeek).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (
             <>
               <h2 className={classes.weekNum}>Week {weekNum}</h2>
               {matchesByWeek[weekNum].map(match => <Match match={match} />)}

@@ -27,11 +27,7 @@ import ccIcon from '../../public/leaderboard/cc.svg';
 
 const styles = createUseStyles({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    marginTop: '2rem',
+    boxShadow: '1px 1px 2px #000 !important',
   },
   typeContainer: {
     display: 'flex',
@@ -102,7 +98,7 @@ const Leaderboard = () => {
       <br />
       {loading && <Spinner />}
       {!loading && (
-        <TableContainer component={Paper}>
+        <TableContainer classes={{ root: classes.container }} component={Paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
