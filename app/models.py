@@ -236,6 +236,18 @@ class Player(models.Model):
     def __str__(self):
         return self.user.discord_username
 
+class PlayerStats(models.Model):
+    player = models.OneToOneField(Player, related_name='stats', on_delete=models.CASCADE)
+
+    # stats from game data
+    games_played    = models.IntegerField(default=0)
+    kills           = models.IntegerField(default=0)
+    deaths          = models.IntegerField(default=0)
+    assists         = models.IntegerField(default=0)
+    kda_per_game    = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    vision_per_min  = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    cc_per_game     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    cs_per_min      = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -253,6 +265,7 @@ class Vote(models.Model):
 class Game(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    game_data = models.JSONField(null=True, blank=True)
     game_id = models.CharField(max_length=100, blank=True)
     tournament_code = models.CharField(max_length=50, blank=True)
     game_in_series = models.IntegerField()

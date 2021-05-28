@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import json
 import requests
+from django.apps import apps
 
 load_dotenv()
 
@@ -111,6 +112,13 @@ def generate_tournament_code(game, all_players):
     return code
 
 def get_game(gameid, tournament_code):
+    Game = apps.get_model('app', 'Game')
+    game = Game.objects.get(game_id=gameid)
+
+    if game.game_data != None:
+        print('Using cached game data')
+        return game.game_data
+
     url = "https://na1.api.riotgames.com/lol/match/v4/matches/"
     url = url + gameid + "/by-tournament-code/" + tournament_code + "?api_key=" + os.getenv('RIOT_API_KEY')
     res = requests.get(url)
@@ -118,4 +126,9 @@ def get_game(gameid, tournament_code):
         return None
 
     body = json.loads(res.text)
+
+    # save this to the game object
+    game.game_data = body;
+    game.save()
+
     return body
