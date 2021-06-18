@@ -170,7 +170,7 @@ const Leaderboard = () => {
             </TableHead>
             <TableBody>
               {leaderboards.map(lb => {
-                const sortedPlayers = allPlayers.sort((a, b) => (parseInt(a.stats.[lb.key]) - parseInt(b.stats.[lb.key])) * lb.sortType);
+                const sortedPlayers = allPlayers.sort((a, b) => (parseFloat(a.stats.[lb.key]) - parseFloat(b.stats.[lb.key])) * lb.sortType);
                 return (
                   <TableRow key={lb.key}>
                     <TableCell component="th" scope="row">
