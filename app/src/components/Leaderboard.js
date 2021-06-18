@@ -5,6 +5,7 @@ import { getPlayers } from '../api';
 import Match from './Match';
 import TeamName from './TeamName';
 import Spinner from './Spinner';
+import colors from '../colors';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -24,6 +25,7 @@ import damageIcon from '../../public/leaderboard/damage.svg';
 import killIcon from '../../public/leaderboard/kill.svg';
 import csIcon from '../../public/leaderboard/cs.svg';
 import ccIcon from '../../public/leaderboard/cc.svg';
+import damageTakenIcon from '../../public/leaderboard/damage_taken.svg';
 
 const styles = createUseStyles({
   container: {
@@ -32,7 +34,17 @@ const styles = createUseStyles({
   typeContainer: {
     display: 'flex',
     alignItems: 'center',
-  }
+  },
+  medal: {
+    width: '16px',
+    height: '16px',
+    borderRadius: '16px',
+    marginRight: '4px',
+  },
+  playerContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 });
 
 const leaderboards = [
@@ -108,7 +120,21 @@ const leaderboards = [
     prefix: '',
     suffix: '',
   },
+  {
+    name: 'Damage Taken / Game',
+    icon: damageTakenIcon,
+    key: 'damage_taken',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
 ];
+
+const rankColors = [
+  colors.gold,
+  colors.silver,
+  colors.bronze,
+]
 
 const Leaderboard = () => {
   const classes = styles();
@@ -121,8 +147,6 @@ const Leaderboard = () => {
       allPlayers = allPlayers.filter(player => player.stats);
 
       setAllPlayers(allPlayers);
-
-      console.log(allPlayers);
 
       setLoading(false);
     }
@@ -147,7 +171,6 @@ const Leaderboard = () => {
             <TableBody>
               {leaderboards.map(lb => {
                 const sortedPlayers = allPlayers.sort((a, b) => (parseInt(a.stats.[lb.key]) - parseInt(b.stats.[lb.key])) * lb.sortType);
-                console.log(lb, sortedPlayers);
                 return (
                   <TableRow key={lb.key}>
                     <TableCell component="th" scope="row">
@@ -156,8 +179,21 @@ const Leaderboard = () => {
                         {lb.name}
                       </div>
                     </TableCell>
-                    <TableCell component="th" scope="row">{sortedPlayers[0].user.summoner_name}</TableCell>
-                    <TableCell component="th" scope="row">{lb.prefix + sortedPlayers[0].stats[lb.key] + lb.suffix}</TableCell>
+                    <TableCell component="th" scope="row">
+                      {[0, 1, 2].map(index => (
+                        <div className={classes.playerContainer}>
+                          <div className={classes.medal} style={{ backgroundColor: rankColors[index] }}/>
+                          <div style={index === 0 ? { fontWeight: 'bold' } : {}}>{sortedPlayers[index].user.summoner_name}</div>
+                        </div>
+                      ))}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {[0, 1, 2].map(index => (
+                        <div>
+                          {lb.prefix + sortedPlayers[index].stats[lb.key] + lb.suffix}
+                        </div>
+                      ))}
+                    </TableCell>
                   </TableRow>
                 );
               })}

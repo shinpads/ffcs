@@ -9,6 +9,9 @@ const colors = {
   primary: '#66FCF1',
   secondary: '#C5C6C7',
   mvp: '#e19205',
+  gold: '#e19205',
+  silver: '#C5C6C7',
+  bronze: '#874f18'
 };
 
 export default colors;

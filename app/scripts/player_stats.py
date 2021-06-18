@@ -33,6 +33,7 @@ def calculate_player_stats():
                 player_stats[summoner_id].cs_per_min     = 0
                 player_stats[summoner_id].kp_per_game    = 0
                 player_stats[summoner_id].damage_per_min = 0
+                player_stats[summoner_id].damage_taken   = 0
 
             effective_deaths = participant['stats']['deaths'] if participant['stats']['deaths'] > 0 else 1
             total_team_kills = sum([p['stats']['kills'] for p in game['participants'] if p['teamId'] == participant['teamId']])
@@ -47,6 +48,7 @@ def calculate_player_stats():
             player_stats[summoner_id].cs_per_min     += (participant['stats']['totalMinionsKilled'] + participant['stats']['neutralMinionsKilled']) / (game['gameDuration'] / 60)
             player_stats[summoner_id].kp_per_game    += ((participant['stats']['assists'] + participant['stats']['kills']) / total_team_kills) * 100
             player_stats[summoner_id].damage_per_min += participant['stats']['totalDamageDealtToChampions'] / (game['gameDuration'] / 60)
+            player_stats[summoner_id].damage_taken   += participant['stats']['totalDamageTaken']
 
 
     # process and save player stats
@@ -61,4 +63,5 @@ def calculate_player_stats():
         player_stat.kills           /= player_stat.games_played
         player_stat.assists         /= player_stat.games_played
         player_stat.deaths          /= player_stat.games_played
+        player_stat.damage_taken    /= player_stat.games_played
         player_stat.save()
