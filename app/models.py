@@ -241,9 +241,9 @@ class PlayerStats(models.Model):
 
     # stats from game data
     games_played    = models.IntegerField(default=0)
-    kills           = models.IntegerField(default=0)
-    deaths          = models.IntegerField(default=0)
-    assists         = models.IntegerField(default=0)
+    kills           = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    deaths          = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    assists         = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     kda_per_game    = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     vision_per_min  = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     cc_per_game     = models.DecimalField(max_digits=5, decimal_places=2, default=0)

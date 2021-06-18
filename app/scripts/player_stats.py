@@ -58,4 +58,7 @@ def calculate_player_stats():
         player_stat.cs_per_min      /= player_stat.games_played
         player_stat.kp_per_game     /= player_stat.games_played
         player_stat.damage_per_min  /= player_stat.games_played
+        player_stat.kills           /= player_stat.games_played
+        player_stat.assists         /= player_stat.games_played
+        player_stat.deaths          /= player_stat.games_played
         player_stat.save()

@@ -35,57 +35,94 @@ const styles = createUseStyles({
   }
 });
 
+const leaderboards = [
+  {
+    name: 'KDA',
+    icon: kdaIcon,
+    key: 'kda_per_game',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    name: 'KP',
+    icon: kpIcon,
+    key: 'kp_per_game',
+    sortType: -1,
+    prefix: '',
+    suffix: '%',
+  },
+  {
+    name: 'Damage / Min',
+    icon: damageIcon,
+    key: 'damage_per_min',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    name: 'Kills / Game',
+    icon: killIcon,
+    key: 'kills',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    name: 'Assists / Game',
+    icon: assistsIcon,
+    key: 'assists',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    name: 'Deaths / Game',
+    icon: killIcon,
+    key: 'deaths',
+    sortType: 1,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    name: 'Vision / Min',
+    icon: visionIcon,
+    key: 'vision_per_min',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    name: 'CS / Min',
+    icon: csIcon,
+    key: 'cs_per_min',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
+  {
+    name: 'CC Score',
+    icon: ccIcon,
+    key: 'cc_per_game',
+    sortType: -1,
+    prefix: '',
+    suffix: '',
+  },
+];
+
 const Leaderboard = () => {
   const classes = styles();
   const [loading, setLoading] = useState(true);
-  const [kdaKing, setKdaKing] = useState(null);
-  const [kpKing, setKpKing] = useState(null);
-  const [damageKing, setDamageKing] = useState(null);
-  const [killsKing, setKillsKing] = useState(null);
-  const [assistsKing, setAssistsKing] = useState(null);
-  const [visionKing, setVisionKing] = useState(null);
-  const [csKing, setCsKing] = useState(null);
-  const [ccKing, setCcKing] = useState(null);
+  const [allPlayers, setAllPlayers] = useState(null);
 
   useEffect(() => {
     async function start() {
       let allPlayers = await getPlayers();
-      allPlayers = allPlayers.filter(player => player.stats)
-      console.log(allPlayers)
+      allPlayers = allPlayers.filter(player => player.stats);
 
-      // KDAstyle="fill:white;"
-      allPlayers.sort((a, b) => b.stats.kda_per_game - a.stats.kda_per_game)
-      setKdaKing(allPlayers[0])
+      setAllPlayers(allPlayers);
 
-      // KP
-      allPlayers.sort((a, b) => b.stats.kp_per_game - a.stats.kp_per_game)
-      setKpKing(allPlayers[0])
-
-      // DAMAGE
-      allPlayers.sort((a, b) => b.stats.damage_per_min - a.stats.damage_per_min)
-      setDamageKing(allPlayers[0])
-
-      // KILLS
-      allPlayers.sort((a, b) => b.stats.kills - a.stats.kills)
-      setKillsKing(allPlayers[0])
-
-      // ASSISTS
-      allPlayers.sort((a, b) => b.stats.assists - a.stats.assists)
-      setAssistsKing(allPlayers[0])
-
-      // VISION
-      allPlayers.sort((a, b) => b.stats.vision_per_min - a.stats.vision_per_min)
-      setVisionKing(allPlayers[0])
-
-      // CS
-      allPlayers.sort((a, b) => b.stats.cs_per_min - a.stats.cs_per_min)
-      setCsKing(allPlayers[0])
-
-      // CC
-      allPlayers.sort((a, b) => b.stats.cc_per_game - a.stats.cc_per_game)
-      setCcKing(allPlayers[0])
-
-
+      console.log(allPlayers);
 
       setLoading(false);
     }
@@ -108,86 +145,22 @@ const Leaderboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(kdaIcon)} />
-                    KDA
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{kdaKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{kdaKing.stats.kda_per_game}</TableCell>
-              </TableRow>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(kpIcon)} />
-                    KP
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{kpKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{kpKing.stats.kp_per_game}%</TableCell>
-              </TableRow>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(damageIcon)} />
-                    Damage / Min
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{damageKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{damageKing.stats.damage_per_min}</TableCell>
-              </TableRow>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(killIcon)} />
-                    Kills
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{killsKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{killsKing.stats.kills}</TableCell>
-              </TableRow>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(assistsIcon)} />
-                    Assists
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{assistsKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{assistsKing.stats.assists}</TableCell>
-              </TableRow>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(visionIcon)} />
-                    Vision / Min
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{visionKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{visionKing.stats.vision_per_min}</TableCell>
-              </TableRow>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(csIcon)} />
-                    CS / Min
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{csKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{csKing.stats.cs_per_min}</TableCell>
-              </TableRow>
-              <TableRow key="">
-                <TableCell component="th" scope="row">
-                  <div className={classes.typeContainer}>
-                    <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(ccIcon)} />
-                    CC Score
-                  </div>
-                </TableCell>
-                <TableCell component="th" scope="row">{ccKing.user.summoner_name}</TableCell>
-                <TableCell component="th" scope="row">{ccKing.stats.cc_per_game}</TableCell>
-              </TableRow>
+              {leaderboards.map(lb => {
+                const sortedPlayers = allPlayers.sort((a, b) => (parseInt(a.stats.[lb.key]) - parseInt(b.stats.[lb.key])) * lb.sortType);
+                console.log(lb, sortedPlayers);
+                return (
+                  <TableRow key={lb.key}>
+                    <TableCell component="th" scope="row">
+                      <div className={classes.typeContainer}>
+                        <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(lb.icon)} />
+                        {lb.name}
+                      </div>
+                    </TableCell>
+                    <TableCell component="th" scope="row">{sortedPlayers[0].user.summoner_name}</TableCell>
+                    <TableCell component="th" scope="row">{lb.prefix + sortedPlayers[0].stats[lb.key] + lb.suffix}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
