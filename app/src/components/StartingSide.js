@@ -15,18 +15,20 @@ const DarkTooltip = withStyles((theme) => ({
 
 const styles = createUseStyles({
   side: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '12px',
+    // width: '8px',
+    // height: '8px',
+    // borderRadius: '12px',
     margin: '0px 4px',
     marginTop: '2px',
     cursor: 'pointer',
   },
   red: {
     // backgroundColor: '#d03125',
+    // color: '#d03125',
   },
   blue: {
-    backgroundColor: '#4b9dff',
+    // backgroundColor: '#4b9dff',
+    color: '#4b9dff',
   }
 });
 
@@ -38,7 +40,9 @@ const StartingSide = ({ side }) => {
   }
   return (
     <DarkTooltip title={`This team starts ${side} side`}>
-      <div className={`${classes.side} ${side === 'blue' ? classes.blue : classes.red}`} />
+      <div className={`${classes.side} ${side === 'blue' ? classes.blue : classes.red}`}>
+        {side === 'blue' ? '[B]': ''}
+      </div>
     </DarkTooltip>
   );
 };
