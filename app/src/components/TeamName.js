@@ -37,7 +37,7 @@ const TeamName = ({ team, nameClass }) => {
   return (
     <DarkTooltip title={
       <div className={classes.tooltip}>
-        {team.players.map((player, index) => <Player player={player} />)}
+        {team.players.map((player, index) => <Player key={player} player={player.id} />)}
       </div>
     }>
       <div className={`${classes.name} ${nameClass}`}>

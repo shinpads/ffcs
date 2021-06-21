@@ -138,13 +138,13 @@ const Match = (props) => {
           const team2Deaths   = team2Participants.reduce((acc, cur) => acc + cur.stats.deaths, 0);
           const team2Assists  = team2Participants.reduce((acc, cur) => acc + cur.stats.assists, 0);
           const mostDamage    = gameData.participants.reduce((acc, cur) => Math.max(acc, cur.stats.totalDamageDealtToChampions), 0)
-          console.log(mostDamage);
+
           return (
             <div>
               <div>Game {game.game_in_series} of {matchData.match.games.length} - <b>Winner: {gameWinner.name}</b> in {Math.floor(gameData.gameDuration / 60)}m</div>
               <br />
 
-              <TableContainer component={Paper}>
+              <TableContainer key={game.id} component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                   <TableHead>
                     <TableRow>
@@ -159,11 +159,11 @@ const Match = (props) => {
                   <TableBody>
                     <TableRow key={team1.name}>
                       <TableCell component="th" scope="row"><TeamName team={team1} /></TableCell>
-                      {team1TeamData.bans.map(ban => <TableCell align="right"><ChampionIcon championId={ban.championId} /></TableCell>)}
+                      {team1TeamData.bans.map(ban => <TableCell key={ban.championId} align="right"><ChampionIcon championId={ban.championId} /></TableCell>)}
                     </TableRow>
                     <TableRow key={team2.name}>
                       <TableCell component="th" scope="row"><TeamName team={team2} /></TableCell>
-                      {team2TeamData.bans.map(ban => <TableCell align="right"><ChampionIcon championId={ban.championId} /></TableCell>)}
+                      {team2TeamData.bans.map(ban => <TableCell key={ban.championId} align="right"><ChampionIcon championId={ban.championId} /></TableCell>)}
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -199,7 +199,7 @@ const Match = (props) => {
                       const team2PlayerKp = Math.round(((team2Participant.stats.kills + team2Participant.stats.assists) / (team2Kills)) * 100);
 
                       return (
-                        <TableRow>
+                        <TableRow key={index}>
                           <TableCell style={{ width: '25%' }} align="left" component="th" scope="row">
                             <Participant mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1ParticipantIdentity.player} />
                           </TableCell>

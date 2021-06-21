@@ -41,7 +41,7 @@ const Participant = ({ participant, player, mvp, reverse }) => {
         {[0, 1, 2, 3, 4, 5, 6].map(itemNum => {
           const key = `item${itemNum}`;
             return (
-              <Item itemId={participant.stats[key]} />
+              <Item key={itemNum} itemId={participant.stats[key]} />
             )
         })}
       </div>
