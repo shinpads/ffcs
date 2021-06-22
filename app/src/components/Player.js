@@ -22,7 +22,7 @@ const styles = createUseStyles({
 
 const Player = ({ player, viewed, delay }) => {
   const classes = styles();
-
+  
   return (
     <Fade duration={viewed ? 0 : 1200} delay={viewed ? 0 : delay}>
       <div className={classes.player}>
