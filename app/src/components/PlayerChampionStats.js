@@ -84,7 +84,8 @@ const winRateColor = (winRate) => {
 
 const PlayerChampionStats = ({ playerChampionStats, championMap }) => {
   const classes = styles();
-  playerChampionStats.sort((a, b) => b.games_played - a.games_played)
+  playerChampionStats.sort((a, b) => b.wins - a.wins);
+  playerChampionStats.sort((a, b) => b.games_played - a.games_played);
   console.log(playerChampionStats);
   console.log(championMap);
 
