@@ -99,7 +99,7 @@ function sortParticipants(participants) {
     } else {
       notPlaced.push({participant, index});
     }
-    console.log(laneRoleKey(participant), laneRoleOrderIndex, newParticipants);
+    // console.log(laneRoleKey(participant), laneRoleOrderIndex, newParticipants);
   });
 
   notPlaced.forEach(({participant, index}) => {
@@ -110,7 +110,7 @@ function sortParticipants(participants) {
     }
   });
 
-  console.log(newParticipants);
+  // console.log(newParticipants);
   return newParticipants;
 }
 
