@@ -77,6 +77,43 @@ const ROLES = [
   { role: 'support', id: 5 }
 ]
 
+const LANE_ROLE_ORDER = [
+  ['TOP SOLO', 'TOP DUO_CARRY'],
+  ['JUNGLE NONE'],
+  ['MIDDLE SOLO', 'MIDDLE DUO'],
+  ['BOTTOM DUO_CARRY', 'BOTTOM SOLO'],
+  ['BOTTOM DUO_SUPPORT', 'TOP DUO_SUPPORT', 'MIDDLE DUO_SUPPORT'],
+];
+
+function sortParticipants(participants) {
+  const laneRoleKey = (participant) => {
+    // put lane and role together so its like 'TOP SOLO' or 'BOTTOM DUO_SUPPORT'
+    return `${participant.timeline.lane} ${participant.timeline.role}`;
+  }
+  const newParticipants = [null, null, null, null, null];
+  const notPlaced = [];
+  participants.forEach((participant, index) => {
+    const laneRoleOrderIndex = LANE_ROLE_ORDER.findIndex(laneRoles => laneRoles.indexOf(laneRoleKey(participant)) > -1);
+    if (laneRoleOrderIndex >= 0 && !newParticipants[laneRoleOrderIndex]) {
+      newParticipants[laneRoleOrderIndex] = participant;
+    } else {
+      notPlaced.push({participant, index});
+    }
+    console.log(laneRoleKey(participant), laneRoleOrderIndex, newParticipants);
+  });
+
+  notPlaced.forEach(({participant, index}) => {
+    if (!newParticipants[index]) {
+      newParticipants[index] = participant;
+    } else {
+      newParticipants[newParticipants.indexOf(null)] = participant;
+    }
+  });
+
+  console.log(newParticipants);
+  return newParticipants;
+}
+
 const Match = (props) => {
   const classes = styles();
   const [loading, setLoading] = useState(true);
@@ -129,8 +166,8 @@ const Match = (props) => {
           const gameWinner    = matchData.match.teams.find(team => team.id === game.winner);
           const team1TeamData = game.winner === team1.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail')
           const team2TeamData = game.winner === team2.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail')
-          const team1Participants = gameData.participants.filter(participant => participant.teamId === team1TeamData.teamId);
-          const team2Participants = gameData.participants.filter(participant => participant.teamId === team2TeamData.teamId);
+          const team1Participants = sortParticipants(gameData.participants.filter(participant => participant.teamId === team1TeamData.teamId));
+          const team2Participants = sortParticipants(gameData.participants.filter(participant => participant.teamId === team2TeamData.teamId));
           const team1Kills    = team1Participants.reduce((acc, cur) => acc + cur.stats.kills, 0);
           const team1Deaths   = team1Participants.reduce((acc, cur) => acc + cur.stats.deaths, 0);
           const team1Assists  = team1Participants.reduce((acc, cur) => acc + cur.stats.assists, 0);
