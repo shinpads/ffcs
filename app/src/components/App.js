@@ -44,7 +44,7 @@ class App extends Component {
           <Route path="/" component={Home} exact />
           <Route path="/signup" component={Signup} exact />
           <Route path="/match/:id" component={Match} exact />
-          <Route path="/player/:id" component={UserProfile} exact />
+          <Route path="/user/:id" component={UserProfile} exact />
           <Redirect from="*" to="/" />
         </Switch>
       </MuiThemeProvider>

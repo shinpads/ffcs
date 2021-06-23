@@ -22,12 +22,17 @@ def calculate_player_stats():
         for participant in game['participants']:
             summoner_id = game['participantIdentities'][participant['participantId'] - 1]['player']['summonerId']
             summoner_name = game['participantIdentities'][participant['participantId'] - 1]['player']['summonerName']
+            summoner_icon = game['participantIdentities'][participant['participantId'] - 1]['player']['profileIcon']
             if not summoner_id in player_stats:
                 players = Player.objects.filter(account_id=summoner_id).select_related('team').filter(team__season=current_season)
                 if not len(players):
                     print('cant find player or team for player', summoner_name)
                     continue
                 player = players[0]
+                if player.profile_icon_id != summoner_icon:
+                    print('updaing profile icon for', summoner_name)
+                    player.profile_icon_id = summoner_icon
+                    player.save()
                 player_stats[summoner_id], created = PlayerStats.objects.get_or_create(player=player)
                 print(player_stats[summoner_id])
                 # set defaults

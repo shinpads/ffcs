@@ -16,7 +16,7 @@ def match_index(request, match_id):
     return render(request, 'index.html')
 
 @login_required(login_url="/")
-def player_index(request, player_id):
+def user_index(request, user_id):
     return render(request, 'index.html')
 
 

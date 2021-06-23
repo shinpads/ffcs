@@ -17,19 +17,22 @@ import Matches from '../Matches';
 import Header from '../Header';
 import Role from '../Role';
 import colors from '../../colors';
-import { getMatch } from '../../api';
+import { getUser } from '../../api';
 import Spinner from '../Spinner';
 import Participant from '../League/Participant';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
+import PlayerChampionStats from '../PlayerChampionStats';
+import { getChampions } from '../../actions/leagueActions';
+import SummonerIcon from '../League/SummonerIcon';
 
 
 const styles = createUseStyles({
-  title: {
+  topContainer: {
     fontSize: '24px',
-    textAlign: 'center',
     textTransform: 'uppercase',
     display: 'flex',
+    marginBottom: '1rem',
   },
   description: {
     textAlign: 'center',
@@ -40,30 +43,42 @@ const styles = createUseStyles({
     margin: '0 auto',
     paddingTop: '5rem',
   },
+  teamContainer: {
+    display: 'flex',
+    fontSize: '18px',
+    marginTop: '4px',
+  },
+  profileIconContainer: {
+    marginRight: '1rem',
+  },
+  content: {
+    display: 'grid',
+    gridTemplateColumns: '4fr 7fr'
+  }
 });
-
-const ROLES = [
-  { role: 'top', id: 1 },
-  { role: 'jungle', id: 2 },
-  { role: 'mid', id: 3 },
-  { role: 'bot', id: 4 },
-  { role: 'support', id: 5 }
-]
 
 const UserProfile = (props) => {
   const classes = styles();
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  const { league } = props;
 
   useEffect(() => {
     async function getData() {
+      const { dispatch } = props;
+      dispatch(getChampions());
       const { id } = props.match.params;
+      const user = await getUser(id);
+      setUser(user);
+      console.log(user);
 
       setLoading(false);
     }
     getData();
   }, []);
 
-  if (loading) {
+  if (loading || !league.champions.loaded) {
     return (
       <>
         <Header />
@@ -74,17 +89,42 @@ const UserProfile = (props) => {
     );
   }
 
+  const player = user.players[user.players.length - 1];
+
   return (
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.title}>
-          Player
+        <div className={classes.topContainer}>
+          <div className={classes.profileIconContainer}>
+            <SummonerIcon iconId={player.profile_icon_id} />
+          </div>
+          <div className={classes.userDetailsContainer}>
+            <div>{user.summoner_name}</div>
+            <div className={classes.teamContainer}>
+              <Role role={player.role} />
+              <div>{player.team.name}</div>
+            </div>
+          </div>
         </div>
-
+        <div className={classes.content}>
+          <div>
+            <div style={{ fontSize: '18px', marginBottom: '4px' }}>Champion Stats</div>
+            <PlayerChampionStats playerChampionStats={player.player_champion_stats} />
+          </div>
+          <div style={{ fontSize: '24px', textAlign: 'center', marginTop: '18px' }}>
+            More details coming soon!
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
-export default UserProfile;
+function mapStateToProps(state) {
+  return {
+    league: state.league,
+  };
+}
+
+export default connect(mapStateToProps)(UserProfile);

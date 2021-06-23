@@ -217,6 +217,8 @@ class Player(models.Model):
     )
     account_id = models.CharField(max_length=70, blank=True)
 
+    profile_icon_id = models.IntegerField(default=0)
+
     @property
     def get_account_id(self):
         return get_riot_account_id(self.user.summoner_name)

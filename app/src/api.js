@@ -47,6 +47,13 @@ export async function getTeam() {
   throw new Error('not done');
 }
 
+export async function getUser(userId) {
+  const response = await axios.get(`/api/user/${userId}/`);
+  const result = response.data.data;
+
+  return result;
+}
+
 export async function discordLogin() {
   const response = await axios.get('/oauth2/login/');
 }

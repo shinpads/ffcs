@@ -11,7 +11,8 @@ const colors = {
   mvp: '#e19205',
   gold: '#e19205',
   silver: '#C5C6C7',
-  bronze: '#874f18'
+  bronze: '#874f18',
+  red: '#c6443e',
 };
 
 export default colors;

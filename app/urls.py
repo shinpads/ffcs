@@ -18,7 +18,7 @@ urlpatterns = [
   path('', views.index),
   path('signup', views.signup_index),
   path('match/<match_id>', views.match_index),
-  path('player/<player_id>', views.player_index),
+  path('user/<user_id>', views.user_index),
   path('riot.txt', views.riot),
   path('api/tournamentcallback/', gameviews.CallbackView.as_view()),
   path('oauth2/login/', discordviews.discord_login, name='oauth_login'),
