@@ -96,6 +96,9 @@ function sortParticipants(participants) {
     const laneRoleOrderIndex = LANE_ROLE_ORDER.findIndex(laneRoles => laneRoles.indexOf(laneRoleKey(participant)) > -1);
     if (laneRoleOrderIndex >= 0 && !newParticipants[laneRoleOrderIndex]) {
       newParticipants[laneRoleOrderIndex] = participant;
+    } else if (newParticipants[laneRoleOrderIndex] && laneRoleOrderIndex === index) {
+      notPlaced.push({ participant: newParticipants[laneRoleOrderIndex], index: -1 });
+      newParticipants[laneRoleOrderIndex] = participant;
     } else {
       notPlaced.push({participant, index});
     }
@@ -103,7 +106,7 @@ function sortParticipants(participants) {
   });
 
   notPlaced.forEach(({participant, index}) => {
-    if (!newParticipants[index]) {
+    if (index >= 0 && !newParticipants[index]) {
       newParticipants[index] = participant;
     } else {
       newParticipants[newParticipants.indexOf(null)] = participant;
