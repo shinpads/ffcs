@@ -14,6 +14,14 @@ const MVPChip = withStyles((theme) => ({
   },
 }))(Chip);
 
+const SubChip = withStyles((theme) => ({
+  root: {
+    fontSize: '10px',
+    backgroundColor: colors.offwhite,
+    height: '24px',
+  },
+}))(Chip);
+
 const styles = createUseStyles({
   root: {
     display: 'flex',
@@ -27,7 +35,7 @@ const styles = createUseStyles({
   }
 });
 
-const Participant = ({ participant, player, mvp, reverse }) => {
+const Participant = ({ participant, player, mvp, reverse, isSub }) => {
   const classes = styles();
 
   return (
@@ -36,6 +44,7 @@ const Participant = ({ participant, player, mvp, reverse }) => {
         <ChampionIcon championId={participant.championId} />
         <div className={classes.summonerName}>{player.summonerName}</div>
         {mvp && <MVPChip label="MVP" />}
+        {isSub && <SubChip label="SUB" />}
       </div>
       <div className={classes.itemsContainer}>
         {[0, 1, 2, 3, 4, 5, 6].map(itemNum => {
