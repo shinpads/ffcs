@@ -71,14 +71,14 @@ const styles = createUseStyles({
 });
 
 const kdaColor = (kda) => {
-  if (kda > 5) return colors.gold;
-  if (kda > 3) return colors.primary;
+  if (kda >= 5) return colors.gold;
+  if (kda >= 3) return colors.primary;
   return colors.white;
 };
 
 const winRateColor = (winRate) => {
-  if (winRate > 60) return colors.red;
-  if (winRate > 50) return colors.white;
+  if (winRate >= 60) return colors.red;
+  if (winRate >= 50) return colors.white;
   return colors.secondary;
 }
 

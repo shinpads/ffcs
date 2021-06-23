@@ -19,12 +19,13 @@ import Role from '../Role';
 import colors from '../../colors';
 import { getUser } from '../../api';
 import Spinner from '../Spinner';
-import Participant from '../League/Participant';
+import Participant from '../League/Part\icipant';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
 import PlayerChampionStats from '../PlayerChampionStats';
 import { getChampions } from '../../actions/leagueActions';
 import SummonerIcon from '../League/SummonerIcon';
+import PlayersGame from '../PlayersGame';
 
 
 const styles = createUseStyles({
@@ -53,14 +54,20 @@ const styles = createUseStyles({
   },
   content: {
     display: 'grid',
-    gridTemplateColumns: '4fr 7fr'
-  }
+    gridTemplateColumns: '4fr 7fr',
+    gridGap: '1rem',
+  },
+  sectionTitle: {
+    fontSize: '18px',
+    marginBottom: '4px',
+  },
 });
 
 const UserProfile = (props) => {
   const classes = styles();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [games, setGames] = useState([]);
 
   const { league } = props;
 
@@ -69,10 +76,10 @@ const UserProfile = (props) => {
       const { dispatch } = props;
       dispatch(getChampions());
       const { id } = props.match.params;
-      const user = await getUser(id);
-      setUser(user);
-      console.log(user);
-
+      const data = await getUser(id);
+      console.log(data);
+      setUser(data.user);
+      setGames(data.games);
       setLoading(false);
     }
     getData();
@@ -90,7 +97,6 @@ const UserProfile = (props) => {
   }
 
   const player = user.players[user.players.length - 1];
-
   return (
     <>
       <Header />
@@ -109,11 +115,16 @@ const UserProfile = (props) => {
         </div>
         <div className={classes.content}>
           <div>
-            <div style={{ fontSize: '18px', marginBottom: '4px' }}>Champion Stats</div>
+            <div className={classes.sectionTitle}>Champion Stats</div>
             <PlayerChampionStats playerChampionStats={player.player_champion_stats} />
           </div>
-          <div style={{ fontSize: '24px', textAlign: 'center', marginTop: '18px' }}>
-            More details coming soon!
+          <div>
+            <div className={classes.sectionTitle}>Games</div>
+            {games.map(game => {
+              return (
+                <PlayersGame game={game} player={player} />
+              );
+            })}
           </div>
         </div>
       </div>
