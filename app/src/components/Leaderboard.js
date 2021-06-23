@@ -6,6 +6,7 @@ import Match from './Match';
 import TeamName from './TeamName';
 import Spinner from './Spinner';
 import colors from '../colors';
+import UserName from './UserName';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -183,7 +184,9 @@ const Leaderboard = () => {
                       {[0, 1, 2].map(index => (
                         <div className={classes.playerContainer}>
                           <div className={classes.medal} style={{ backgroundColor: rankColors[index] }}/>
-                          <div style={index === 0 ? { fontWeight: 'bold' } : {}}>{sortedPlayers[index].user.summoner_name}</div>
+                          <div style={index === 0 ? { fontWeight: 'bold' } : {}}>
+                            <UserName user={sortedPlayers[index].user} nameClass={classes.summonerName} />
+                          </div>
                         </div>
                       ))}
                     </TableCell>

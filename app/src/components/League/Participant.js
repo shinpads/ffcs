@@ -5,6 +5,7 @@ import ChampionIcon from './ChampionIcon';
 import Chip from '@material-ui/core/Chip';
 import Item from './Item';
 import colors from '../../colors';
+import UserName from '../UserName';
 
 const MVPChip = withStyles((theme) => ({
   root: {
@@ -35,14 +36,17 @@ const styles = createUseStyles({
   }
 });
 
-const Participant = ({ participant, player, mvp, reverse, isSub }) => {
+const Participant = ({ participant, player, mvp, reverse, isSub, user }) => {
   const classes = styles();
 
   return (
     <div>
       <div className={classes.root} style={reverse ? { flexDirection: 'row-reverse' } : {}}>
         <ChampionIcon championId={participant.championId} />
-        <div className={classes.summonerName}>{player.summonerName}</div>
+        {user
+          ? (<UserName user={user} nameClass={classes.summonerName} />)
+          : (<div className={classes.summonerName}>{player.summonerName}</div>)
+        }
         {mvp && <MVPChip label="MVP" />}
         {isSub && <SubChip label="SUB" />}
       </div>
