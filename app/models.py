@@ -201,7 +201,8 @@ class Player(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='players',
     )
     caster = models.BooleanField(default=False)
     team = models.ForeignKey(
@@ -253,12 +254,14 @@ class PlayerStats(models.Model):
     damage_taken    = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
 class PlayerChampionStats(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player_champion_stats')
 
     # stats from game data
     champion_id     = models.IntegerField()
     # stats represent data for specific champion
     games_played    = models.IntegerField(default=0)
+    wins            = models.IntegerField(default=0)
+    losses          = models.IntegerField(default=0)
     kills           = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     deaths          = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     assists         = models.DecimalField(max_digits=5, decimal_places=2, default=0)
@@ -269,6 +272,9 @@ class PlayerChampionStats(models.Model):
     kp              = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     damage_per_min  = models.DecimalField(max_digits=6, decimal_places=2, default=0)
     damage_taken    = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+
+    class Meta:
+        unique_together = ('player', 'champion_id')
 
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

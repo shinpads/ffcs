@@ -1,5 +1,6 @@
-from ..models import Player, Team, Season
+from ..models import Player, Team, Season, User
 from ..serializers.userserializer import UserSerializer
+from ..serializers.userprofileserializer import UserProfileSerializer
 from django.http import JsonResponse
 from django.views import View
 from django.db import IntegrityError
@@ -19,4 +20,14 @@ def get_from_session(request):
     return JsonResponse({
         "message": "success",
         "data": out_data,
+    }, status=200)
+
+
+def get_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user_data = UserProfileSerializer(user).data
+
+    return JsonResponse({
+        "message": "success",
+        "data": user_data,
     }, status=200)
