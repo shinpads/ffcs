@@ -3,6 +3,10 @@ import { createUseStyles } from 'react-jss';
 import logo from '../../public/logo.svg';
 import colors from '../colors';
 import { getImage } from '../helpers';
+import UserName from './UserName';
+
+import { connect } from 'react-redux';
+
 
 const styles = createUseStyles({
   header: {
@@ -27,16 +31,26 @@ const styles = createUseStyles({
   },
 });
 
-const Header = () => {
+const Header = (props) => {
   const classes = styles();
+
+  const { loaded: userLoaded, user } = props.user;
 
   return (
     <header className={classes.header}>
       <img alt="" width={48} src={getImage(logo)} />
       <a href="/"><div className={classes.title}>For Fun Championship Series</div></a>
-      <div style={{ paddingRight: '1rem', textAlign: 'right' }}>Season 2</div>
+      <div style={{ paddingRight: '1rem', textAlign: 'right' }}>
+        {userLoaded && <UserName user={user} />}
+      </div>
     </header>
   );
 };
 
-export default Header;
+function mapStateToProps(state) {
+  return {
+    user: state.user,
+  };
+}
+
+export default connect(mapStateToProps)(Header);
