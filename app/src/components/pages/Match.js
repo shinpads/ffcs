@@ -90,6 +90,9 @@ function sortParticipants(participants) {
     // put lane and role together so its like 'TOP SOLO' or 'BOTTOM DUO_SUPPORT'
     return `${participant.timeline.lane} ${participant.timeline.role}`;
   }
+
+  // sort participants by lane and role. If two partcipants have the same lane and role, determine role based off of order they were in.
+
   const newParticipants = [null, null, null, null, null];
   const notPlaced = [];
   participants.forEach((participant, index) => {

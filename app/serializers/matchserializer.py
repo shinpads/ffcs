@@ -5,7 +5,7 @@ from .gameserializer import GameSerializer
 from ..models import Match
 
 class MatchSerializer(serializers.ModelSerializer):
-    teams = serializers.SerializerMethodField('get_teams')
+    teams = TeamSerializer(many=True)
     winner = TeamSerializer()
     games = GameSerializer(many=True)
 
@@ -13,6 +13,10 @@ class MatchSerializer(serializers.ModelSerializer):
         model = Match
         fields = '__all__'
 
+class MatchSerializerWithoutGames(serializers.ModelSerializer):
+    teams = TeamSerializer(many=True)
+    winner = TeamSerializer()
 
-    def get_teams(self, obj):
-        return [TeamSerializer(team).data for team in obj.teams.all()]
+    class Meta:
+        model = Match
+        fields = '__all__'
