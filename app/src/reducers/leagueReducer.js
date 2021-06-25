@@ -1,23 +1,19 @@
-import { SET_CHAMPIONS } from '../actions/actionTypes';
+import { SET_LEAGUE_DATA } from '../actions/actionTypes';
 
 const initalState = {
-  champions: {
-    loaded: false,
-    championMap: null,
-  },
+  loaded: false,
+  championMap: null,
+  summonerMap: null,
 };
 
 export default (state = initalState, action) => {
   switch (action.type) {
-    case SET_CHAMPIONS:
+    case SET_LEAGUE_DATA:
       return {
         ...state,
-        champions: {
-          loaded: true,
-          championMap: {
-            ...action.payload.championMap,
-          },
-        },
+        loaded: true,
+        championMap: action.payload.championMap,
+        summonerMap: action.payload.summonerMap,
       };
     default:
       return state;

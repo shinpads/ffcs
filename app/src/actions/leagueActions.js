@@ -1,21 +1,31 @@
 import axios from 'axios';
 
-import { SET_CHAMPIONS } from './actionTypes';
+import { SET_LEAGUE_DATA } from './actionTypes';
 
-export const getChampions = () => async (dispatch, getState) => {
+export const getLeagueData = () => async (dispatch, getState) => {
   try {
     const { league } = getState();
-    if (league.champions.loaded) {
+    if (league.loaded) {
       return;
     }
     const versions = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
     const latestVersion = versions.data[0];
 
-    const res = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/champion.json`);
+    const requests = [
+      axios.get(`https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/champion.json`),
+      axios.get(`https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/en_US/summoner.json`),
+    ];
+
+    const [
+      championsResult,
+      summonerResult,
+    ] = await Promise.all(requests);
+
     await dispatch({
-      type: SET_CHAMPIONS,
+      type: SET_LEAGUE_DATA,
       payload: {
-        championMap: res.data.data,
+        championMap: championsResult.data.data,
+        summonerMap: summonerResult.data.data,
       },
     });
   } catch (err) {
@@ -24,5 +34,5 @@ export const getChampions = () => async (dispatch, getState) => {
 };
 
 export default {
-  getChampions,
+  getLeagueData,
 };

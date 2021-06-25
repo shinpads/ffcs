@@ -7,7 +7,7 @@ import colors from '../colors';
 import TeamName from './TeamName';
 import { getImage } from '../helpers';
 import ChampionIcon from './League/ChampionIcon';
-import Participant from './League/Participant';
+import { IndividualParticipant } from './League/Participant';
 import ParticipantName from './League/ParticipantName';
 
 const styles = createUseStyles({
@@ -19,13 +19,21 @@ const styles = createUseStyles({
     flexBasis: '400px',
     boxShadow: `1px 1px 2px ${colors.black}`,
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr 1fr 2fr'
+    gridTemplateColumns: '0.8fr 4fr 2fr'
   },
   win: {
     borderLeft: `4px solid ${colors.primary}`
   },
   lose: {
     borderLeft: `4px solid ${colors.red}`
+  },
+  winColor: {
+    color: colors.primary,
+    fontWeight: 600,
+  },
+  loseColor: {
+    color: colors.red,
+    fontWeight: 600,
   },
   participantsContainer: {
     display: 'grid',
@@ -34,6 +42,18 @@ const styles = createUseStyles({
   },
   teamParticipantsContainer: {
     overflow: 'hidden',
+  },
+  matchTime: {
+    color: colors.secondary,
+  },
+  gameDuration: {
+    color: colors.secondary,
+  },
+  gameDetails: {
+    fontSize: '14px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   }
 });
 
@@ -51,20 +71,24 @@ const PlayersGame = ({ game, player }) => {
   const team1Participants = gameData.participants.filter(participant => participant.teamId === team1TeamData.teamId);
   const team2Participants = gameData.participants.filter(participant => participant.teamId === team2TeamData.teamId);
 
+  const gameDurationMinutes = (gameData.gameDuration / 60).toFixed(0);
+  const gameDurationSeconds = gameData.gameDuration % 60;
+
   return (
-    <div className={`${classes.container} ${won ? classes.win : classes.lose}`}>
-      <Participant mvp={game.mvp === player.id} participant={participant} player={player} user={player.user} />
-      <div className={classes.kdaContainer}>
+    <a href={`/match/${game.match.id}`} className={`${classes.container} ${won ? classes.win : classes.lose}`}>
+      <div className={classes.gameDetails}>
+        <div className={classes.matchTime}>{moment(game.match.scheduled_for).fromNow()}</div>
+        <div>
+          <div className={won ? classes.winColor : classes.loseColor}>{won ? 'Victory' : 'Defeat'}</div>
+          <div className={classes.gameDuration}>{gameDurationMinutes}m {gameDurationSeconds}s</div>
+        </div>
       </div>
-      <div className={classes.statsContainer}>
-      </div>
-      <div className={classes.itemsContainer}>
-      </div>
+      <IndividualParticipant mvp={game.mvp === player.id} participant={participant} player={player} user={player.user} />
       <div className={classes.participantsContainer}>
         <TeamPartcipants participants={team1Participants} team={team1} game={game} />
         <TeamPartcipants participants={team2Participants} team={team2} game={game} />
       </div>
-    </div>
+    </a>
   );
 };
 

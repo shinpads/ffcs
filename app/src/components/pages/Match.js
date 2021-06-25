@@ -19,7 +19,7 @@ import Role from '../Role';
 import colors from '../../colors';
 import { getMatch } from '../../api';
 import Spinner from '../Spinner';
-import Participant from '../League/Participant';
+import { Participant } from '../League/Participant';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
 

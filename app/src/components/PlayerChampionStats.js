@@ -8,6 +8,7 @@ import TeamName from './TeamName';
 import Spinner from './Spinner';
 import colors from '../colors';
 import ChampionIcon from './League/ChampionIcon';
+import ChampionName from './League/ChampionName';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -90,7 +91,6 @@ const PlayerChampionStats = ({ playerChampionStats, championMap }) => {
   return (
     <Paper className={classes.container}>
       {playerChampionStats.map(playerChampionStat => {
-        const championName = Object.keys(championMap).find(name => championMap[name].key == playerChampionStat.champion_id)
         const winRate = ((playerChampionStat.wins / playerChampionStat.games_played) * 100).toFixed(1)
         return (
           <div className={classes.row} key={playerChampionStat.champion_id}>
@@ -98,7 +98,7 @@ const PlayerChampionStats = ({ playerChampionStats, championMap }) => {
               <ChampionIcon championId={playerChampionStat.champion_id} />
             </div>
             <div className={classes.cell} style={{ alignItems: 'start' }}>
-              <div className={classes.championName}>{championName}</div>
+              <div className={classes.championName}><ChampionName championId={playerChampionStat.champion_id} /></div>
               <div className={classes.csScore}>{playerChampionStat.cs_per_min} CS/m</div>
             </div>
             <div className={classes.cell}>
@@ -118,7 +118,7 @@ const PlayerChampionStats = ({ playerChampionStats, championMap }) => {
 
 function mapStateToProps(state) {
   return {
-    championMap: state.league.champions.championMap,
+    championMap: state.league.championMap,
   };
 }
 

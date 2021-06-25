@@ -52,7 +52,7 @@ const Match = ({ match }) => {
   const classes = styles();
   let date = `WEEK ${match.week}`;
   if (match.scheduled_for) {
-    date = moment(match.scheduled_for).format('MMM Do h:mm a')
+    date = moment(match.scheduled_for).format('MMM Do h:mm a');
   }
 
   let winner = null;

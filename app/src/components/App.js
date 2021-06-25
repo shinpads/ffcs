@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import colors from '../colors';
 import { getUser } from '../actions/userActions';
+import { getLeagueData } from '../actions/leagueActions';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Match from './pages/Match';
@@ -35,6 +36,7 @@ class App extends Component {
 
     document.body.style.backgroundColor = colors.background;
     dispatch(getUser());
+    dispatch(getLeagueData());
   }
 
   render() {

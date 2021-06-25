@@ -19,11 +19,9 @@ import Role from '../Role';
 import colors from '../../colors';
 import { getUser } from '../../api';
 import Spinner from '../Spinner';
-import Participant from '../League/Part\icipant';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
 import PlayerChampionStats from '../PlayerChampionStats';
-import { getChampions } from '../../actions/leagueActions';
 import SummonerIcon from '../League/SummonerIcon';
 import PlayersGame from '../PlayersGame';
 
@@ -34,6 +32,8 @@ const styles = createUseStyles({
     textTransform: 'uppercase',
     display: 'flex',
     marginBottom: '1rem',
+    padding: '8px',
+    boxShadow: '1px 1px 2px #000 !important',
   },
   description: {
     textAlign: 'center',
@@ -51,6 +51,7 @@ const styles = createUseStyles({
   },
   profileIconContainer: {
     marginRight: '1rem',
+    display: 'flex',
   },
   content: {
     display: 'grid',
@@ -74,7 +75,6 @@ const UserProfile = (props) => {
   useEffect(() => {
     async function getData() {
       const { dispatch } = props;
-      dispatch(getChampions());
       const { id } = props.match.params;
       const data = await getUser(id);
       console.log(data);
@@ -85,7 +85,7 @@ const UserProfile = (props) => {
     getData();
   }, []);
 
-  if (loading || !league.champions.loaded) {
+  if (loading || !league.loaded) {
     return (
       <>
         <Header />
@@ -101,9 +101,9 @@ const UserProfile = (props) => {
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.topContainer}>
+        <Paper className={classes.topContainer}>
           <div className={classes.profileIconContainer}>
-            <SummonerIcon iconId={player.profile_icon_id} />
+            <SummonerIcon rounded iconId={player.profile_icon_id} />
           </div>
           <div className={classes.userDetailsContainer}>
             <div>{user.summoner_name}</div>
@@ -112,7 +112,7 @@ const UserProfile = (props) => {
               <div>{player.team.name}</div>
             </div>
           </div>
-        </div>
+        </Paper>
         <div className={classes.content}>
           <div>
             <div className={classes.sectionTitle}>Champion Stats</div>
