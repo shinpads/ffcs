@@ -11,7 +11,7 @@ import Item from './Item';
 import colors from '../../colors';
 import UserName from '../UserName';
 
-const MVPChip = withStyles((theme) => ({
+export const MVPChip = withStyles((theme) => ({
   root: {
     fontSize: '10px',
     backgroundColor: colors.mvp,

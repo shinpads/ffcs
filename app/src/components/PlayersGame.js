@@ -7,7 +7,7 @@ import colors from '../colors';
 import TeamName from './TeamName';
 import { getImage } from '../helpers';
 import ChampionIcon from './League/ChampionIcon';
-import { IndividualParticipant } from './League/Participant';
+import { IndividualParticipant, MVPChip } from './League/Participant';
 import ParticipantName from './League/ParticipantName';
 
 const styles = createUseStyles({
@@ -78,6 +78,9 @@ const PlayersGame = ({ game, player }) => {
     <a href={`/match/${game.match.id}`} className={`${classes.container} ${won ? classes.win : classes.lose}`}>
       <div className={classes.gameDetails}>
         <div className={classes.matchTime}>{moment(game.match.scheduled_for).fromNow()}</div>
+        <div>
+          {game.mvp === player.id && <MVPChip label="MVP" />}
+        </div>
         <div>
           <div className={won ? classes.winColor : classes.loseColor}>{won ? 'Victory' : 'Defeat'}</div>
           <div className={classes.gameDuration}>{gameDurationMinutes}m {gameDurationSeconds}s</div>
