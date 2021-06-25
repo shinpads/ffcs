@@ -28,7 +28,7 @@ const Matches = () => {
   useEffect(() => {
     async function getAllMatches() {
       const allMatches = await getMatches(2);
-      console.log(allMatches);
+      
       const newMatchesByWeek = {}
       allMatches.forEach(match => {
         if (!newMatchesByWeek[match.week]) {

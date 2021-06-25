@@ -62,7 +62,12 @@ class SeasonView(View):
 def standings(request: HttpRequest):
     season_num = request.GET['season']
     season = Season.objects.get(number=season_num)
-    matches = Match.objects.filter(season=season).prefetch_related('teams')
+    matches = Match.objects.filter(season=season) \
+    .prefetch_related('teams') \
+    .prefetch_related('teams__player_set') \
+    .prefetch_related('teams__player_set__stats') \
+    .prefetch_related('teams__player_set__player_champion_stats') \
+    
     standings = {}
 
     for match in matches:

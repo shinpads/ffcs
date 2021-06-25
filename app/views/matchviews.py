@@ -8,7 +8,13 @@ import json
 
 class MatchesView(View):
     def get(self, request, *args, **kwargs):
-        matches = Match.objects.all().order_by('scheduled_for', '-week').prefetch_related('teams').prefetch_related('teams__player_set')
+        matches = Match.objects.all() \
+        .order_by('scheduled_for', '-week') \
+        .prefetch_related('games') \
+        .prefetch_related('teams') \
+        .prefetch_related('teams__player_set') \
+        .prefetch_related('teams__player_set__stats') \
+        .prefetch_related('teams__player_set__player_champion_stats') \
 
         out_data = MatchSerializer(matches, many=True).data
 
