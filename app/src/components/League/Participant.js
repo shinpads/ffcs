@@ -35,7 +35,7 @@ const styles = createUseStyles({
   individualParticipant: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
   summonerName: {
     margin: '0px 8px',
@@ -65,6 +65,21 @@ const styles = createUseStyles({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  extraDetailsContainer: {
+    textAlign: 'center',
+    fontSize: '14px',
+    display: 'grid',
+    gridGap: '4px',
+  },
+  level: {
+    color: colors.secondary,
+  },
+  csScore: {
+    color: colors.secondary,
+  },
+  kp: {
+    color: colors.red,
+  }
 });
 
 const ITEM_NUMBERS = [0, 1, 2, 3, 4, 5, 6];
@@ -104,10 +119,14 @@ export const Participant = ({ participant, player, mvp, reverse, isSub, user }) 
   );
 }
 
-export const IndividualParticipant = ({ participant, player, mvp, reverse, isSub, user }) => {
+export const IndividualParticipant = ({ participant, player, mvp, reverse, isSub, user, gameData }) => {
   const classes = styles();
   const { kills, deaths, assists } = participant.stats;
   const kda = ((kills + assists) / (deaths || 0)).toFixed(2);
+
+  const playersTeamsKills = gameData.participants.filter(p => p.teamId === participant.teamId).map(p => p.stats.kills).reduce((a, c) => a + c);
+  const playersKp = (((participant.stats.kills + participant.stats.assists) / playersTeamsKills) * 100).toFixed(0);
+  const csPerMin = (participant.stats.totalMinionsKilled  / (gameData.gameDuration / 60)).toFixed(1);
 
   return (
     <div className={classes.individualParticipant}>
@@ -127,6 +146,11 @@ export const IndividualParticipant = ({ participant, player, mvp, reverse, isSub
       <div className={classes.kdaContainer}>
         <div className={classes.killsDeathsAssists}>{kills} / {deaths} / {assists}</div>
         <div>{kda} KDA</div>
+      </div>
+      <div className={classes.extraDetailsContainer}>
+        <div className={classes.level}>Level {participant.stats.champLevel}</div>
+        <div className={classes.csScore}>{participant.stats.totalMinionsKilled} ({csPerMin}) CS</div>
+        <div className={classes.kp}>{playersKp}% KP</div>
       </div>
       <div className={classes.individualItemsContainer}>
         {ITEM_NUMBERS_STACKED.map(itemNum => {

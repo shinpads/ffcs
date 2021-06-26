@@ -40,7 +40,7 @@ const styles = createUseStyles({
     color: colors.offwhite,
   },
   container: {
-    maxWidth: '900px',
+    maxWidth: '1000px',
     margin: '0 auto',
     paddingTop: '5rem',
   },
@@ -55,7 +55,7 @@ const styles = createUseStyles({
   },
   content: {
     display: 'grid',
-    gridTemplateColumns: '4fr 7fr',
+    gridTemplateColumns: '4fr 8fr',
     gridGap: '1rem',
   },
   sectionTitle: {

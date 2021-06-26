@@ -39,6 +39,7 @@ const styles = createUseStyles({
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     overflow: 'hidden',
+    marginLeft: '8px',
   },
   teamParticipantsContainer: {
     overflow: 'hidden',
@@ -71,6 +72,7 @@ const PlayersGame = ({ game, player }) => {
   const team1Participants = gameData.participants.filter(participant => participant.teamId === team1TeamData.teamId);
   const team2Participants = gameData.participants.filter(participant => participant.teamId === team2TeamData.teamId);
 
+
   const gameDurationMinutes = (gameData.gameDuration / 60).toFixed(0);
   const gameDurationSeconds = gameData.gameDuration % 60;
 
@@ -86,7 +88,7 @@ const PlayersGame = ({ game, player }) => {
           <div className={classes.gameDuration}>{gameDurationMinutes}m {gameDurationSeconds}s</div>
         </div>
       </div>
-      <IndividualParticipant mvp={game.mvp === player.id} participant={participant} player={player} user={player.user} />
+      <IndividualParticipant mvp={game.mvp === player.id} participant={participant} player={player} user={player.user} gameData={gameData} />
       <div className={classes.participantsContainer}>
         <TeamPartcipants participants={team1Participants} team={team1} game={game} />
         <TeamPartcipants participants={team2Participants} team={team2} game={game} />
