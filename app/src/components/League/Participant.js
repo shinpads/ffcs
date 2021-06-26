@@ -42,6 +42,7 @@ const styles = createUseStyles({
   },
   itemsContainer: {
     marginTop: '4px',
+    display: 'flex',
   },
   individualItemsContainer: {
     display: 'grid',
@@ -91,7 +92,7 @@ export const Participant = ({ participant, player, mvp, reverse, isSub, user }) 
         {mvp && <MVPChip label="MVP" />}
         {isSub && <SubChip label="SUB" />}
       </div>
-      <div className={classes.itemsContainer}>
+      <div className={classes.itemsContainer} style={reverse ? { flexDirection: 'row-reverse' } : {}}>
         {ITEM_NUMBERS.map(itemNum => {
           const key = `item${itemNum}`;
             return (
