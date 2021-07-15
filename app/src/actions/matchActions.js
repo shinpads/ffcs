@@ -11,11 +11,15 @@ export const getMatches = () => async (dispatch) => {
     if (res.data) {
       const matches = res.data.data;
 
+      let maxPlayoffFraction = 1;
+
       matches.forEach(match => {
         if (match.playoff_fraction) {
           if (!playOffMatchesByFraction[match.playoff_fraction]) {
             playOffMatchesByFraction[match.playoff_fraction] = [];
           }
+
+          maxPlayoffFraction = Math.max(maxPlayoffFraction, match.playoff_fraction);
 
           playOffMatchesByFraction[match.playoff_fraction].push(match);
 
@@ -26,6 +30,14 @@ export const getMatches = () => async (dispatch) => {
           matchesByWeek[match.week].push(match);
         }
       });
+
+      // ensure there are keys for all playoff fractions all the way to the finals
+      while (maxPlayoffFraction > 1) {
+        maxPlayoffFraction /= 2;
+        if (!playOffMatchesByFraction[maxPlayoffFraction]) {
+          playOffMatchesByFraction[maxPlayoffFraction] = [];
+        }
+      }
 
       await dispatch({
         type: SET_MATCHES,
