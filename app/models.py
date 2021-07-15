@@ -106,6 +106,9 @@ class Match(models.Model):
     twitch_vod      = models.CharField(max_length=120, blank=True)
     blue_side       = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
 
+    # 4 for quarter finals, 2 for semi-finbals, 1 for finals, etc (null for non-playoff)
+    playoff_fraction = models.IntegerField(null=True, blank=True)
+
     @property
     def wins(self):
         wins_dict = {team.name: 0 for team in self.teams.all()}

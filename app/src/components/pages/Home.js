@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { connect } from 'react-redux';
+import { getMatches } from '../../actions/matchActions';
 import Teams from './Teams';
 import Matches from '../Matches';
+import Playoffs from '../Playoffs';
 import Standings from '../Standings';
 import Leaderboard from '../Leaderboard';
 import Header from '../Header';
@@ -12,6 +14,8 @@ import { Button } from '@material-ui/core';
 import discordLogo from '../../../public/discord.png';
 import DiscordUser from '../discord/DiscordUser';
 import { getVote } from '../../api';
+import Spinner from '../Spinner';
+
 
 const styles = createUseStyles({
   title: {
@@ -34,14 +38,11 @@ const styles = createUseStyles({
     color: colors.offwhite,
   },
   container: {
-    maxWidth: '900px',
+    maxWidth: '1000px',
     margin: '0 auto',
     paddingTop: '5rem',
   },
   splitContainer: {
-    maxWidth: '1000px',
-    margin: '0 auto',
-    paddingTop: '5rem',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     gridGap: '4rem',
@@ -57,6 +58,21 @@ const styles = createUseStyles({
     marginBottom: '2rem',
     flexDirection: 'column',
   },
+  loadingScreen: {
+    transition: 'opacity 0.75s ease',
+    backgroundColor: colors.darkGrey,
+    opacity: 1,
+    zIndex: 100,
+    position: 'absolute',
+    width: '100vw',
+    height: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  loadedScreen: {
+    opacity: 0,
+    pointerEvents: 'none',
+  }
 });
 
 const Home = (props) => {
@@ -64,12 +80,18 @@ const Home = (props) => {
 
   const [voted, setVoted] = useState(false);
 
+  const { loaded } = props.matches;
+
+  const { dispatch } = props;
+
   useEffect(() => {
     async function start() {
       const existingVote = await getVote();
       setVoted(existingVote);
     }
     start();
+
+    dispatch(getMatches());
   }, []);
 
   const openLogin = () => {
@@ -93,11 +115,17 @@ const Home = (props) => {
   return (
     <>
       <Header />
-      <div className={classes.splitContainer}>
-        <Matches />
-        <div>
-          <Standings />
-          <Leaderboard />
+      <div className={`${classes.loadingScreen} ${loaded ? classes.loadedScreen : ''}`}>
+        <Spinner />
+      </div>
+      <div className={classes.container}>
+        <Playoffs />
+        <div className={classes.splitContainer}>
+          <Matches />
+          <div>
+            <Standings />
+            <Leaderboard />
+          </div>
         </div>
       </div>
     </>
@@ -135,6 +163,7 @@ const SignIn = ({ user }) => {
 function mapStateToProps(state) {
   return {
     user: state.user,
+    matches: state.matches,
   };
 }
 

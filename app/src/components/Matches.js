@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { createUseStyles } from 'react-jss';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { getMatches } from '../api';
+import { getMatches } from '../actions/matchActions';
 import Match from './Match';
 import Spinner from './Spinner';
 
@@ -18,39 +19,24 @@ const styles = createUseStyles({
   }
 });
 
-const Matches = () => {
+const Matches = (props) => {
   const classes = styles();
-  const [matches, setMatches] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [matchesByWeek, setMatchesByWeek] = useState({});
-  const [currentWeek, setCurrentWeek] = useState(-1);
 
-  useEffect(() => {
-    async function getAllMatches() {
-      const allMatches = await getMatches(2);
-      
-      const newMatchesByWeek = {}
-      allMatches.forEach(match => {
-        if (!newMatchesByWeek[match.week]) {
-          newMatchesByWeek[match.week] = [];
+  const { matchesByWeek, playOffMatchesByFraction } = props.matches;
+
+
+  const loading = !matchesByWeek;
+
+  let currentWeek = -1;
+  if (!loading) {
+    Object.keys(matchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).forEach(week => {
+      if (matchesByWeek[week].filter(match => !match.winner).length > 0) {
+        if (currentWeek === -1) {
+          currentWeek = week;
         }
-        newMatchesByWeek[match.week].push(match);
-      });
-      let newCurrentWeek = -1;
-      Object.keys(newMatchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).forEach(week => {
-        if (newMatchesByWeek[week].filter(match => !match.winner).length > 0) {
-          if (newCurrentWeek === -1) {
-            newCurrentWeek = week;
-          }
-        }
-      })
-      setCurrentWeek(newCurrentWeek);
-      setMatchesByWeek(newMatchesByWeek);
-      setMatches(allMatches);
-      setLoading(false);
-    }
-    getAllMatches();
-  }, []);
+      }
+    });
+  }
 
 
   return (
@@ -74,4 +60,11 @@ const Matches = () => {
   );
 };
 
-export default Matches;
+function mapStateToProps(state) {
+  return {
+    matches: state.matches,
+  };
+}
+
+
+export default connect(mapStateToProps)(Matches);
