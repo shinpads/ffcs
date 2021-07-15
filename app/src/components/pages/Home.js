@@ -63,7 +63,7 @@ const styles = createUseStyles({
     backgroundColor: colors.darkGrey,
     opacity: 1,
     zIndex: 100,
-    position: 'absolute',
+    position: 'fixed',
     width: '100vw',
     height: '100vh',
     display: 'flex',
