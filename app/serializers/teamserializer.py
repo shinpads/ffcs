@@ -4,14 +4,8 @@ from .playerserializer import PlayerSerializer
 from ..models import Team
 
 class TeamSerializer(serializers.ModelSerializer):
-    players = serializers.SerializerMethodField('all_players')
+    players = PlayerSerializer(many=True)
 
     class Meta:
         model = Team
         fields = '__all__'
-
-    def all_players(self, obj):
-        players_list = []
-        for x in obj.player_set.all().select_related('user'):
-            players_list.append(PlayerSerializer(x).data)
-        return players_list

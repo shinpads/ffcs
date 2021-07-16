@@ -12,9 +12,9 @@ class MatchesView(View):
         .order_by('scheduled_for', '-week') \
         .prefetch_related('games') \
         .prefetch_related('teams') \
-        .prefetch_related('teams__player_set') \
-        .prefetch_related('teams__player_set__stats') \
-        .prefetch_related('teams__player_set__player_champion_stats') \
+        .prefetch_related('teams__players') \
+        .prefetch_related('teams__players__stats') \
+        .prefetch_related('teams__players__player_champion_stats') \
 
         out_data = MatchSerializer(matches, many=True).data
 

@@ -211,7 +211,8 @@ class Player(models.Model):
     team = models.ForeignKey(
         Team,
         on_delete=models.CASCADE,
-        blank=True, null=True
+        blank=True, null=True,
+        related_name='players',
     )
     role = models.CharField(
         max_length=10,
