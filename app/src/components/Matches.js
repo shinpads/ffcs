@@ -37,6 +37,9 @@ const Matches = (props) => {
       }
     });
   }
+  if (currentWeek === -1) {
+    currentWeek = 10; 
+  }
 
 
   return (
