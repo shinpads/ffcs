@@ -39,6 +39,7 @@ const styles = createUseStyles({
   },
   container: {
     maxWidth: '1000px',
+    minWidth: '1000px',
     margin: '0 auto',
     paddingTop: '5rem',
   },
@@ -64,8 +65,8 @@ const styles = createUseStyles({
     opacity: 1,
     zIndex: 100,
     position: 'fixed',
-    width: '100vw',
-    height: '100vh',
+    width: '100%',
+    height: '100%',
     display: 'flex',
     alignItems: 'center',
   },

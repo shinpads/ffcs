@@ -28,6 +28,8 @@ const Matches = (props) => {
   const loading = !matchesByWeek;
 
   let currentWeek = -1;
+  let currentPlayoffStage = 1;
+
   if (!loading) {
     Object.keys(matchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).forEach(week => {
       if (matchesByWeek[week].filter(match => !match.winner).length > 0) {
@@ -36,10 +38,18 @@ const Matches = (props) => {
         }
       }
     });
+    if (currentWeek === -1) {
+      // all regular season games are over
+      console.log(playOffMatchesByFraction);
+      const unfinishedPlayoffStages = Object.keys(playOffMatchesByFraction).sort().filter(fraction => playOffMatchesByFraction[fraction].filter(match => !match.winner).length > 0).reverse()
+      if (unfinishedPlayoffStages.length > 0) {
+        currentPlayoffStage = unfinishedPlayoffStages[0];
+      }
+    }
   }
-  if (currentWeek === -1) {
-    currentWeek = 10; 
-  }
+
+
+
 
 
   return (
@@ -49,7 +59,8 @@ const Matches = (props) => {
       {!loading && (
         <div className={classes.container}>
           <>
-            {matchesByWeek[currentWeek].map(match => <Match match={match} />)}
+            {currentWeek > 0 && matchesByWeek[currentWeek].map(match => <Match match={match} />)}
+            {currentWeek === -1 && playOffMatchesByFraction[currentPlayoffStage].map(match => <Match match={match} />)}
           </>
           {Object.keys(matchesByWeek).filter(week => week != currentWeek).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (
             <>
