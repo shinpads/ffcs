@@ -129,11 +129,10 @@ const Home = (props) => {
         <img className={classes.loadingImage} style={ loaded ? { transform: 'scale(0)', animation: 'none' } : { transform: 'scale(1)'}} alt="" width={128} src={getImage(logo)} />
       </div>
       <div className={classes.container}>
-        <Playoffs />
         <div className={classes.splitContainer}>
           <Matches />
           <div>
-            <Standings />
+            <Playoffs />
             <Leaderboard />
           </div>
         </div>
