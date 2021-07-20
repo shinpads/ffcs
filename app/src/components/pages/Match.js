@@ -22,6 +22,7 @@ import Spinner from '../Spinner';
 import { Participant } from '../League/Participant';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
+import GoldGraph from '../GoldGraph';
 
 const ProgressBar = withStyles((theme) => ({
   root: {
@@ -215,7 +216,7 @@ const Match = (props) => {
 
               <br />
 
-              
+              <GoldGraph timeline={gameData.timeline} team1Participants={team1Participants} team2Participants={team2Participants} team1={team1} team2={team2} />
 
               <br />
 
@@ -279,6 +280,7 @@ const Match = (props) => {
                   </TableBody>
                 </Table>
               </TableContainer>
+              <br />
             </div>
           )
         })}
