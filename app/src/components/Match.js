@@ -101,8 +101,8 @@ const Match = ({ match }) => {
         </div>
       </div>
       <div className={classes.bottomContainer}>
-        {!winner && match.games.filter(game => game.tournament_code).map(game => (
-          <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Tournament Code</Button>
+        {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (
+          <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Game {index + 1} Code</Button>
         ))}
         {winner && match.twitch_vod && (
           <a href={match.twitch_vod}>
