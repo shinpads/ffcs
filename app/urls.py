@@ -15,6 +15,7 @@ urlpatterns = [
   path('api/user/from-session/', userviews.get_from_session, name='get_user_from_session'),
   path('api/season/standings/', seasonviews.standings, name='season_standings'),
   path('api/user/<user_id>/', userviews.get_user, name='get_user'),
+  path('api/game/<game_id>/timeline/', gameviews.get_timeline, name='get_game_timeline'),
   path('', views.index),
   path('signup', views.signup_index),
   path('match/<match_id>', views.match_index),

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
-import logo from '../../public/logo.svg';
+import logo from '../../public/logo_transparent.png';
 import colors from '../colors';
 import { getImage } from '../helpers';
 import UserName from './UserName';
@@ -38,7 +38,7 @@ const Header = (props) => {
 
   return (
     <header className={classes.header}>
-      <img alt="" width={48} src={getImage(logo)} />
+      <img style={{ padding: '4px' }} alt="" width={48} src={getImage(logo)} />
       <a href="/"><div className={classes.title}>For Fun Championship Series</div></a>
       <div style={{ paddingRight: '1rem', textAlign: 'right' }}>
         {userLoaded && <UserName user={user} />}

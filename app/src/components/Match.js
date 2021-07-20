@@ -45,6 +45,11 @@ const styles = createUseStyles({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  codeContainer: {
+    display: 'grid',
+    float: 'right',
+    gridGap: '8px',
   }
 });
 
@@ -101,9 +106,13 @@ const Match = ({ match }) => {
         </div>
       </div>
       <div className={classes.bottomContainer}>
-        {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (
-          <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Game {index + 1} Code</Button>
-        ))}
+        <div className={classes.codeContainer}>
+          {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (
+            <>
+              <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Game {index + 1} Code</Button>
+            </>
+          ))}
+        </div>
         {winner && match.twitch_vod && (
           <a href={match.twitch_vod}>
             <img  alt="Watch on Twitch" target="_blank" width={24} src={getImage(twitchLogo)} />

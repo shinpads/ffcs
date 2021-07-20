@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Spinner = () => {
+const Spinner = ({ style }) => {
   return (
-    <div className="spinner">
+    <div className="spinner" style={style}>
       <div className="bounce1"></div>
       <div className="bounce2"></div>
       <div className="bounce3"></div>

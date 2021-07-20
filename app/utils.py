@@ -132,3 +132,16 @@ def get_game(gameid, tournament_code):
     game.save()
 
     return body
+
+def get_game_timeline(gameid):
+    url = "https://na1.api.riotgames.com/lol/match/v4/timelines/by-match/"
+    url = url + gameid + "?api_key=" + os.getenv('RIOT_API_KEY')
+
+    res = requests.get(url)
+
+    if res.status_code != 200:
+        return None
+
+    body = json.loads(res.text)
+
+    return body

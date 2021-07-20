@@ -15,6 +15,7 @@ import discordLogo from '../../../public/discord.png';
 import DiscordUser from '../discord/DiscordUser';
 import { getVote } from '../../api';
 import Spinner from '../Spinner';
+import logo from '../../../public/logo_transparent.png';
 
 
 const styles = createUseStyles({
@@ -69,10 +70,18 @@ const styles = createUseStyles({
     height: '100%',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
   loadedScreen: {
     opacity: 0,
     pointerEvents: 'none',
+  },
+  loadingImage: {
+    animation: 'loading-image 2.4s infinite ease-in-out both',
+    padding: '4px',
+    transform: 'scale(1)',
+    transition: 'transform 1s ease',
   }
 });
 
@@ -117,7 +126,7 @@ const Home = (props) => {
     <>
       <Header />
       <div className={`${classes.loadingScreen} ${loaded ? classes.loadedScreen : ''}`}>
-        <Spinner />
+        <img className={classes.loadingImage} style={ loaded ? { transform: 'scale(0)', animation: 'none' } : { transform: 'scale(1)'}} alt="" width={128} src={getImage(logo)} />
       </div>
       <div className={classes.container}>
         <Playoffs />

@@ -17,7 +17,7 @@ import Matches from '../Matches';
 import Header from '../Header';
 import Role from '../Role';
 import colors from '../../colors';
-import { getMatch } from '../../api';
+import { getMatch, getGameTimeline } from '../../api';
 import Spinner from '../Spinner';
 import { Participant } from '../League/Participant';
 import TeamName from '../TeamName';
@@ -129,6 +129,7 @@ const Match = (props) => {
     async function getData() {
       const { id } = props.match.params;
       const matchData = await getMatch(id);
+
       setMatchData(matchData);
       setLoading(false);
     }
@@ -211,6 +212,10 @@ const Match = (props) => {
                   </TableBody>
                 </Table>
               </TableContainer>
+
+              <br />
+
+              
 
               <br />
 

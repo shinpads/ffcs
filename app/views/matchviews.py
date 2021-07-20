@@ -1,5 +1,5 @@
 from ..models import Match
-from ..utils import get_game
+from ..utils import get_game, get_game_timeline
 from ..serializers.matchserializer import MatchSerializer
 from django.http import JsonResponse
 from django.db import IntegrityError
@@ -29,12 +29,20 @@ def get_match(request, match_id):
     match_data = MatchSerializer(match).data
 
     game_datas = [get_game(game['game_id'], game['tournament_code']) for game in match_data['games']]
-    # game_data = get_game(game_id)
-    # print(game_data)
+    game_timelines = [get_game_timeline(game['game_id']) for game in match_data['games']]
+
+    game_datas = []
+
+    for game in match_data['games']:
+        game_data = get_game(game['game_id'], game['tournament_code'])
+        game_timeline = get_game_timeline(game['game_id'])
+        game_data['timeline'] = game_timeline
+        game_datas.append(game_data)
+
     return JsonResponse({
         "message": "success",
         "data": {
             "match": match_data,
-            "game_datas": game_datas
+            "game_datas": game_datas,
         }
     })

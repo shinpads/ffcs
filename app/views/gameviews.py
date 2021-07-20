@@ -3,7 +3,9 @@ from django.views import View
 from ..models import Game, Player
 from ..utils import get_riot_account_id
 from ..scripts import player_stats
+from ..utils import get_game_timeline
 import json
+
 
 class CallbackView(View):
 
@@ -61,3 +63,14 @@ class CallbackView(View):
             "data": out_data,
         }, status=200)
         return response
+
+
+def get_timeline(request, game_id):
+    timeline = get_game_timeline(game_id)
+
+    return JsonResponse({
+        "message": "success",
+        "data": {
+            "timeline": timeline,
+        }
+    })

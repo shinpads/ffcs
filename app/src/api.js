@@ -43,6 +43,14 @@ export async function getMatch(matchId) {
   return result;
 }
 
+export async function getGameTimeline(gameId) {
+  const response = await axios.get(`/api/game/${gameId}/timeline`);
+
+  const result = response.data.data;
+
+  return result;
+}
+
 export async function getTeam() {
   throw new Error('not done');
 }
