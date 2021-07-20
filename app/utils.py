@@ -83,7 +83,7 @@ def generate_tournament_code(game, all_players):
         metadata["key"] = game.meta_key
 
     for team in game.match.teams.all():
-        for player in team.player_set.all():
+        for player in team.players.all():
             summoners.append(player.account_id)
 
     if len(summoners) < 10:
