@@ -59,21 +59,22 @@ const Match = ({ match }) => {
   if (match.scheduled_for) {
     date = moment(match.scheduled_for).format('MMM Do h:mm a');
   }
+  
+  const winner = match.winner ? match.winner.id : null;
+//   let winner = null;
 
-  let winner = null;
-
-  if (match.games.filter(game => game.winner).length === match.match_format) {
-    const gamesWon = {};
-    match.games.forEach(game => {
-      if (!gamesWon[game.winner]) {
-        gamesWon[game.winner] = 0;
-      }
-      gamesWon[game.winner] += 1;
-      if (gamesWon[game.winner] == Math.ceil(match.match_format / 2)) {
-        winner = game.winner;
-      }
-    });
-  }
+//   if (match.games.filter(game => game.winner).length === match.match_format) {
+//     const gamesWon = {};
+//     match.games.forEach(game => {
+//       if (!gamesWon[game.winner]) {
+//         gamesWon[game.winner] = 0;
+//       }
+//       gamesWon[game.winner] += 1;
+//       if (gamesWon[game.winner] == Math.ceil(match.match_format / 2)) {
+//         winner = game.winner;
+//       }
+//     });
+//   }
 
   if (match.teams.length != 2) return <div />
 
