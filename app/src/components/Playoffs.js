@@ -25,7 +25,7 @@ const styles = createUseStyles({
     borderRadius: '4px',
     boxShadow: `1px 1px 2px ${colors.black}`,
     margin: '1rem 0rem',
-    minWidth: '250px',
+    minWidth: '150px',
   },
   playoffStage: {
     display: 'flex',
