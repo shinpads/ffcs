@@ -23,12 +23,11 @@ export const getMatches = () => async (dispatch) => {
 
           playOffMatchesByFraction[match.playoff_fraction].push(match);
 
-        } else {
-          if (!matchesByWeek[match.week]) {
-            matchesByWeek[match.week] = [];
-          }
-          matchesByWeek[match.week].push(match);
         }
+        if (!matchesByWeek[match.week]) {
+          matchesByWeek[match.week] = [];
+        }
+        matchesByWeek[match.week].push(match);
       });
 
       // ensure there are keys for all playoff fractions all the way to the finals
