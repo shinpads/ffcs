@@ -110,7 +110,7 @@ const Match = ({ match }) => {
         <div className={classes.codeContainer}>
           {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (
             <>
-              <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Game {index + 1} Code</Button>
+              <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Game {game.game_in_series} Code</Button>
             </>
           ))}
         </div>
