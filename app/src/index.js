@@ -1,4 +1,5 @@
 import './index.css';
+import '../public/favicon.ico';
 import 'regenerator-runtime/runtime';
 import React from 'react';
 import ReactDOM from 'react-dom';

@@ -25,7 +25,7 @@ const styles = createUseStyles({
     borderRadius: '4px',
     boxShadow: `1px 1px 2px ${colors.black}`,
     margin: '1rem 0rem',
-    minWidth: '250px',
+    minWidth: '150px',
   },
   playoffStage: {
     display: 'flex',
@@ -57,7 +57,6 @@ const Playoffs = (props) => {
       <div className={classes.container}>
         {playOffFractions.map(fraction => {
           const matches = playOffMatchesByFraction[fraction];
-          console.log(matches, fraction)
           return (
             <div className={classes.playoffStage}>
               {matches.map(match => {
