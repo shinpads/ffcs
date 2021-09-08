@@ -367,6 +367,8 @@ class RegistrationForm(models.Model):
     heard_from = models.CharField(max_length=64)
     summoner_name = models.CharField(max_length=32)
 
+    wants_to_be_captain = models.BooleanField(default=False)
+
 
     def clean(self):
         if len(Set([self.first_role, self.second_role, self.third_role, self.fourth_role, self.fifth_role])) < 5:

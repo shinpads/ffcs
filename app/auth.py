@@ -7,6 +7,8 @@ class DiscordAuthenticationBackend(BaseBackend):
         find_user = User.objects.filter(discord_user_id=user['id'])
         if len(find_user) == 0:
             return User.objects.create_new_discord_user(user)
+
+        find_user.update(avatar=user['avatar'])
         return list(find_user).pop()
 
     def get_user(self, user_id):

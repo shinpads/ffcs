@@ -4,6 +4,7 @@ import logo from '../../public/logo_transparent.png';
 import colors from '../colors';
 import { getImage } from '../helpers';
 import UserName from './UserName';
+import DiscordUser from './discord/DiscordUser';
 
 import { connect } from 'react-redux';
 
@@ -40,8 +41,8 @@ const Header = (props) => {
     <header className={classes.header}>
       <img style={{ padding: '4px' }} alt="" width={48} src={getImage(logo)} />
       <a href="/"><div className={classes.title}>For Fun Championship Series</div></a>
-      <div style={{ paddingRight: '1rem', textAlign: 'right' }}>
-        {userLoaded && <UserName user={user} />}
+      <div style={{ paddingRight: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+        {userLoaded && <DiscordUser user={user} />}
       </div>
     </header>
   );
