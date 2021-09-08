@@ -147,4 +147,4 @@ class RegistrationFormAdmin(admin.ModelAdmin):
 
     get_id.short_description = 'ID'
 
-    list_display = ('created_at', 'summoner_name', 'first_name', 'first_role', 'second_role', 'third_role', 'fourth_role', 'fifth_role', 'current_rank', 'rank_should_be', 'heard_from')
+    list_display = ('created_at', 'season_id', 'summoner_name', 'first_name', 'first_role', 'second_role', 'third_role', 'fourth_role', 'fifth_role', 'current_rank', 'rank_should_be', 'heard_from')
