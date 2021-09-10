@@ -51,8 +51,10 @@ export async function getGameTimeline(gameId) {
   return result;
 }
 
-export async function getTeam() {
-  throw new Error('not done');
+export async function getTeam(id) {
+  const response = await axios.get(`/api/team/`, { params: { id }});
+
+  return response.data.data;
 }
 
 export async function getUser(userId) {

@@ -19,6 +19,10 @@ def match_index(request, match_id):
 def user_index(request, user_id):
     return render(request, 'index.html')
 
+@login_required(login_url="/")
+def team_index(request, team_id):
+    return render(request, 'index.html')
+
 
 
 def riot(request):

@@ -74,6 +74,7 @@ class Team(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=25)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    captain = models.ForeignKey('Player', on_delete=models.CASCADE, null=True, blank=True, related_name="captain_of")
 
     class Meta:
         indexes = [

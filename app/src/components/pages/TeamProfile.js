@@ -16,15 +16,16 @@ import Teams from './Teams';
 import Matches from '../Matches';
 import Header from '../Header';
 import Role from '../Role';
+import PlayerDetailed from '../PlayerDetailed';
 import colors from '../../colors';
-import { getUser } from '../../api';
+import { getTeam } from '../../api';
 import Spinner from '../Spinner';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
 import PlayerChampionStats from '../PlayerChampionStats';
 import SummonerIcon from '../League/SummonerIcon';
 import PlayersGame from '../PlayersGame';
-
+import sortTeamPlayers from '../../util/sortTeamPlayers';
 
 const styles = createUseStyles({
   topContainer: {
@@ -62,23 +63,27 @@ const styles = createUseStyles({
     fontSize: '18px',
     marginBottom: '4px',
   },
+  players: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
 });
 
-const UserProfile = (props) => {
+const TeamProfile = (props) => {
   const classes = styles();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
-  const [games, setGames] = useState([]);
+  const [team, setTeam] = useState(null);
 
   const { league } = props;
 
   useEffect(() => {
     async function getData() {
       const { id } = props.match.params;
-      const data = await getUser(id);
+      const data = await getTeam(id);
+      data.players = sortTeamPlayers(data.players);
+      setTeam(data);
       console.log(data);
-      setUser(data.user);
-      setGames(data.games);
       setLoading(false);
     }
     getData();
@@ -95,36 +100,20 @@ const UserProfile = (props) => {
     );
   }
 
-  const player = user.players[user.players.length - 1];
   return (
     <>
       <Header />
       <div className={classes.container}>
         <Paper className={classes.topContainer}>
           <div className={classes.profileIconContainer}>
-            <SummonerIcon rounded iconId={player.profile_icon_id} />
+            <SummonerIcon rounded iconId={1} />
           </div>
           <div className={classes.userDetailsContainer}>
-            <div>{user.summoner_name}</div>
-            <div className={classes.teamContainer}>
-              <Role role={player.role} />
-              <div>{player.team.name}</div>
-            </div>
+            <div>{team.name}</div>
           </div>
         </Paper>
-        <div className={classes.content}>
-          <div>
-            <div className={classes.sectionTitle}>Champion Stats</div>
-            <PlayerChampionStats playerChampionStats={player.player_champion_stats} />
-          </div>
-          <div>
-            <div className={classes.sectionTitle}>Games</div>
-            {games.map(game => {
-              return (
-                <PlayersGame game={game} player={player} />
-              );
-            })}
-          </div>
+        <div className={classes.players}>
+          {team.players.map((player, index) => <PlayerDetailed player={player} />)}
         </div>
       </div>
     </>
@@ -137,4 +126,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(UserProfile);
+export default connect(mapStateToProps)(TeamProfile);

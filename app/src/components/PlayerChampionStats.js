@@ -35,6 +35,12 @@ const styles = createUseStyles({
     boxShadow: '1px 1px 2px #000 !important',
     // maxWidth: '300px',
   },
+  noContainer: {
+    padding: '0 !important',
+    margin: '0 !important',
+    borderRadius: '0 !important',
+    boxShadow: '0px 0px !important',
+  },
   cell: {
     padding: '8px',
     display: 'flex',
@@ -83,13 +89,17 @@ const winRateColor = (winRate) => {
   return colors.secondary;
 }
 
-const PlayerChampionStats = ({ playerChampionStats, championMap }) => {
+const PlayerChampionStats = ({ playerChampionStats, championMap, noContainer, limit }) => {
   const classes = styles();
   playerChampionStats.sort((a, b) => b.wins - a.wins);
   playerChampionStats.sort((a, b) => b.games_played - a.games_played);
 
+  if (limit) {
+    playerChampionStats = playerChampionStats.slice(0, limit);
+  }
+
   return (
-    <Paper className={classes.container}>
+    <Paper className={noContainer ? classes.noContainer : classes.container}>
       {playerChampionStats.map(playerChampionStat => {
         const winRate = ((playerChampionStat.wins / playerChampionStat.games_played) * 100).toFixed(1)
         return (

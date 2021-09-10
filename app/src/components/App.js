@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Match from './pages/Match';
 import UserProfile from './pages/UserProfile';
+import TeamProfile from './pages/TeamProfile';
 
 const theme = createMuiTheme({
   palette: {
@@ -47,6 +48,7 @@ class App extends Component {
           <Route path="/signup" component={Signup} exact />
           <Route path="/match/:id" component={Match} exact />
           <Route path="/user/:id" component={UserProfile} exact />
+          <Route path="/team/:id" component={TeamProfile} exact />
           <Redirect from="*" to="/" />
         </Switch>
       </MuiThemeProvider>

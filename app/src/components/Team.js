@@ -3,14 +3,7 @@ import { Fade } from 'react-reveal';
 import { createUseStyles } from 'react-jss';
 import Player from './Player';
 import colors from '../colors';
-
-const sortIndex = {
-  SUPP: 0,
-  ADC: 1,
-  MID: 2,
-  JG: 3,
-  TOP: 4,
-};
+import sortTeamPlayers from '../util/sortTeamPlayers';
 
 const styles = createUseStyles({
   team: {
@@ -35,7 +28,7 @@ const styles = createUseStyles({
 const Team = ({ team, viewed, delay }) => {
   const classes = styles();
 
-  team.players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
+  team.players = sortTeamPlayers(team.players);
 
   return (
     <Fade duration={viewed ? 0 : 1500} delay={viewed ? 0 : delay}>
