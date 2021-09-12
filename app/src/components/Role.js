@@ -7,7 +7,7 @@ import MID from '../../public/mid.png';
 import ADC from '../../public/adc.png';
 import SUPP from '../../public/supp.png';
 
-const Role = ({ role }) => {
+const Role = ({ role, width }) => {
   const roleImageMap = {
     TOP,
     JG,
@@ -22,7 +22,7 @@ const Role = ({ role }) => {
   };
 
   return (
-    <img style={{ filter: 'contrast(0)' }} alt={role} width={24} src={getImage(roleImageMap[role])} />
+    <img style={{ filter: 'contrast(0)' }} alt={role} width={width || 24} src={getImage(roleImageMap[role])} />
   );
 };
 

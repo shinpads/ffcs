@@ -10,12 +10,9 @@ import PlayerChampionStats from './PlayerChampionStats';
 
 const styles = createUseStyles({
   player: {
-    cursor: 'pointer',
-    marginBottom: '1rem',
-    padding: '8px',
-    boxShadow: '1px 1px 2px #000 !important',
-    width: '300px',
     alignItems: 'center',
+    borderLeft: `1px solid ${colors.darkestGrey}`,
+    borderRight: `1px solid ${colors.darkestGrey}`,
   },
   playerName: {
     fontWeight: 500,
@@ -23,21 +20,33 @@ const styles = createUseStyles({
     marginLeft: '4px',
     lineHeight: '12px',
   },
+  roleContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: '0.5rem 0',
+  },
+  summonerDetails: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '0.5rem',
+  }
 });
 
 const PlayerDetailed = ({ player }) => {
   const classes = styles();
 
   return (
-    <a href={`/user/${player.user.id}`}>
-      <Paper className={classes.player}>
-        <div style={{ display: 'flex' }}>
-          <SummonerIcon rounded iconId={player.profile_icon_id} width={32} />
-          <div className={classes.playerName}>{player.user.summoner_name}</div>
-        </div>
-        <PlayerChampionStats noContainer limit={5} playerChampionStats={player.player_champion_stats} />
-      </Paper>
-    </a>
+    <div className={classes.player}>
+      <div className={classes.roleContainer}>
+        <Role role={player.role} width={32} />
+      </div>
+      <a href={`/user/${player.user.id}`} className={classes.summonerDetails}>
+        <SummonerIcon rounded iconId={player.profile_icon_id} width={32} />
+        <div className={classes.playerName}>{player.user.summoner_name}</div>
+      </a>
+      <PlayerChampionStats noContainer compact limit={5} playerChampionStats={player.player_champion_stats} />
+    </div>
   );
 };
 

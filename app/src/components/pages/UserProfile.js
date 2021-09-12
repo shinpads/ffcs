@@ -42,7 +42,7 @@ const styles = createUseStyles({
   container: {
     maxWidth: '1000px',
     margin: '0 auto',
-    paddingTop: '5rem',
+    paddingTop: '6rem',
   },
   teamContainer: {
     display: 'flex',

@@ -43,7 +43,7 @@ const styles = createUseStyles({
   container: {
     maxWidth: '1000px',
     margin: '0 auto',
-    paddingTop: '5rem',
+    paddingTop: '6rem',
   },
   teamContainer: {
     display: 'flex',
@@ -64,9 +64,9 @@ const styles = createUseStyles({
     marginBottom: '4px',
   },
   players: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+    boxShadow: '1px 1px 2px #000 !important',
   },
 });
 
@@ -106,15 +106,15 @@ const TeamProfile = (props) => {
       <div className={classes.container}>
         <Paper className={classes.topContainer}>
           <div className={classes.profileIconContainer}>
-            <SummonerIcon rounded iconId={1} />
+            <SummonerIcon rounded iconId={2} />
           </div>
           <div className={classes.userDetailsContainer}>
             <div>{team.name}</div>
           </div>
         </Paper>
-        <div className={classes.players}>
+        <Paper className={classes.players}>
           {team.players.map((player, index) => <PlayerDetailed player={player} />)}
-        </div>
+        </Paper>
       </div>
     </>
   );

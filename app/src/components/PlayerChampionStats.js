@@ -47,11 +47,12 @@ const styles = createUseStyles({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   row: {
     display: 'grid',
-    gridTemplateColumns: '1fr 2fr 3fr 2fr',
-    borderBottom: '1px solid',
+    gridTemplateColumns: props => props.compact ? '1fr 2fr 1fr 1fr' : '1fr 2fr 3fr 2fr',
+    borderBottom: props => props.compact ? '' : '1px solid',
     borderColor: colors.offwhite,
   },
   championName: {
@@ -63,6 +64,7 @@ const styles = createUseStyles({
   },
   kda: {
     fontWeight: 'bold',
+    fontSize: props => props.compact ? '14px' : '16px',
   },
   killsDeathsAssists: {
     color: colors. secondary,
@@ -74,6 +76,7 @@ const styles = createUseStyles({
   },
   winRate: {
     fontWeight: 'bold',
+    fontSize: props => props.compact ? '14px' : '16px',
   },
 });
 
@@ -89,8 +92,9 @@ const winRateColor = (winRate) => {
   return colors.secondary;
 }
 
-const PlayerChampionStats = ({ playerChampionStats, championMap, noContainer, limit }) => {
-  const classes = styles();
+const PlayerChampionStats = (props) => {
+  const classes = styles(props);
+  let { playerChampionStats, championMap, noContainer, limit, compact } = props;
   playerChampionStats.sort((a, b) => b.wins - a.wins);
   playerChampionStats.sort((a, b) => b.games_played - a.games_played);
 
@@ -101,24 +105,38 @@ const PlayerChampionStats = ({ playerChampionStats, championMap, noContainer, li
   return (
     <Paper className={noContainer ? classes.noContainer : classes.container}>
       {playerChampionStats.map(playerChampionStat => {
-        const winRate = ((playerChampionStat.wins / playerChampionStat.games_played) * 100).toFixed(1)
+        const csPerMin = parseFloat(playerChampionStat.cs_per_min).toFixed(1);
+        const kda = parseFloat(playerChampionStat.kda).toFixed(1);
+        const winRate = ((playerChampionStat.wins / playerChampionStat.games_played) * 100).toFixed(0)
         return (
           <div className={classes.row} key={playerChampionStat.champion_id}>
             <div className={classes.cell}>
-              <ChampionIcon championId={playerChampionStat.champion_id} />
+              <ChampionIcon championId={playerChampionStat.champion_id} rounded={compact} width={compact ? 24 : 32}/>
             </div>
-            <div className={classes.cell} style={{ alignItems: 'start' }}>
-              <div className={classes.championName}><ChampionName championId={playerChampionStat.champion_id} /></div>
-              <div className={classes.csScore}>{playerChampionStat.cs_per_min} CS/m</div>
-            </div>
+            {!compact &&  (
+              <div className={classes.cell} style={{ alignItems: 'start' }}>
+                <div className={classes.championName}><ChampionName championId={playerChampionStat.champion_id} /></div>
+                <div className={classes.csScore}>{csPerMin} CS/m</div>
+              </div>
+            )}
             <div className={classes.cell}>
-              <div className={classes.kda} style={{ color: kdaColor(parseFloat(playerChampionStat.kda))}}>{playerChampionStat.kda} KDA</div>
-              <div className={classes.killsDeathsAssists}>{parseFloat(playerChampionStat.kills).toFixed(1)} / {parseFloat(playerChampionStat.deaths).toFixed(1)} / {parseFloat(playerChampionStat.assists).toFixed(1)}</div>
+              <div className={classes.kda} style={{ color: kdaColor(parseFloat(playerChampionStat.kda))}}>{kda} KDA</div>
+              {!compact &&<div className={classes.killsDeathsAssists}>{parseFloat(playerChampionStat.kills).toFixed(1)} / {parseFloat(playerChampionStat.deaths).toFixed(1)} / {parseFloat(playerChampionStat.assists).toFixed(1)}</div>}
             </div>
+            
+            {compact && (
+              <div className={classes.cell}>
+                 <div className={classes.gamesPlayed}>{playerChampionStat.games_played}</div>
+              </div>
+            )}
+
             <div className={classes.cell}>
               <div className={classes.winRate} style={{ color: winRateColor(winRate)}}>{winRate}%</div>
-              <div className={classes.gamesPlayed}>{playerChampionStat.games_played} played</div>
+              {!compact && <div className={classes.gamesPlayed}>{playerChampionStat.games_played} played</div>}
             </div>
+
+
+
           </div>
         )
       })}
