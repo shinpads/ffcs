@@ -54,6 +54,10 @@ const GoldGraph = ({ timeline, team1Participants, team2Participants, team1, team
 
   console.log(timeline);
   console.log(team1Participants, team2Participants);
+  
+  if (!timeline) {
+   return null; 
+  }
 
   const labels = timeline.frames.map(frame => {
     const { timestamp } = frame;
