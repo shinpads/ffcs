@@ -132,7 +132,6 @@ const Home = (props) => {
         <div className={classes.splitContainer}>
           <Matches />
           <div>
-            <Playoffs />
             <Leaderboard />
           </div>
         </div>
