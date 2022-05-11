@@ -17,6 +17,10 @@ const styles = createUseStyles({
   teamText: {
     fontSize: '18px',
     fontWeight: 'bold',
+    padding: '2px',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
   },
 });
 

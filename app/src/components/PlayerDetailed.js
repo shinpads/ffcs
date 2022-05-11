@@ -7,7 +7,6 @@ import Role from './Role';
 import SummonerIcon from './League/SummonerIcon';
 import PlayerChampionStats from './PlayerChampionStats';
 
-
 const styles = createUseStyles({
   player: {
     alignItems: 'center',
@@ -30,7 +29,7 @@ const styles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '0.5rem',
-  }
+  },
 });
 
 const PlayerDetailed = ({ player }) => {

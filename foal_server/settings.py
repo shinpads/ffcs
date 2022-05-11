@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'rest_framework',
 ]
 
@@ -102,6 +103,10 @@ DATABASES = {
         'PORT': os.getenv('DATABASE_PORT'),
     }
 }
+
+CRONJOBS = [
+    ('0 0 * * *', 'app.cron.update_summoner_info')
+]
 
 
 # Password validation

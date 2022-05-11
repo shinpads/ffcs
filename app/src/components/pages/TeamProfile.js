@@ -119,7 +119,7 @@ const TeamProfile = (props) => {
           </div>
         </Paper>
         <Paper className={classes.players}>
-          {team.players.map((player, index) => <PlayerDetailed player={player} />)}
+          {team.players.map(player => <PlayerDetailed player={player} />)}
         </Paper>
       </div>
     </>

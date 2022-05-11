@@ -5,9 +5,9 @@ import { createUseStyles } from 'react-jss';
 import { Paper, Button } from '@material-ui/core';
 import colors from '../colors';
 import TeamName from './TeamName';
-import { copyTextToClipboard } from '../helpers';
+import { copyTextToClipboard, getImage } from '../helpers';
 import twitchLogo from '../../public/twitch.png';
-import { getImage } from '../helpers';
+
 import StartingSide from './StartingSide';
 
 const styles = createUseStyles({
@@ -50,7 +50,7 @@ const styles = createUseStyles({
     display: 'grid',
     float: 'right',
     gridGap: '8px',
-  }
+  },
 });
 
 const Match = ({ match }) => {
@@ -59,27 +59,27 @@ const Match = ({ match }) => {
   if (match.scheduled_for) {
     date = moment(match.scheduled_for).format('MMM Do h:mm a');
   }
-  
+
   const winner = match.winner ? match.winner.id : null;
-//   let winner = null;
+  //   let winner = null;
 
-//   if (match.games.filter(game => game.winner).length === match.match_format) {
-//     const gamesWon = {};
-//     match.games.forEach(game => {
-//       if (!gamesWon[game.winner]) {
-//         gamesWon[game.winner] = 0;
-//       }
-//       gamesWon[game.winner] += 1;
-//       if (gamesWon[game.winner] == Math.ceil(match.match_format / 2)) {
-//         winner = game.winner;
-//       }
-//     });
-//   }
+  //   if (match.games.filter(game => game.winner).length === match.match_format) {
+  //     const gamesWon = {};
+  //     match.games.forEach(game => {
+  //       if (!gamesWon[game.winner]) {
+  //         gamesWon[game.winner] = 0;
+  //       }
+  //       gamesWon[game.winner] += 1;
+  //       if (gamesWon[game.winner] == Math.ceil(match.match_format / 2)) {
+  //         winner = game.winner;
+  //       }
+  //     });
+  //   }
 
-  if (match.teams.length != 2) return <div />
+  if (match.teams.length != 2) return <div />;
 
-  let team1 = match.teams[0];
-  let team2 = match.teams[1];
+  const team1 = match.teams[0];
+  const team2 = match.teams[1];
 
   return (
     <div className={classes.container}>
@@ -116,7 +116,7 @@ const Match = ({ match }) => {
         </div>
         {winner && match.twitch_vod && (
           <a href={match.twitch_vod}>
-            <img  alt="Watch on Twitch" target="_blank" width={24} src={getImage(twitchLogo)} />
+            <img alt="Watch on Twitch" target="_blank" width={24} src={getImage(twitchLogo)} />
           </a>
         )}
         {winner && (

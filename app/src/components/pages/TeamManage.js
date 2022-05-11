@@ -9,6 +9,7 @@ import Role from '../Role';
 import { getTeam, saveTeamManage } from '../../api';
 import Header from '../Header';
 import Spinner from '../Spinner';
+import sortTeamPlayers from '../../util/sortTeamPlayers';
 
 const styles = createUseStyles({
   container: {
@@ -78,7 +79,7 @@ const ROLES_SHORT = [
   'TOP',
   'JG',
   'MID',
-  'BOT',
+  'ADC',
   'SUPP',
 ];
 
@@ -110,12 +111,13 @@ const TeamManage = (props) => {
     async function getData() {
       const { id } = props.match.params;
       const data = await getTeam(id);
-      const players = data.players.map(player => ({
+      const sortedPlayers = sortTeamPlayers(data.players);
+      const mappedPlayers = sortedPlayers.map(player => ({
         summonerName: player.user.summoner_name,
         id: player.id,
       }));
       setIsCaptain(data.is_captain);
-      setPlayerRoles(players);
+      setPlayerRoles(mappedPlayers);
       setLoading(false);
     }
     getData();
