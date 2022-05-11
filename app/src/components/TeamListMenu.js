@@ -37,7 +37,6 @@ const TeamListMenu = () => {
   useEffect(() => {
     async function getData() {
       const data = await getAllCurrentSeasonTeams();
-      console.log(data);
       setTeams(data);
       setLoading(false);
     }

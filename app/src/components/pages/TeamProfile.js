@@ -89,7 +89,6 @@ const TeamProfile = (props) => {
       const data = await getTeam(id);
       data.players = sortTeamPlayers(data.players);
       setTeam(data);
-      console.log(data);
       setLoading(false);
     }
     getData();

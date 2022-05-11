@@ -100,7 +100,6 @@ const TeamManage = (props) => {
 
     const response = await saveTeamManage(data);
     setChangesSaved(response.data.success);
-    console.log(e);
   };
 
   const formChange = () => {
