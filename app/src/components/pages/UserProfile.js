@@ -25,7 +25,6 @@ import PlayerChampionStats from '../PlayerChampionStats';
 import SummonerIcon from '../League/SummonerIcon';
 import PlayersGame from '../PlayersGame';
 
-
 const styles = createUseStyles({
   topContainer: {
     fontSize: '24px',
@@ -76,7 +75,6 @@ const UserProfile = (props) => {
     async function getData() {
       const { id } = props.match.params;
       const data = await getUser(id);
-      console.log(data);
       setUser(data.user);
       setGames(data.games);
       setLoading(false);
@@ -119,11 +117,9 @@ const UserProfile = (props) => {
           </div>
           <div>
             <div className={classes.sectionTitle}>Games</div>
-            {games.map(game => {
-              return (
-                <PlayersGame game={game} player={player} />
-              );
-            })}
+            {games.map(game => (
+              <PlayersGame game={game} player={player} />
+            ))}
           </div>
         </div>
       </div>

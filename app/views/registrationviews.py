@@ -8,7 +8,7 @@ import json
 def signup(request):
     user = request.user
     json_data = json.loads(request.body)
-    current_season = Season.objects.get(number=3)
+    current_season = Season.objects.get(is_current=True)
 
     form, created = RegistrationForm.objects.get_or_create(season=current_season, user=request.user)
 

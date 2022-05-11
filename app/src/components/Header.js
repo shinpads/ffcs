@@ -1,18 +1,17 @@
 import React from 'react';
 import { createUseStyles } from 'react-jss';
+import { connect } from 'react-redux';
 import logo from '../../public/logo_transparent.png';
 import colors from '../colors';
 import { getImage } from '../helpers';
 import UserName from './UserName';
 import DiscordUser from './discord/DiscordUser';
-
-import { connect } from 'react-redux';
-
+import TeamListMenu from './TeamListMenu';
 
 const styles = createUseStyles({
   header: {
     display: 'grid',
-    gridTemplateColumns: '1fr 3fr 1fr',
+    gridTemplateColumns: '1fr 1fr 3fr 1fr 1fr',
     padding: '8px',
     backgroundColor: colors.header,
     color: colors.white,
@@ -22,7 +21,6 @@ const styles = createUseStyles({
     boxShadow: `1px 1px 2px ${colors.black}`,
     position: 'fixed',
     width: '100%',
-    zIndex: 99999,
   },
   title: {
     fontWeight: 600,
@@ -40,7 +38,9 @@ const Header = (props) => {
   return (
     <header className={classes.header}>
       <img style={{ padding: '4px' }} alt="" width={48} src={getImage(logo)} />
+      <div />
       <a href="/"><div className={classes.title}>For Fun Championship Series</div></a>
+      <TeamListMenu />
       <div style={{ paddingRight: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
         {userLoaded && <DiscordUser user={user} />}
       </div>

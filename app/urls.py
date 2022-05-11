@@ -21,6 +21,7 @@ urlpatterns = [
   path('match/<match_id>', views.match_index),
   path('user/<user_id>', views.user_index),
   path('team/<team_id>', views.team_index),
+  path('team/<team_id>/manage', views.team_index),
   path('riot.txt', views.riot),
   path('api/tournamentcallback/', gameviews.CallbackView.as_view()),
   path('oauth2/login/', discordviews.discord_login, name='oauth_login'),

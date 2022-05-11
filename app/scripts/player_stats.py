@@ -9,7 +9,7 @@ from ..utils import get_game
 load_dotenv()
 
 def calculate_player_stats():
-    current_season = Season.objects.get(number=2)
+    current_season = Season.objects.get(is_current=True)
     all_matches = Match.objects.filter(season=current_season)
     all_games = Game.objects.filter(match__in=all_matches).exclude(game_id='')
     game_datas = [get_game(game.game_id, game.tournament_code) for game in list(all_games)]

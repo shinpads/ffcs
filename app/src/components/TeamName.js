@@ -28,22 +28,25 @@ const styles = createUseStyles({
   tooltip: {
     width: '100%',
     height: '100%',
-  }
+  },
 });
 
 const TeamName = ({ team, nameClass }) => {
   const classes = styles();
   team.players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
   return (
-    <DarkTooltip title={
-      <div className={classes.tooltip}>
-        {team.players.map((player, index) => <Player key={player.id} player={player} />)}
-      </div>
-    }>
-      <div className={`${classes.name} ${nameClass}`}>
-        {team.name}
-      </div>
-    </DarkTooltip>
+    <a href={`/team/${team.id}`}>
+      <DarkTooltip title={(
+        <div className={classes.tooltip}>
+          {team.players.map((player, index) => <Player key={player.id} player={player} />)}
+        </div>
+    )}
+      >
+        <div className={`${classes.name} ${nameClass}`}>
+          {team.name}
+        </div>
+      </DarkTooltip>
+    </a>
   );
 };
 
