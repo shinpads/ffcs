@@ -47,7 +47,7 @@ class SeasonAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('number', 'name', 'provider', 'is_mock')
+            'fields': ('number', 'name', 'provider', 'is_mock', 'is_current')
         }),
     )
 

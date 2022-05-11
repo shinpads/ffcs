@@ -23,7 +23,7 @@ export async function submitVote(season) {
 }
 
 export async function getVote() {
-  const response  = await axios.get('/api/vote/');
+  const response = await axios.get('/api/vote/');
 
   return response.data.data || false;
 }
@@ -52,8 +52,13 @@ export async function getGameTimeline(gameId) {
 }
 
 export async function getTeam(id) {
-  const response = await axios.get(`/api/team/`, { params: { id }});
+  const response = await axios.get('/api/team/', { params: { id } });
 
+  return response.data.data;
+}
+
+export async function getAllCurrentSeasonTeams() {
+  const response = await axios.get('/api/team/', { params: { currentSeasonTeams: true } });
   return response.data.data;
 }
 
@@ -73,7 +78,12 @@ export async function signup(data) {
   return response.data;
 }
 
-export async function getStandings(season=2) {
+export async function saveTeamManage(data) {
+  const response = await axios.patch('/api/team/', data);
+  return response.data;
+}
+
+export async function getStandings(season = 2) {
   const response = await axios.get('/api/season/standings/', { params: { season } });
   return response.data.data;
 }

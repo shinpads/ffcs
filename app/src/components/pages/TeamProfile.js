@@ -68,6 +68,12 @@ const styles = createUseStyles({
     gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
     boxShadow: '1px 1px 2px #000 !important',
   },
+  manageTeam: {
+    color: '#3366BB',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
 });
 
 const TeamProfile = (props) => {
@@ -110,6 +116,7 @@ const TeamProfile = (props) => {
           </div>
           <div className={classes.userDetailsContainer}>
             <div>{team.name}</div>
+            {team.is_captain && <a href={`/team/${team.id}/manage`} className={classes.manageTeam}>Manage Team</a>}
           </div>
         </Paper>
         <Paper className={classes.players}>

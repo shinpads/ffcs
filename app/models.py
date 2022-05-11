@@ -39,6 +39,7 @@ class Season(models.Model):
     number = models.IntegerField(unique=True)
     name = models.CharField(max_length=20, blank=True)
     is_mock = models.BooleanField(default=False)
+    is_current = models.BooleanField(default=False)
     provider = models.ForeignKey(Provider, on_delete=models.SET_NULL, null=True)
     tournament_id = models.CharField(max_length=70, blank=True)
 
@@ -161,7 +162,7 @@ class User(AbstractBaseUser):
     # League stuff
     summoner_name = models.CharField(max_length=64)
 
-    # last_login = models.DateTimeField(null=True)\
+    # last_login = models.DateTimeField(null=True)
 
     REQUIRED_FIELDS = []
 

@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { getPlayers } from '../api';
-import Match from './Match';
-import TeamName from './TeamName';
-import Spinner from './Spinner';
-import colors from '../colors';
-import UserName from './UserName';
+import {
+  Tab, Tabs, TabList, TabPanel,
+} from 'react-tabs';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,6 +11,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import UserName from './UserName';
+import colors from '../colors';
+import Spinner from './Spinner';
+import TeamName from './TeamName';
+import Match from './Match';
+import { getPlayers } from '../api';
 
 // pictures
 import { getImage } from '../helpers';
@@ -135,7 +137,7 @@ const rankColors = [
   colors.gold,
   colors.silver,
   colors.bronze,
-]
+];
 
 const Leaderboard = () => {
   const classes = styles();
@@ -171,21 +173,21 @@ const Leaderboard = () => {
             </TableHead>
             <TableBody>
               {leaderboards.map(lb => {
-                const sortedPlayers = allPlayers.sort((a, b) => (parseFloat(a.stats.[lb.key]) - parseFloat(b.stats.[lb.key])) * lb.sortType);
+                const sortedPlayers = allPlayers.sort((a, b) => (parseFloat(a?.stats.[lb.key]) - parseFloat(b?.stats.[lb.key])) * lb.sortType);
                 return (
                   <TableRow key={lb.key}>
                     <TableCell component="th" scope="row">
                       <div className={classes.typeContainer}>
-                        <img style={{ marginRight: '8px' }}  alt="" target="_blank" width={24} src={getImage(lb.icon)} />
+                        <img style={{ marginRight: '8px' }} alt="" target="_blank" width={24} src={getImage(lb.icon)} />
                         {lb.name}
                       </div>
                     </TableCell>
                     <TableCell component="th" scope="row">
                       {[0, 1, 2].map(index => (
                         <div className={classes.playerContainer}>
-                          <div className={classes.medal} style={{ backgroundColor: rankColors[index] }}/>
+                          <div className={classes.medal} style={{ backgroundColor: rankColors[index] }} />
                           <div style={index === 0 ? { fontWeight: 'bold' } : {}}>
-                            <UserName user={sortedPlayers[index].user} nameClass={classes.summonerName} />
+                            <UserName user={sortedPlayers[index]?.user} nameClass={classes.summonerName} />
                           </div>
                         </div>
                       ))}
@@ -193,7 +195,7 @@ const Leaderboard = () => {
                     <TableCell component="th" scope="row">
                       {[0, 1, 2].map(index => (
                         <div>
-                          {lb.prefix + sortedPlayers[index].stats[lb.key] + lb.suffix}
+                          {lb.prefix + sortedPlayers[index]?.stats[lb.key] + lb.suffix}
                         </div>
                       ))}
                     </TableCell>

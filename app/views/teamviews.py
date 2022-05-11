@@ -1,4 +1,4 @@
-from ..models import Team, Season
+from ..models import Player, Team, Season
 from ..serializers.teamserializer import TeamSerializer
 from django.http import JsonResponse
 from django.views import View
@@ -10,6 +10,8 @@ class TeamView(View):
 
     def get(self, request, *args, **kwargs):
         data = request.GET
+        user_id = request.user.id
+        multi_team = False
 
         if "id" in data:
             team_id = data["id"]
@@ -42,15 +44,44 @@ class TeamView(View):
                 }, status=500)
                 return response
 
+        elif "currentSeasonTeams" in data and data['currentSeasonTeams']:
+            current_season = Season.objects.get(is_current=True)
+            if current_season == None:
+                response = JsonResponse({
+                    "message": "There is no current season.",
+                    "data": {},
+                }, status=500)
+                return response
+            
+            teams = Team.objects.all().filter(season=current_season)
+            if teams == None:
+                response = JsonResponse({
+                    "message": "There are no teams in the current season.",
+                    "data": {},
+                }, status=500)
+                return response
+            
+            multi_team = True
+
         else:
             response = JsonResponse({
                 "message": ("Invalid request. Please specify "
-                            "an 'id', or a 'team_name' and 'season'."),
+                            "an 'id', or a 'team_name' and 'season', or "
+                            "set currentSeasonTeams to true."),
                 "data": {},
             }, status=500)
             return response
 
-        out_data = TeamSerializer(team).data
+        
+
+        if multi_team:
+            out_data = [TeamSerializer(team).data for team in teams]
+        else:
+            out_data = TeamSerializer(team).data
+            if team.captain:
+                out_data['is_captain'] = team.captain.user.id == user_id
+            else:
+                out_data['is_captain'] = False
 
         response = JsonResponse({
             "message": "successfully retrieved team from database.",
@@ -95,3 +126,27 @@ class TeamView(View):
         }, status=200)
 
         return response
+
+    def patch(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+
+        for player in data['players']:
+            player_obj = Player.objects.get(id=player['id'])
+            if player_obj == None:
+                response = JsonResponse({
+                    "message": "could not find player with id: " + player['id'],
+                    "data": {},
+                }, status=500)
+                return response
+            player_obj.role = player['role']
+            player_obj.save()
+        
+        out_data = {'success': True}
+        response = JsonResponse({
+            "message": "successfully updated team.",
+            "data": out_data,
+        }, status=200)
+
+        return response
+
+        
