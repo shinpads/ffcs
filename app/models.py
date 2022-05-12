@@ -161,6 +161,7 @@ class User(AbstractBaseUser):
 
     # League stuff
     summoner_name = models.CharField(max_length=64)
+    summoner_level = models.IntegerField(default=1)
 
     # last_login = models.DateTimeField(null=True)
 

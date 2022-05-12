@@ -19,6 +19,17 @@ def get_riot_account_id(username):
 
     return str(account_id)
 
+def get_info_by_account_id(account_id):
+    url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-account/"
+    url = url + account_id.strip() + "?api_key=" + os.getenv('RIOT_API_KEY')
+
+    res = requests.get(url)
+    if res.status_code != 200:
+        return None
+    
+    body = json.loads(res.text)
+    return body
+
 def register_tournament_provider():
     debug = os.getenv('DEBUG')
     if debug == "on":

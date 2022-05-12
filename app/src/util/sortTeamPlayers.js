@@ -6,10 +6,6 @@ const sortIndex = {
   TOP: 4,
 };
 
-function sortTeamPlayers(players) {
-  players = players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
+const sortTeamPlayers = (players) => players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
 
-  return players;
-}
-
-export default sortTeamPlayers
+export default sortTeamPlayers;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { connect } from 'react-redux';
+import { Button } from '@material-ui/core';
 import { getMatches } from '../../actions/matchActions';
 import Teams from './Teams';
 import Matches from '../Matches';
@@ -10,13 +11,11 @@ import Leaderboard from '../Leaderboard';
 import Header from '../Header';
 import colors from '../../colors';
 import { getImage } from '../../helpers';
-import { Button } from '@material-ui/core';
 import discordLogo from '../../../public/discord.png';
 import DiscordUser from '../discord/DiscordUser';
 import { getVote } from '../../api';
 import Spinner from '../Spinner';
 import logo from '../../../public/logo_transparent.png';
-
 
 const styles = createUseStyles({
   title: {
@@ -82,7 +81,7 @@ const styles = createUseStyles({
     padding: '4px',
     transform: 'scale(1)',
     transition: 'transform 1s ease',
-  }
+  },
 });
 
 const Home = (props) => {
@@ -105,8 +104,8 @@ const Home = (props) => {
   }, []);
 
   const openLogin = () => {
-      window.location.href = window.location.origin + '/oauth2/login';
-  }
+    window.location.href = `${window.location.origin}/oauth2/login`;
+  };
 
   const { loaded: userLoaded, user } = props.user;
 
@@ -119,14 +118,14 @@ const Home = (props) => {
           <SignIn user={user} />
         </div>
       </>
-    )
+    );
   }
 
   return (
     <>
       <Header />
       <div className={`${classes.loadingScreen} ${loaded ? classes.loadedScreen : ''}`}>
-        <img className={classes.loadingImage} style={ loaded ? { transform: 'scale(0)', animation: 'none' } : { transform: 'scale(1)'}} alt="" width={128} src={getImage(logo)} />
+        <img className={classes.loadingImage} style={loaded ? { transform: 'scale(0)', animation: 'none' } : { transform: 'scale(1)' }} alt="" width={128} src={getImage(logo)} />
       </div>
       <div className={classes.container}>
         <div className={classes.splitContainer}>
@@ -155,18 +154,17 @@ const SignIn = ({ user }) => {
         <div>Signed in as:</div>
         <DiscordUser user={user} />
       </div>
-    )
+    );
   }
   return (
     <div className={classes.signin}>
       <Button variant="contained" color="secondary" href="/oauth2/login">
         <div className={classes.buttonText}>Sign in with Discord</div>
-        <img  alt="discord" width={32} src={getImage(discordLogo)} />
+        <img alt="discord" width={32} src={getImage(discordLogo)} />
       </Button>
     </div>
-  )
-}
-
+  );
+};
 
 function mapStateToProps(state) {
   return {

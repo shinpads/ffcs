@@ -9,6 +9,7 @@ import Role from '../Role';
 import { getTeam, saveTeamManage } from '../../api';
 import Header from '../Header';
 import Spinner from '../Spinner';
+import sortTeamPlayers from '../../util/sortTeamPlayers';
 
 const styles = createUseStyles({
   container: {
@@ -78,7 +79,7 @@ const ROLES_SHORT = [
   'TOP',
   'JG',
   'MID',
-  'BOT',
+  'ADC',
   'SUPP',
 ];
 
@@ -88,6 +89,9 @@ const TeamManage = (props) => {
   const [isCaptain, setIsCaptain] = useState(false);
   const [playerRoles, setPlayerRoles] = useState();
   const [changesSaved, setChangesSaved] = useState();
+  const { match } = props;
+  const { params } = match;
+  const { id } = params;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -96,6 +100,7 @@ const TeamManage = (props) => {
         id: playerRole.id,
         role: ROLES_SHORT[i],
       })),
+      id,
     };
 
     const response = await saveTeamManage(data);
@@ -108,14 +113,14 @@ const TeamManage = (props) => {
 
   useEffect(() => {
     async function getData() {
-      const { id } = props.match.params;
       const data = await getTeam(id);
-      const players = data.players.map(player => ({
+      const sortedPlayers = sortTeamPlayers(data.players);
+      const mappedPlayers = sortedPlayers.map(player => ({
         summonerName: player.user.summoner_name,
         id: player.id,
       }));
       setIsCaptain(data.is_captain);
-      setPlayerRoles(players);
+      setPlayerRoles(mappedPlayers);
       setLoading(false);
     }
     getData();
