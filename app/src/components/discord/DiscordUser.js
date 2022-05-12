@@ -1,6 +1,6 @@
-import React from 'react'
-import DiscordAvatar from './DiscordAvatar'
+import React from 'react';
 import { createUseStyles } from 'react-jss';
+import DiscordAvatar from './DiscordAvatar';
 
 const styles = createUseStyles({
   user: {

@@ -79,9 +79,10 @@ class TeamView(View):
         else:
             out_data = TeamSerializer(team).data
             if team.captain:
-                out_data['is_captain'] = team.captain.user.id == user_id
+                out_data['is_captain'] = (team.captain.user.id == user_id)
             else:
                 out_data['is_captain'] = False
+            out_data['is_captain'] |= request.user.is_admin
 
         response = JsonResponse({
             "message": "successfully retrieved team from database.",
@@ -129,6 +130,21 @@ class TeamView(View):
 
     def patch(self, request, *args, **kwargs):
         data = json.loads(request.body)
+
+        team = Team.objects.get(id=data['id'])
+        if team == None:
+                response = JsonResponse({
+                    "message": "could not find team with id: " + data['id'],
+                    "data": {},
+                }, status=500)
+                return response
+
+        if request.user.id != team.captain.user.id:
+            response = JsonResponse({
+                "message": "you are not authorized to perform this request.",
+                "data": {},
+            }, status=401)
+            return response
 
         for player in data['players']:
             player_obj = Player.objects.get(id=player['id'])

@@ -89,6 +89,9 @@ const TeamManage = (props) => {
   const [isCaptain, setIsCaptain] = useState(false);
   const [playerRoles, setPlayerRoles] = useState();
   const [changesSaved, setChangesSaved] = useState();
+  const { match } = props;
+  const { params } = match;
+  const { id } = params;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -97,6 +100,7 @@ const TeamManage = (props) => {
         id: playerRole.id,
         role: ROLES_SHORT[i],
       })),
+      id,
     };
 
     const response = await saveTeamManage(data);
@@ -109,7 +113,6 @@ const TeamManage = (props) => {
 
   useEffect(() => {
     async function getData() {
-      const { id } = props.match.params;
       const data = await getTeam(id);
       const sortedPlayers = sortTeamPlayers(data.players);
       const mappedPlayers = sortedPlayers.map(player => ({
