@@ -139,7 +139,7 @@ class TeamView(View):
                 }, status=500)
                 return response
 
-        if request.user.id != team.captain.user.id:
+        if (request.user.id != team.captain.user.id) and not request.user.is_admin:
             response = JsonResponse({
                 "message": "you are not authorized to perform this request.",
                 "data": {},
