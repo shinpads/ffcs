@@ -13,16 +13,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='team',
             name='color',
-            field=models.IntegerField(default=None, null=True),
+            field=models.IntegerField(default=16777215, null=True),
         ),
         migrations.AddField(
             model_name='team',
             name='discord_channel_id',
-            field=models.CharField(default=None, max_length=64, null=True),
+            field=models.BigIntegerField(default=None, null=True),
         ),
         migrations.AddField(
             model_name='team',
             name='discord_role_id',
-            field=models.CharField(default='', max_length=64, null=True),
+            field=models.BigIntegerField(default=None, null=True),
         ),
     ]
