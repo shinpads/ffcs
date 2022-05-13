@@ -1,6 +1,7 @@
 from .models import Player
 from .utils import get_info_by_account_id
 from apscheduler.schedulers.background import BackgroundScheduler
+import sys
 
 def start():
     scheduler = BackgroundScheduler()
@@ -9,6 +10,8 @@ def start():
 
 def update_summoner_info():
     all_players = Player.objects.all()
+    print('reached')
+    sys.stdout.flush()
 
     for player in all_players:
         if not player.account_id:
@@ -16,8 +19,11 @@ def update_summoner_info():
 
         player_info = get_info_by_account_id(player.account_id)
         if player_info == None:
-            return
+            continue
         user = player.user
+
+        print(player_info)
+        sys.stdout.flush()
 
         player.profile_icon_id = player_info['profileIconId']
         user.summoner_name = player_info['name']
