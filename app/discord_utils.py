@@ -3,6 +3,7 @@ from .discord_bot import DiscordBot
 from .discord_constants import ChannelTypes, permissions
 from dotenv import load_dotenv
 import os
+import sys
 
 load_dotenv()
 discord_bot_token = os.getenv('DISCORD_BOT_TOKEN')
@@ -36,6 +37,7 @@ def create_team_discord_role(team_id, players):
 
     res = discord_bot.create_role(data).json()
     print(res)
+    sys.stdout.flush()
     role_id = res['id']
     team.discord_role_id = role_id
     team.save()
