@@ -161,6 +161,9 @@ class TeamView(View):
         if data['color'] != team.color:
             update_team_discord_info(data['id'], data['players'], {'color': data['color']})
         
+        team.color = data['color']
+        team.save()
+        
         out_data = {'success': True}
         response = JsonResponse({
             "message": "successfully updated team.",
