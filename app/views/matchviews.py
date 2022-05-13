@@ -1,5 +1,5 @@
 from ..models import Match
-from ..utils import get_game, get_game_timeline
+from ..utils.utils import get_game, get_game_timeline
 from ..serializers.matchserializer import MatchSerializer
 from django.http import JsonResponse
 from django.db import IntegrityError

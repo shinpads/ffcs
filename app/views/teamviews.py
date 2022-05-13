@@ -1,3 +1,4 @@
+from app.utils.discord_utils import update_team_discord_info
 from ..models import Player, Team, Season
 from ..serializers.teamserializer import TeamSerializer
 from django.http import JsonResponse
@@ -156,6 +157,12 @@ class TeamView(View):
                 return response
             player_obj.role = player['role']
             player_obj.save()
+        
+        if data['color'] != team.color:
+            update_team_discord_info(data['id'], data['players'], {'color': data['color']})
+        
+        team.color = data['color']
+        team.save()
         
         out_data = {'success': True}
         response = JsonResponse({

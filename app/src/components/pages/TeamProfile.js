@@ -1,30 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
-import { Button, TextField } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import LinearProgress from '@material-ui/core/LinearProgress';
 
-import Teams from './Teams';
-import Matches from '../Matches';
 import Header from '../Header';
-import Role from '../Role';
 import PlayerDetailed from '../PlayerDetailed';
 import colors from '../../colors';
 import { getTeam } from '../../api';
 import Spinner from '../Spinner';
-import TeamName from '../TeamName';
-import ChampionIcon from '../League/ChampionIcon';
-import PlayerChampionStats from '../PlayerChampionStats';
 import SummonerIcon from '../League/SummonerIcon';
-import PlayersGame from '../PlayersGame';
 import sortTeamPlayers from '../../util/sortTeamPlayers';
 
 const styles = createUseStyles({
