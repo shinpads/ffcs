@@ -1,5 +1,5 @@
 from ..models import Player, Team, Season, PlayerStats
-from ..utils import get_riot_account_id
+from ..utils.utils import get_riot_account_id
 from ..serializers.teamserializer import TeamSerializer
 from ..serializers.playerserializer import PlayerSerializer
 from django.http import JsonResponse

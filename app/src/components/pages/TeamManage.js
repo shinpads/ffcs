@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { Button } from '@material-ui/core';
 
-import { connect } from 'react-redux';
 import { ReactSortable as Sortable } from 'react-sortablejs';
+import { HexColorPicker } from 'react-colorful';
 import colors from '../../colors';
 import Role from '../Role';
 import { getTeam, saveTeamManage } from '../../api';
 import Header from '../Header';
 import Spinner from '../Spinner';
 import sortTeamPlayers from '../../util/sortTeamPlayers';
+import { hexColorCodeToInt, intToHexColorCode } from '../../helpers';
 
 const styles = createUseStyles({
   container: {
@@ -89,6 +90,8 @@ const TeamManage = (props) => {
   const [isCaptain, setIsCaptain] = useState(false);
   const [playerRoles, setPlayerRoles] = useState();
   const [changesSaved, setChangesSaved] = useState();
+  const [color, setColor] = useState('#FFFFFF');
+  const [buttonLoading, setButtonLoading] = useState(false);
   const { match } = props;
   const { params } = match;
   const { id } = params;
@@ -101,9 +104,12 @@ const TeamManage = (props) => {
         role: ROLES_SHORT[i],
       })),
       id,
+      color: hexColorCodeToInt(color),
     };
 
+    setButtonLoading(true);
     const response = await saveTeamManage(data);
+    setButtonLoading(false);
     setChangesSaved(response.data.success);
   };
 
@@ -119,6 +125,7 @@ const TeamManage = (props) => {
         summonerName: player.user.summoner_name,
         id: player.id,
       }));
+      setColor(intToHexColorCode(data.color));
       setIsCaptain(data.is_captain);
       setPlayerRoles(mappedPlayers);
       setLoading(false);
@@ -149,7 +156,7 @@ const TeamManage = (props) => {
       <Header />
       <div className={classes.formContainer}>
         <form className={classes.form} onSubmit={submit} onChange={formChange}>
-          <div className={classes.question}>Change player roles (drag to change order)</div>
+          <div className={classes.question}>Change Team Color</div>
           <div className={classes.rolesContainer}>
             <Sortable
               animation={150}
@@ -165,10 +172,14 @@ const TeamManage = (props) => {
               ))}
             </Sortable>
           </div>
-          <Button className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>
+          <Button disabled={buttonLoading} className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>
             <div className={classes.buttonText}>Save Changes</div>
           </Button>
           {!!changesSaved && <div className={classes.changesSaved}>Changes saved successfully!</div>}
+          <div className={classes.question}>Change player roles (drag to change order)</div>
+          <div>
+            <HexColorPicker color={color} onChange={setColor} />
+          </div>
         </form>
       </div>
     </>

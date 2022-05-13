@@ -2,24 +2,23 @@ export function getImage(name) {
   return `/static/app/${name}`;
 }
 
-
 function fallbackCopyTextToClipboard(text) {
-  var textArea = document.createElement("textarea");
+  const textArea = document.createElement('textarea');
   textArea.value = text;
 
   // Avoid scrolling to bottom
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
+  textArea.style.top = '0';
+  textArea.style.left = '0';
+  textArea.style.position = 'fixed';
 
   document.body.appendChild(textArea);
   textArea.focus();
   textArea.select();
 
   try {
-    var successful = document.execCommand('copy');
-    var msg = successful ? 'successful' : 'unsuccessful';
-    console.log('Fallback: Copying text command was ' + msg);
+    const successful = document.execCommand('copy');
+    const msg = successful ? 'successful' : 'unsuccessful';
+    console.log(`Fallback: Copying text command was ${msg}`);
   } catch (err) {
     console.error('Fallback: Oops, unable to copy', err);
   }
@@ -32,9 +31,17 @@ export function copyTextToClipboard(text) {
     fallbackCopyTextToClipboard(text);
     return;
   }
-  navigator.clipboard.writeText(text).then(function() {
+  navigator.clipboard.writeText(text).then(() => {
     console.log('Async: Copying to clipboard was successful!');
-  }, function(err) {
+  }, (err) => {
     console.error('Async: Could not copy text: ', err);
   });
+}
+
+export function intToHexColorCode(num) {
+  return `#${num.toString(16)}`;
+}
+
+export function hexColorCodeToInt(hex) {
+  return parseInt(hex.substring(1), 16);
 }

@@ -1,4 +1,4 @@
-from .utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code
+from .utils.utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
@@ -76,7 +76,10 @@ class Team(models.Model):
     name = models.CharField(max_length=25)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     captain = models.ForeignKey('Player', on_delete=models.CASCADE, null=True, blank=True, related_name="captain_of")
-
+    color = models.IntegerField(default=16777215)
+    discord_channel_id = models.BigIntegerField(default=None, null=True, blank=True)
+    discord_role_id = models.BigIntegerField(default=None, null=True, blank=True)
+    
     class Meta:
         indexes = [
             models.Index(fields=['name'])
