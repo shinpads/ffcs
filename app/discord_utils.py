@@ -35,6 +35,7 @@ def create_team_discord_role(team_id, players):
     }
 
     res = discord_bot.create_role(data).json()
+    print(res)
     role_id = res['id']
     team.discord_role_id = role_id
     team.save()
