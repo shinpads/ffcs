@@ -1,4 +1,4 @@
-from app.utils.discord_utils import update_team_discord_info
+from app.discord_utils import update_team_discord_info
 from ..models import Player, Team, Season
 from ..serializers.teamserializer import TeamSerializer
 from django.http import JsonResponse

@@ -1,5 +1,5 @@
 from .models import Player
-from .utils.utils import get_info_by_account_id
+from .utils import get_info_by_account_id
 from apscheduler.schedulers.background import BackgroundScheduler
 
 def start():

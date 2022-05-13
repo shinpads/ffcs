@@ -4,7 +4,7 @@ import os
 import json
 import requests
 from ..models import Game, Player, Match, Season, PlayerStats, PlayerChampionStats
-from ..utils.utils import get_game
+from ..utils import get_game
 
 load_dotenv()
 

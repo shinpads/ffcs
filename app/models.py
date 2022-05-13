@@ -1,4 +1,4 @@
-from .utils.utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code
+from .utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
