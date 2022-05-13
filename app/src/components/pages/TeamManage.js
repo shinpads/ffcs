@@ -3,7 +3,6 @@ import { createUseStyles } from 'react-jss';
 import { Button } from '@material-ui/core';
 
 import { ReactSortable as Sortable } from 'react-sortablejs';
-import { HexColorPicker } from 'react-colorful';
 import colors from '../../colors';
 import Role from '../Role';
 import { getTeam, saveTeamManage } from '../../api';
@@ -11,6 +10,7 @@ import Header from '../Header';
 import Spinner from '../Spinner';
 import sortTeamPlayers from '../../util/sortTeamPlayers';
 import { hexColorCodeToInt, intToHexColorCode } from '../../helpers';
+import ColorPicker from '../ColorPicker';
 
 const styles = createUseStyles({
   container: {
@@ -156,7 +156,7 @@ const TeamManage = (props) => {
       <Header />
       <div className={classes.formContainer}>
         <form className={classes.form} onSubmit={submit} onChange={formChange}>
-          <div className={classes.question}>Change Team Color</div>
+          <div className={classes.question}>Change player roles (drag to change order)</div>
           <div className={classes.rolesContainer}>
             <Sortable
               animation={150}
@@ -172,14 +172,12 @@ const TeamManage = (props) => {
               ))}
             </Sortable>
           </div>
+          <div className={classes.question}>Change Team Color</div>
+          <ColorPicker color={color} onChange={setColor} />
           <Button disabled={buttonLoading} className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>
             <div className={classes.buttonText}>Save Changes</div>
           </Button>
           {!!changesSaved && <div className={classes.changesSaved}>Changes saved successfully!</div>}
-          <div className={classes.question}>Change player roles (drag to change order)</div>
-          <div>
-            <HexColorPicker color={color} onChange={setColor} />
-          </div>
         </form>
       </div>
     </>
