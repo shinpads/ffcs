@@ -77,8 +77,8 @@ class Team(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     captain = models.ForeignKey('Player', on_delete=models.CASCADE, null=True, blank=True, related_name="captain_of")
     color = models.IntegerField(default=16777215)
-    discord_channel_id = models.BigIntegerField(default=None, null=True, blank=True)
-    discord_role_id = models.BigIntegerField(default=None, null=True, blank=True)
+    discord_channel_id = models.CharField(default=None, null=True, blank=True, max_length=64)
+    discord_role_id = models.CharField(default=None, null=True, blank=True, max_length=64)
     
     class Meta:
         indexes = [

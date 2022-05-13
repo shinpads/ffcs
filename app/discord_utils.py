@@ -1,4 +1,5 @@
 from app.models import Player, Team
+from app.serializers.teamserializer import TeamSerializer
 from .discord_bot import DiscordBot
 from .discord_constants import ChannelTypes, permissions
 from dotenv import load_dotenv
@@ -15,19 +16,19 @@ def update_team_discord_info(team_id, players, updates):
     role_id = team.discord_role_id
     channel_id = team.discord_channel_id
 
-    if role_id == None:
-        role_id = create_team_discord_role(team_id, players)
+    if team.discord_role_id == None:
+        create_team_discord_role(team, players)
 
-    if channel_id == None:
-        channel_id = create_team_discord_channel(team_id)
+    if team.discord_channel_id == None:
+        create_team_discord_channel(team)
     
     discord_bot.edit_role(role_id, updates)
+    team.color = updates['color']
+    team.save()
 
     return
 
-def create_team_discord_role(team_id, players):
-    team = Team.objects.get(id=team_id)
-
+def create_team_discord_role(team, players):
     data = {
         'color': team.color,
         'name': team.name,
@@ -36,23 +37,16 @@ def create_team_discord_role(team_id, players):
     }
 
     res = discord_bot.create_role(data).json()
-    print(res['id'])
-    sys.stdout.flush()
     role_id = res['id']
-    team.discord_role_id = int(role_id)
-    team.save(update_fields=['discord_role_id'])
-    print('save worked')
-    sys.stdout.flush()
+    team.discord_role_id = str(role_id)
 
     for player in players:
         player_obj = Player.objects.get(id=player['id'])
         discord_bot.assign_user_to_role(player_obj.user.discord_user_id, role_id)
 
-    return role_id
+    return
 
-def create_team_discord_channel(team_id):
-    team = Team.objects.get(id=team_id)
-
+def create_team_discord_channel(team):
     everyone_permission_overwrite = {
         'id': discord_bot.guild_id,
         'type': 0,
@@ -77,7 +71,6 @@ def create_team_discord_channel(team_id):
     }
 
     res = discord_bot.create_channel(data).json()
-    team.discord_channel_id = int(res['id'])
-    team.save(update_fields=['discord_channel_id'])
+    team.discord_channel_id = res['id']
 
-    return res['id']
+    return
