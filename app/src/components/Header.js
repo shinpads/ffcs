@@ -41,7 +41,7 @@ const Header = (props) => {
       <div />
       <a href="/"><div className={classes.title}>For Fun Championship Series</div></a>
       <TeamListMenu />
-      <div style={{ paddingRight: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ paddingRight: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
         {userLoaded && <DiscordUser user={user} />}
       </div>
     </header>

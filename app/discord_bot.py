@@ -81,4 +81,8 @@ class DiscordBot():
         }
 
         return requests.put(url, headers=self.headers, json=data)
-        
+    
+    def get_user_info(self, user_id):
+        url = self.base_url + '/users/{}'.format(user_id)
+
+        return requests.get(url, headers=self.headers)

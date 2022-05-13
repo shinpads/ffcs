@@ -1,4 +1,6 @@
-from app.models import Player, Team
+from app.models import Player, Team, User
+from django.utils import timezone
+import pytz
 from app.serializers.teamserializer import TeamSerializer
 from .discord_bot import DiscordBot
 from .discord_constants import ChannelTypes, permissions
@@ -23,6 +25,22 @@ def update_team_discord_info(team_id, players, updates):
     discord_bot.edit_role(team.discord_role_id, updates)
     team.color = updates['color']
     team.save()
+
+    return
+
+def update_user_info(user):
+    now = timezone.now()
+    last_updated_discord_info = user.last_updated_discord_info
+
+    if (last_updated_discord_info != None and
+        ((now - last_updated_discord_info).total_seconds() / 60) < 10):
+        return
+    
+    res = discord_bot.get_user_info(user.discord_user_id).json()
+    user.discord_username = res['username']
+    user.avatar = res['avatar']
+    user.last_updated_discord_info = now
+    user.save()
 
     return
 

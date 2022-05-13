@@ -156,3 +156,7 @@ def get_game_timeline(gameid):
     body = json.loads(res.text)
 
     return body
+
+def format_user_for_frontend(data):
+    data['discord_user_id'] = str(data['discord_user_id'])
+    
