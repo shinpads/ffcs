@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(update_summoner_info, 'interval', hours=6)
+    scheduler.add_job(update_summoner_info, 'interval', seconds=30)
     scheduler.start()
 
 def update_summoner_info():

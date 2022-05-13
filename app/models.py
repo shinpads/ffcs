@@ -154,6 +154,7 @@ class User(AbstractBaseUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    last_updated_discord_info = models.DateTimeField(null=True)
     is_admin = models.BooleanField(default=False)
 
     # Stuff from discord

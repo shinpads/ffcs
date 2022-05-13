@@ -1,3 +1,5 @@
+from app.discord_utils import update_user_info
+from app.utils import format_user_for_frontend
 from ..models import Player, Team, Season, User, Match, Game
 from ..serializers.userserializer import UserSerializer
 from ..serializers.userprofileserializer import UserProfileSerializer
@@ -11,6 +13,7 @@ import requests
 
 def get_from_session(request):
     user = request.user
+    update_user_info(user)
     if user.is_anonymous:
         return JsonResponse({
             "message": "not logged in",
@@ -18,6 +21,7 @@ def get_from_session(request):
         }, status=200)
 
     out_data = UserSerializer(user).data
+    format_user_for_frontend(out_data)
 
     return JsonResponse({
         "message": "success",
@@ -27,10 +31,12 @@ def get_from_session(request):
 
 def get_user(request, user_id):
     user = User.objects.filter(pk=user_id).prefetch_related('players').get()
+    update_user_info(user)
     user_data = UserProfileSerializer(user).data
     matches = Match.objects.filter(teams__in=[player.team for player in user.players.all()]).prefetch_related('teams').prefetch_related('teams__players')
     games = Game.objects.filter(match__in=[match.id for match in matches], winner__isnull=False, game_data__isnull=False).order_by('-match__scheduled_for')
     games_data = GameSerializerWithMatch(games, many=True).data
+
 
     return JsonResponse({
         "message": "success",
@@ -39,3 +45,5 @@ def get_user(request, user_id):
             "games": games_data,
         }
     }, status=200)
+
+
