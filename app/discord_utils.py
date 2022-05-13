@@ -40,7 +40,7 @@ def create_team_discord_role(team_id, players):
     sys.stdout.flush()
     role_id = res['id']
     team.discord_role_id = int(role_id)
-    team.save()
+    team.save(update_fields=['discord_role_id'])
     print('save worked')
     sys.stdout.flush()
 
@@ -78,6 +78,6 @@ def create_team_discord_channel(team_id):
 
     res = discord_bot.create_channel(data).json()
     team.discord_channel_id = int(res['id'])
-    team.save()
+    team.save(update_fields=['discord_channel_id'])
 
     return res['id']
