@@ -1,8 +1,13 @@
 from app.models import Player, Team
-from ..discord_bot import DiscordBot
-from ..static.discord_constants import ChannelTypes, permissions
+from .discord_bot import DiscordBot
+from .discord_constants import ChannelTypes, permissions
+from dotenv import load_dotenv
+import os
 
-discord_bot = DiscordBot()
+load_dotenv()
+discord_bot_token = os.getenv('DISCORD_BOT_TOKEN')
+guild_id = os.getenv('DISCORD_GUILD_ID')
+discord_bot = DiscordBot(discord_bot_token, guild_id)
 
 def update_team_discord_info(team_id, players, updates):
     team = Team.objects.get(id=team_id)

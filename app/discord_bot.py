@@ -4,14 +4,14 @@ import requests
 from dotenv import load_dotenv
 
 class DiscordBot():
-    def __init__(self):
+    def __init__(self, bot_token, guild_id):
         load_dotenv('../foal_server/.env')
-        self.auth = 'Bot {}'.format(os.getenv('DISCORD_BOT_TOKEN'))
+        self.auth = 'Bot {}'.format(bot_token)
         self.base_url = 'https://discord.com/api/v10'
         self.headers = {
             'Authorization': self.auth,
         }
-        self.guild_id = os.getenv('DISCORD_GUILD_ID')
+        self.guild_id = guild_id
     
 
     def send_message(self, message, channel):

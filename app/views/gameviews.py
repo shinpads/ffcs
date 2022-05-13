@@ -1,9 +1,9 @@
 from django.http import JsonResponse
 from django.views import View
 from ..models import Game, Player
-from ..utils.utils import get_riot_account_id
+from ..utils import get_riot_account_id
 from ..scripts import player_stats
-from ..utils.utils import get_game_timeline
+from ..utils import get_game_timeline
 import json
 
 
