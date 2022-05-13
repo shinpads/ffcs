@@ -13,8 +13,6 @@ discord_bot = DiscordBot(discord_bot_token, guild_id)
 
 def update_team_discord_info(team_id, players, updates):
     team = Team.objects.get(id=team_id)
-    role_id = team.discord_role_id
-    channel_id = team.discord_channel_id
 
     if team.discord_role_id == None:
         create_team_discord_role(team, players)
@@ -22,7 +20,7 @@ def update_team_discord_info(team_id, players, updates):
     if team.discord_channel_id == None:
         create_team_discord_channel(team)
     
-    discord_bot.edit_role(role_id, updates)
+    discord_bot.edit_role(team.discord_role_id, updates)
     team.color = updates['color']
     team.save()
 
