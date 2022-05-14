@@ -24,6 +24,9 @@ def get_info_by_account_id(account_id):
     url = url + account_id.strip() + "?api_key=" + os.getenv('RIOT_API_KEY')
 
     res = requests.get(url)
+    print('response: ' + res.text)
+    sys.stdout.flush()
+
     if res.status_code != 200:
         return None
     
