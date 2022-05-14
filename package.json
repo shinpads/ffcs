@@ -53,6 +53,7 @@
     "html-webpack-plugin": "^3.2.0",
     "husky": "^3.1.0",
     "mini-css-extract-plugin": "^0.4.5",
+    "npm-run-all": "^4.1.5",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "raw-loader": "^4.0.1",
     "uglifyjs-webpack-plugin": "^2.2.0",
@@ -63,6 +64,8 @@
   },
   "scripts": {
     "start:dev": "NODE_ENV=development yarn run build:dev & python3 manage.py runserver",
+    "start:windows": "run-p start:django build:dev",
+    "start:django": "python manage.py runserver",
     "start": "yarn run build",
     "build": "webpack --mode production --config webpack.prod.config.js",
     "build:dev": "webpack --mode development --config webpack.dev.config.js",
