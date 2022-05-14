@@ -8,6 +8,12 @@ export async function getSeason(season, cb) {
   return result;
 }
 
+export async function getAllSeasons() {
+  const response = await axios.get('/api/season/', { params: { all: true } });
+
+  return response.data.data;
+}
+
 export async function getSeasonByName(name, cb) {
   const response = await axios.get('/api/season/', { params: { season_name: name } });
   const result = response.data.data || [];

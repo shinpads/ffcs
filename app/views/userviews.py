@@ -34,6 +34,7 @@ def get_from_session(request):
 
 def get_user(request, user_id):
     user = User.objects.filter(pk=user_id).prefetch_related('players').get()
+    current_season_id = Season.objects.get(is_current=True).id
     try:
         update_user_info(user)
     except AttributeError:
@@ -49,6 +50,7 @@ def get_user(request, user_id):
         "data": {
             "user": user_data,
             "games": games_data,
+            "currentSeason": current_season_id,
         }
     }, status=200)
 
