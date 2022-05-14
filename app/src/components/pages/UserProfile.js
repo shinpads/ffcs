@@ -17,7 +17,7 @@ import Matches from '../Matches';
 import Header from '../Header';
 import Role from '../Role';
 import colors from '../../colors';
-import { getUser } from '../../api';
+import { getAllSeasons, getUser } from '../../api';
 import Spinner from '../Spinner';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
@@ -61,22 +61,44 @@ const styles = createUseStyles({
     fontSize: '18px',
     marginBottom: '4px',
   },
+  seasonButtonsContainer: {
+    marginBottom: '4px',
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  seasonButton: {
+    padding: '4px',
+  },
 });
 
 const UserProfile = (props) => {
   const classes = styles();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [selectedSeason, setSelectedSeason] = useState();
+  const [allSeasons, setAllSeasons] = useState();
   const [games, setGames] = useState([]);
+  const [allGames, setAllGames] = useState([]);
 
   const { league } = props;
+
+  const changeSeasons = (id) => {
+    setSelectedSeason(id);
+    setGames(allGames.filter(game => game.match.season === id));
+  };
 
   useEffect(() => {
     async function getData() {
       const { id } = props.match.params;
       const data = await getUser(id);
+      const seasons = await getAllSeasons();
+      const allUserSeasons = data.user.players.map(player => player.team.season);
+      const userMostRecentSeason = Math.max(...allUserSeasons);
       setUser(data.user);
-      setGames(data.games);
+      setAllGames(data.games);
+      setSelectedSeason(userMostRecentSeason);
+      setGames(data.games.filter(game => game.match.season === userMostRecentSeason));
+      setAllSeasons(seasons.filter(season => allUserSeasons.includes(season.id)));
       setLoading(false);
     }
     getData();
@@ -93,11 +115,22 @@ const UserProfile = (props) => {
     );
   }
 
-  const player = user.players[user.players.length - 1];
+  let player = user.players.filter(curPlayer => curPlayer.team.season === selectedSeason)[0];
+  if (!player) {
+    player = user.players[user.players.length - 1];
+  }
+
   return (
     <>
       <Header />
       <div className={classes.container}>
+        <div className={classes.seasonButtonsContainer}>
+          {allSeasons.map(season => (
+            <div className={classes.seasonButton}>
+              <Button variant={season.id === selectedSeason ? 'contained' : 'outlined'} onClick={() => changeSeasons(season.id)}> Season {season.number} </Button>
+            </div>
+          ))}
+        </div>
         <Paper className={classes.topContainer}>
           <div className={classes.profileIconContainer}>
             <SummonerIcon rounded iconId={player.profile_icon_id} />
