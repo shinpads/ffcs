@@ -10,8 +10,11 @@ def start():
 
 def update_summoner_info():
     all_players = Player.objects.all()
-    print('reached')
+    print('reached beginning')
     sys.stdout.flush()
+
+    print(all_players[0].summoner_name)
+    sys.stdout.flush()    
 
     for player in all_players:
         print('on: ' + player.summoner_name)
