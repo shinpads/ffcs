@@ -14,16 +14,20 @@ def update_summoner_info():
     sys.stdout.flush()
 
     for player in all_players:
+        print('on: ' + player.summoner_name)
+        sys.stdout.flush()
         if not player.account_id:
+            print('not: ' + player.summoner_name)
+            sys.stdout.flush()
             continue
 
         player_info = get_info_by_account_id(player.account_id)
+        print('info:' + player_info)
+        sys.stdout.flush()
+
         if player_info == None:
             continue
         user = player.user
-
-        print(player_info)
-        sys.stdout.flush()
 
         player.profile_icon_id = player_info['profileIconId']
         user.summoner_name = player_info['name']
