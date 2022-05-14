@@ -13,7 +13,10 @@ import requests
 
 def get_from_session(request):
     user = request.user
-    update_user_info(user)
+    try:
+        update_user_info(user)
+    except AttributeError:
+        print("Error updating user info")
     if user.is_anonymous:
         return JsonResponse({
             "message": "not logged in",
@@ -31,7 +34,10 @@ def get_from_session(request):
 
 def get_user(request, user_id):
     user = User.objects.filter(pk=user_id).prefetch_related('players').get()
-    update_user_info(user)
+    try:
+        update_user_info(user)
+    except AttributeError:
+        print("Error updating user info")
     user_data = UserProfileSerializer(user).data
     matches = Match.objects.filter(teams__in=[player.team for player in user.players.all()]).prefetch_related('teams').prefetch_related('teams__players')
     games = Game.objects.filter(match__in=[match.id for match in matches], winner__isnull=False, game_data__isnull=False).order_by('-match__scheduled_for')

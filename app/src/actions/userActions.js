@@ -5,7 +5,6 @@ import { SET_USER } from './actionTypes';
 export const getUser = () => async (dispatch) => {
   try {
     const res = await axios.get('/api/user/from-session/');
-    console.log(res);
     if (res.data) {
       await dispatch({
         type: SET_USER,

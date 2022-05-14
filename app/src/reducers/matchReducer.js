@@ -14,6 +14,8 @@ export default (state = initalState, action) => {
         loaded: true,
         matchesByWeek: action.payload.matchesByWeek,
         playOffMatchesByFraction: action.payload.playOffMatchesByFraction,
+        currentSeasonMatchesByWeek: action.payload.currentSeasonMatchesByWeek,
+        matchesByTeam: action.payload.matchesByTeam,
       };
     default:
       return state;
