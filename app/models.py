@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.db import models
 from django.core import serializers
 from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.postgres.fields import ArrayField
 from .managers import DiscordUserOAuthManager
 import json
 import math
@@ -166,6 +167,10 @@ class User(AbstractBaseUser):
     # League stuff
     summoner_name = models.CharField(max_length=64)
     summoner_level = models.IntegerField(default=1)
+    smurfs = ArrayField(
+        models.CharField(max_length=64, default='', blank=True),
+        null=True
+    )
 
     # last_login = models.DateTimeField(null=True)
 
@@ -227,6 +232,10 @@ class Player(models.Model):
         choices=ROLE_CHOICES
     )
     account_id = models.CharField(max_length=70, blank=True)
+    smurf_account_ids = ArrayField(
+        models.CharField(max_length=70, blank=True, default=''),
+        null=True
+    )
 
     profile_icon_id = models.IntegerField(default=0)
 
