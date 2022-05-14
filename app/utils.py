@@ -3,6 +3,7 @@ import os
 import json
 import requests
 from django.apps import apps
+import sys
 
 load_dotenv()
 
@@ -20,7 +21,7 @@ def get_riot_account_id(username):
     return str(account_id)
 
 def get_info_by_account_id(account_id):
-    url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-account/"
+    url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/"
     url = url + account_id.strip() + "?api_key=" + os.getenv('RIOT_API_KEY')
 
     res = requests.get(url)

@@ -5,26 +5,19 @@ import sys
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(update_summoner_info, 'interval', seconds=30)
+    scheduler.add_job(update_summoner_info, 'interval', minutes=20)
     scheduler.start()
 
 def update_summoner_info():
     all_players = Player.objects.all()
-    print('reached beginning')
+    print('updating summoners')
     sys.stdout.flush()
-    sys.stdout.flush()    
 
     for player in all_players:
-        print('on: ' + player.user.summoner_name)
-        sys.stdout.flush()
         if not player.account_id:
-            print('not: ' + player.user.summoner_name)
-            sys.stdout.flush()
             continue
 
         player_info = get_info_by_account_id(player.account_id)
-        print('info:' + player_info)
-        sys.stdout.flush()
 
         if player_info == None:
             continue
