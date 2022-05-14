@@ -89,7 +89,7 @@ const Home = (props) => {
 
   const [voted, setVoted] = useState(false);
 
-  const { loaded } = props.matches;
+  const { loaded, currentSeasonMatchesByWeek } = props.matches;
 
   const { dispatch } = props;
 
@@ -129,7 +129,7 @@ const Home = (props) => {
       </div>
       <div className={classes.container}>
         <div className={classes.splitContainer}>
-          <Matches />
+          <Matches enablePlayoffs matchesToShow={currentSeasonMatchesByWeek} />
           <div>
             <Leaderboard />
           </div>

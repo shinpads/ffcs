@@ -1,4 +1,4 @@
-from ..models import Match
+from ..models import Match, Season
 from ..utils import get_game, get_game_timeline
 from ..serializers.matchserializer import MatchSerializer
 from django.http import JsonResponse
@@ -8,6 +8,7 @@ import json
 
 class MatchesView(View):
     def get(self, request, *args, **kwargs):
+        current_season_id = Season.objects.get(is_current=True).id
         matches = Match.objects.all() \
         .order_by('scheduled_for', '-week') \
         .prefetch_related('games') \
@@ -15,8 +16,10 @@ class MatchesView(View):
         .prefetch_related('teams__players') \
         .prefetch_related('teams__players__stats') \
         .prefetch_related('teams__players__player_champion_stats') \
-
-        out_data = MatchSerializer(matches, many=True).data
+        
+        out_data = {}
+        out_data['matches'] = MatchSerializer(matches, many=True).data
+        out_data['current_season_id'] = current_season_id
 
         return JsonResponse({
             "message": "success",

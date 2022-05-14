@@ -10,6 +10,8 @@ import { getTeam } from '../../api';
 import Spinner from '../Spinner';
 import SummonerIcon from '../League/SummonerIcon';
 import sortTeamPlayers from '../../util/sortTeamPlayers';
+import Matches from '../Matches';
+import { getMatches } from '../../actions/matchActions';
 
 const styles = createUseStyles({
   topContainer: {
@@ -28,6 +30,10 @@ const styles = createUseStyles({
     maxWidth: '1000px',
     margin: '0 auto',
     paddingTop: '6rem',
+  },
+  contentContainer: {
+    display: 'flex',
+    flexDirection: 'column',
   },
   teamContainer: {
     display: 'flex',
@@ -58,6 +64,9 @@ const styles = createUseStyles({
       textDecoration: 'underline',
     },
   },
+  matches: {
+    marginTop: '12px',
+  },
 });
 
 const TeamProfile = (props) => {
@@ -65,13 +74,16 @@ const TeamProfile = (props) => {
   const [loading, setLoading] = useState(true);
   const [team, setTeam] = useState(null);
 
-  const { league } = props;
+  const {
+    league, matches, match, dispatch,
+  } = props;
+  const teamId = match.params.id;
 
   useEffect(() => {
     async function getData() {
-      const { id } = props.match.params;
-      const data = await getTeam(id);
+      const data = await getTeam(teamId);
       data.players = sortTeamPlayers(data.players);
+      dispatch(getMatches());
       setTeam(data);
       setLoading(false);
     }
@@ -93,18 +105,25 @@ const TeamProfile = (props) => {
     <>
       <Header />
       <div className={classes.container}>
-        <Paper className={classes.topContainer}>
-          <div className={classes.profileIconContainer}>
-            <SummonerIcon rounded iconId={2} />
+        <div className={classes.contentContainer}>
+          <div>
+            <Paper className={classes.topContainer}>
+              <div className={classes.profileIconContainer}>
+                <SummonerIcon rounded iconId={2} />
+              </div>
+              <div className={classes.userDetailsContainer}>
+                <div>{team.name}</div>
+                {team.is_captain && <a href={`/team/${team.id}/manage`} className={classes.manageTeam}>Manage Team</a>}
+              </div>
+            </Paper>
+            <Paper className={classes.players}>
+              {team.players.map(player => <PlayerDetailed player={player} />)}
+            </Paper>
           </div>
-          <div className={classes.userDetailsContainer}>
-            <div>{team.name}</div>
-            {team.is_captain && <a href={`/team/${team.id}/manage`} className={classes.manageTeam}>Manage Team</a>}
+          <div className={classes.matches}>
+            {matches.loaded && <Matches enablePlayoffs={false} matchesToShow={matches.matchesByTeam[teamId]} />}
           </div>
-        </Paper>
-        <Paper className={classes.players}>
-          {team.players.map(player => <PlayerDetailed player={player} />)}
-        </Paper>
+        </div>
       </div>
     </>
   );
@@ -113,6 +132,7 @@ const TeamProfile = (props) => {
 function mapStateToProps(state) {
   return {
     league: state.league,
+    matches: state.matches,
   };
 }
 

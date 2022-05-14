@@ -21,19 +21,20 @@ const styles = createUseStyles({
   },
 });
 
-const Matches = (props) => {
+const Matches = ({ matches, matchesToShow, enablePlayoffs }) => {
   const classes = styles();
 
-  const { matchesByWeek, playOffMatchesByFraction } = props.matches;
+  const { playOffMatchesByFraction } = matches;
 
-  const loading = !matchesByWeek;
+  const loading = !(matchesToShow && playOffMatchesByFraction);
 
   let currentWeek = -1;
   let currentPlayoffStage = 1;
 
   if (!loading) {
-    Object.keys(matchesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).forEach(week => {
-      if (matchesByWeek[week].filter(match => !match.winner).length > 0) {
+    console.log(matchesToShow);
+    Object.keys(matchesToShow).sort((a, b) => parseInt(a) - parseInt(b)).forEach(week => {
+      if (matchesToShow[week].filter(match => !match.winner).length > 0) {
         if (currentWeek === -1) {
           currentWeek = week;
         }
@@ -51,20 +52,21 @@ const Matches = (props) => {
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>THIS WEEK'S MATCHES</h1>
-      {loading && <Spinner />}
-      {!loading && (
-        <div className={classes.container}>
-          <>
-            {currentWeek > 0 && matchesByWeek[currentWeek].map(match => <Match match={match} />)}
-            {currentWeek === -1 && playOffMatchesByFraction[currentPlayoffStage]?.map(match => <Match match={match} />)}
-          </>
-          {Object.keys(matchesByWeek).filter(week => week != currentWeek).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (
+      {loading ? <Spinner /> : (
+        <div>
+          <h1 style={{ textAlign: 'center', margin: 0 }}>THIS WEEK'S MATCH{matchesToShow[currentWeek].length > 1 ? 'ES' : ''}</h1>
+          <div className={classes.container}>
             <>
-              <h2 className={classes.weekNum}>Week {weekNum}</h2>
-              {matchesByWeek[weekNum]?.map(match => <Match match={match} />)}
+              {currentWeek > 0 && matchesToShow[currentWeek].map(match => <Match match={match} />)}
+              {(currentWeek === -1 && enablePlayoffs) && playOffMatchesByFraction[currentPlayoffStage]?.map(match => <Match match={match} />)}
             </>
-          ))}
+            {Object.keys(matchesToShow).filter(week => week != currentWeek).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (
+              <>
+                <h2 className={classes.weekNum}>Week {weekNum}</h2>
+                {matchesToShow[weekNum]?.map(match => <Match match={match} />)}
+              </>
+            ))}
+          </div>
         </div>
       )}
     </div>
