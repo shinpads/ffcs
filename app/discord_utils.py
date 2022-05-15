@@ -38,7 +38,8 @@ def update_user_info(user):
     
     res = discord_bot.get_user_info(user.discord_user_id).json()
     user.discord_username = res['username']
-    user.avatar = res['avatar']
+    if res['avatar'] != None:
+        user.avatar = res['avatar']
     user.last_updated_discord_info = now
     user.save()
 

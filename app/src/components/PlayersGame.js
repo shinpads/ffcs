@@ -19,13 +19,13 @@ const styles = createUseStyles({
     flexBasis: '400px',
     boxShadow: `1px 1px 2px ${colors.black}`,
     display: 'grid',
-    gridTemplateColumns: '0.8fr 4fr 2fr'
+    gridTemplateColumns: '0.8fr 4fr 2fr',
   },
   win: {
-    borderLeft: `4px solid ${colors.primary}`
+    borderLeft: `4px solid ${colors.primary}`,
   },
   lose: {
-    borderLeft: `4px solid ${colors.red}`
+    borderLeft: `4px solid ${colors.red}`,
   },
   winColor: {
     color: colors.primary,
@@ -55,7 +55,7 @@ const styles = createUseStyles({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-  }
+  },
 });
 
 const PlayersGame = ({ game, player }) => {
@@ -67,11 +67,10 @@ const PlayersGame = ({ game, player }) => {
   const won = game.winner === player.team.id;
 
   const [team1, team2] = game.match.teams;
-  const team1TeamData = game.winner === team1.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail')
-  const team2TeamData = game.winner === team2.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail')
+  const team1TeamData = game.winner === team1.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail');
+  const team2TeamData = game.winner === team2.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail');
   const team1Participants = gameData.participants.filter(participant => participant.teamId === team1TeamData.teamId);
   const team2Participants = gameData.participants.filter(participant => participant.teamId === team2TeamData.teamId);
-
 
   const gameDurationMinutes = (gameData.gameDuration / 60).toFixed(0);
   const gameDurationSeconds = gameData.gameDuration % 60;
@@ -104,13 +103,13 @@ const TeamPartcipants = ({ participants, game, team }) => {
     <div className={classes.teamParticipantsContainer}>
       {participants.map(participant => {
         const participantIdentity = gameData.participantIdentities.find(identity => participant.participantId === identity.participantId) || {};
-        const player = team.players.find(player => player.account_id === participantIdentity.player.summonerId) || {}
+        const player = team.players.find(player => player.account_id === participantIdentity.player.summonerId) || {};
         return (
           <ParticipantName participant={participant} player={participantIdentity.player} user={player.user} />
         );
       })}
     </div>
-  )
-}
+  );
+};
 
 export default PlayersGame;

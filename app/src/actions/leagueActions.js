@@ -26,6 +26,7 @@ export const getLeagueData = () => async (dispatch, getState) => {
       payload: {
         championMap: championsResult.data.data,
         summonerMap: summonerResult.data.data,
+        latestVersion,
       },
     });
   } catch (err) {
