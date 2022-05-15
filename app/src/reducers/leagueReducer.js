@@ -14,6 +14,7 @@ export default (state = initalState, action) => {
         loaded: true,
         championMap: action.payload.championMap,
         summonerMap: action.payload.summonerMap,
+        latestVersion: action.payload.latestVersion,
       };
     default:
       return state;

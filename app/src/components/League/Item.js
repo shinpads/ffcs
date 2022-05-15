@@ -1,16 +1,26 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-const Item = ({ itemId, width }) => {
+const Item = ({ itemId, width, league }) => {
   width = width || 24;
   if (!itemId) {
     return (
-      <div style={{ height: width, width: width, borderRadius: '4px', backgroundColor: 'black', opacity: '0.5' }} />
-    )
+      <div style={{
+        height: width, width, borderRadius: '4px', backgroundColor: 'black', opacity: '0.5',
+      }}
+      />
+    );
   }
-  const url = `http://ddragon.leagueoflegends.com/cdn/11.10.1/img/item/${itemId}.png`
+  const url = `http://ddragon.leagueoflegends.com/cdn/${league.latestVersion}/img/item/${itemId}.png`;
   return (
-    <img alt="" target="_blank" width={width} src={url} style={{ borderRadius: '4px' }} />
+    <img alt={itemId} target="_blank" width={width} src={url} style={{ borderRadius: '4px' }} />
   );
+};
+
+function mapStateToProps(state) {
+  return {
+    league: state.league,
+  };
 }
 
-export default Item;
+export default connect(mapStateToProps)(Item);
