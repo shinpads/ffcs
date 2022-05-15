@@ -185,3 +185,4 @@ LOGGING = {
 }
 
 django_heroku.settings(locals())
+DATABASES['default']['CONN_MAX_AGE'] = 0

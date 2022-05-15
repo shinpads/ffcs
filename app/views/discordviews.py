@@ -75,12 +75,12 @@ def game_confirm_response(data, interaction_response):
 
     if response_value:
         from_captain_message = (
-            "The schedule you proposed for your game with **{}** at **{}**"
+            "The schedule you proposed for your game with **{}** at **{}** "
             "has been approved by the enemy captain, **{}**. Good luck, summoner!"
         ).format(
             to_team.name,
+            proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST'),
             to_team_captain.summoner_name,
-            proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST')
         )
         discord_bot.send_dm(from_team_captain.discord_user_id, from_captain_message)
 
@@ -107,8 +107,8 @@ def game_confirm_response(data, interaction_response):
             "new time on the FFCS website that the enemy captain agrees with."
         ).format(
             to_team.name,
+            proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST'),
             to_team_captain.summoner_name,
-            proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST')
         )
         discord_bot.send_dm(from_team_captain.discord_user_id, from_captain_message)
 

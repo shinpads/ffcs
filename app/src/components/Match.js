@@ -90,6 +90,8 @@ const Match = ({ match, user }) => {
 
   const isCaptain = !![team1, team2].filter(team => team.captain.user.id === user.user.id)[0];
 
+  const userTeam = [team1, team2].filter(team => !!team.players.filter(player => player.user.id === user.user.id)[0])[0];
+
   return (
     <div className={classes.container}>
       <div className={classes.topContainer}>
@@ -117,7 +119,7 @@ const Match = ({ match, user }) => {
       </div>
       <div className={classes.bottomContainer}>
         <div className={classes.scheduleContainer}>
-          {(isCaptain || user.user.is_admin) && <MatchScheduler />}
+          {(isCaptain) && <MatchScheduler sendingTeam={userTeam} match={match} />}
         </div>
         <div className={classes.codeContainer}>
           {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (

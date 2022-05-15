@@ -127,8 +127,6 @@ def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
         embeds
     )
 
-    print(res.json())
-
     return res.json()
 
 def create_message_confirmation_components(

@@ -100,7 +100,11 @@ export async function getPlayers() {
 }
 
 export async function postDateProposal(data) {
-  const response = await axios.post('/api/match/proposeschedule/', data);
+  const response = await axios.post('/api/match/proposeschedule/', data)
+    .catch((error) => ({
+      status: error.response.status,
+      data: error.response.data,
+    }));
 
   return response;
 }
