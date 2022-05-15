@@ -1,4 +1,4 @@
-from ..models import Match, Season
+from ..models import Match, Season, Team
 from ..utils import get_game, get_game_timeline
 from ..serializers.matchserializer import MatchSerializer
 from django.http import JsonResponse
@@ -13,6 +13,7 @@ class MatchesView(View):
         .order_by('scheduled_for', '-week') \
         .prefetch_related('games') \
         .prefetch_related('teams') \
+        .prefetch_related('teams__captain') \
         .prefetch_related('teams__players') \
         .prefetch_related('teams__players__stats') \
         .prefetch_related('teams__players__player_champion_stats') \
@@ -49,3 +50,29 @@ def get_match(request, match_id):
             "game_datas": game_datas,
         }
     })
+
+def propose_schedule(request, team_id, match_id, proposed_time):
+    team = Team.objects.get(id=team_id)
+    match = Match.objects.get(id=match_id)
+    
+    if match == None:
+        response = JsonResponse({
+            "message": "could not find match with id: " + match_id,
+            "data": {},
+        }, status=500)
+        return response
+    
+    if team == None:
+        response = JsonResponse({
+            "message": "could not find team with id: " + team_id,
+            "data": {},
+        }, status=500)
+        return response
+
+    if (request.user.id != team.captain.user.id) and not request.user.is_admin:
+        response = JsonResponse({
+            "message": "you are not authorized to perform this request.",
+            "data": {},
+        }, status=401)
+        return response
+    

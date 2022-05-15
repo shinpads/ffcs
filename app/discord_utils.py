@@ -1,4 +1,5 @@
-from app.models import Player, Team, User
+import json
+from app.models import Match, Player, Team, User
 from django.utils import timezone
 import pytz
 from app.serializers.teamserializer import TeamSerializer
@@ -91,3 +92,106 @@ def create_team_discord_channel(team):
     team.discord_channel_id = res['id']
 
     return
+
+def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
+    from_team = Team.objects.get(id=from_team_id)
+    to_team = Team.objects.get(id=to_team_id)
+    from_team_captain = from_team.captain.user
+    to_team_captain = to_team.captain.user
+    match = Match.objects.get(id=match_id)
+    est = pytz.timezone('US/Eastern')
+    proposed_time = match.proposed_for.astimezone(est)
+
+    message = (
+        "Your week {} match versus **{}** has been scheduled by their captain, "
+        "**{}**, for **{}**. Please confirm or deny the requested date/time."
+    ).format(
+        match.week,
+        from_team.name,
+        from_team_captain.summoner_name,
+        proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST')
+        )
+
+    embeds = [
+        create_team_embed(from_team)
+    ]
+
+    res = discord_bot.send_dm(
+        to_team_captain.discord_user_id,
+        message,
+        create_message_confirmation_components(
+            from_team_id,
+            to_team_id,
+            match_id
+        ),
+        embeds
+    )
+
+    print(res.json())
+
+    return res.json()
+
+def create_message_confirmation_components(
+    from_team_id,
+    to_team_id,
+    match_id):
+    components = [
+        {
+            "type": 1,
+            "components": [
+                {
+                    "type": 2,
+                    "label": "Confirm",
+                    "style": 3,
+                    "custom_id": json.dumps({
+                        "i_type": "match_confirm",
+                        "val": True,
+                        "f_id": from_team_id,
+                        "to_id": to_team_id,
+                        "m_id": match_id,
+                    })
+                },
+                {
+                    "type": 2,
+                    "label": "Deny",
+                    "style": 4,
+                    "custom_id": json.dumps({
+                        "i_type": "match_confirm",
+                        "val": False,
+                        "f_id": from_team_id,
+                        "to_id": to_team_id,
+                        "m_id": match_id,
+                    })
+                }
+            ]
+        }
+    ]
+
+    return components
+
+def create_team_embed(team):
+    role_sorting = {
+        "TOP": 0,
+        "JG": 1,
+        "MID": 2,
+        "ADC": 3,
+        "SUPP": 4
+    }
+
+    embed = {
+        "type": "Rich",
+        "title": team.name,
+        "description": "",
+        "color": 0x5e7676,
+        "thumbnail": {
+            "url": 'https://ddragon.leagueoflegends.com/cdn/12.6.1/img/profileicon/10.png',
+            "height": 0,
+            "width": 0
+        },
+        "author": {
+            "name": team.season.name
+        },
+        "url": "https://ffcsleague.com/team/{}".format(team.id)
+    }
+
+    return embed

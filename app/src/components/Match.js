@@ -3,12 +3,14 @@ import moment from 'moment';
 import { Fade } from 'react-reveal';
 import { createUseStyles } from 'react-jss';
 import { Paper, Button } from '@material-ui/core';
+import { connect } from 'react-redux';
 import colors from '../colors';
 import TeamName from './TeamName';
 import { copyTextToClipboard, getImage } from '../helpers';
 import twitchLogo from '../../public/twitch.png';
 
 import StartingSide from './StartingSide';
+import MatchScheduler from './MatchScheduler';
 
 const styles = createUseStyles({
   container: {
@@ -51,9 +53,14 @@ const styles = createUseStyles({
     float: 'right',
     gridGap: '8px',
   },
+  scheduleContainer: {
+    dispaly: 'grid',
+    float: 'left',
+    gridGap: '8px',
+  },
 });
 
-const Match = ({ match }) => {
+const Match = ({ match, user }) => {
   const classes = styles();
   let date = `WEEK ${match.week}`;
   if (match.scheduled_for) {
@@ -81,6 +88,8 @@ const Match = ({ match }) => {
   const team1 = match.teams[0];
   const team2 = match.teams[1];
 
+  const isCaptain = !![team1, team2].filter(team => team.captain.user.id === user.user.id)[0];
+
   return (
     <div className={classes.container}>
       <div className={classes.topContainer}>
@@ -107,6 +116,9 @@ const Match = ({ match }) => {
         </div>
       </div>
       <div className={classes.bottomContainer}>
+        <div className={classes.scheduleContainer}>
+          {(isCaptain || user.user.is_admin) && <MatchScheduler />}
+        </div>
         <div className={classes.codeContainer}>
           {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (
             <>
@@ -127,4 +139,10 @@ const Match = ({ match }) => {
   );
 };
 
-export default Match;
+function mapStateToProps(state) {
+  return {
+    user: state.user,
+  };
+}
+
+export default connect(mapStateToProps)(Match);

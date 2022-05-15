@@ -98,3 +98,9 @@ export async function getPlayers() {
   const response = await axios.get('/api/players/');
   return response.data.data;
 }
+
+export async function postDateProposal(data) {
+  const response = await axios.post('/api/match/proposeschedule/', data);
+
+  return response;
+}

@@ -109,6 +109,7 @@ class Match(models.Model):
     teams           = models.ManyToManyField(Team, related_name="matches")
     week            = models.IntegerField(default=1)
     scheduled_for   = models.DateTimeField(null=True, blank=True)
+    proposed_for    = models.DateTimeField(null=True, blank=True, default=None)
     twitch_vod      = models.CharField(max_length=120, blank=True)
     blue_side       = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
 
