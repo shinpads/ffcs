@@ -1,10 +1,14 @@
-from ..models import Match, Season
+from datetime import datetime
+
+from app.discord_utils import send_game_confirmation_dm
+from ..models import Match, Season, Team
 from ..utils import get_game, get_game_timeline
 from ..serializers.matchserializer import MatchSerializer
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.views import View
 import json
+import pytz
 
 class MatchesView(View):
     def get(self, request, *args, **kwargs):
@@ -13,6 +17,7 @@ class MatchesView(View):
         .order_by('scheduled_for', '-week') \
         .prefetch_related('games') \
         .prefetch_related('teams') \
+        .prefetch_related('teams__captain') \
         .prefetch_related('teams__players') \
         .prefetch_related('teams__players__stats') \
         .prefetch_related('teams__players__player_champion_stats') \
@@ -49,3 +54,65 @@ def get_match(request, match_id):
             "game_datas": game_datas,
         }
     })
+
+def propose_schedule(request):
+    data = json.loads(request.body)
+    proposed_date_epoch = int(str(data['date'])[:-3])
+    proposed_date = pytz.utc.localize(datetime.fromtimestamp(proposed_date_epoch))
+    from_team_id = data.get('sendingTeamId')
+    match_id = data.get('matchId')
+
+    try:
+        team = Team.objects.get(id=from_team_id)
+    except:
+        response = JsonResponse({
+            "message": "There was an error finding the team.",
+            "data": {},
+        }, status=500)
+        return response
+    
+    try:
+        match = Match.objects.get(id=match_id)
+    except:
+        response = JsonResponse({
+            "message": "There was an error finding the match.",
+            "data": {},
+        }, status=500)
+        return response
+
+    if (request.user.id != team.captain.user.id) and not request.user.is_admin:
+        response = JsonResponse({
+            "message": "you are not authorized to perform this request.",
+            "data": {},
+        }, status=401)
+        return response
+    
+    if match.proposed_for != None:
+        response = JsonResponse({
+            "message": "There is already a proposed date for this match! Please wait for that date to be confirmed or denied.",
+            "data": {},
+        }, status=500)
+        return response
+    
+    match.proposed_for = proposed_date
+    match.save()
+
+    to_team_id = None
+    for team in match.teams.all():
+        if team.id != from_team_id:
+            to_team_id = team.id
+            break
+
+    try:
+        send_game_confirmation_dm(from_team_id, to_team_id, match_id)
+        response = JsonResponse({
+            "message": "Successfully proposed the date! Please wait for the enemy captain to confirm.",
+            "data": {},
+        }, status=200)
+        return response
+    except:
+        response = JsonResponse({
+            "message": "An error occured sending the confirmation message.",
+            "data": {},
+        }, status=500)
+        return response

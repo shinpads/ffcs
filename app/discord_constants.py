@@ -15,6 +15,15 @@ class ChannelTypes(IntEnum):
     GUILD_DIRECTORY = 14
     GUILD_FORM = 15
 
+class InteractionCallbackTypes(IntEnum):
+    PONG = 1
+    CHANNEL_MESSAGE_WITH_SOURCE = 4
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5
+    DEFERRED_UPDATE_MESSAGE = 6
+    UPDATE_MESSAGE = 7
+    APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8
+    MODAL = 9
+
 permissions = {
     'CREATE_INSTANT_INVITE': (1 << 0),
     'KICK_MEMBERS': (1 << 1),

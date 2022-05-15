@@ -98,3 +98,13 @@ export async function getPlayers() {
   const response = await axios.get('/api/players/');
   return response.data.data;
 }
+
+export async function postDateProposal(data) {
+  const response = await axios.post('/api/match/proposeschedule/', data)
+    .catch((error) => ({
+      status: error.response.status,
+      data: error.response.data,
+    }));
+
+  return response;
+}

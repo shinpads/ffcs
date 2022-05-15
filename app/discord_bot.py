@@ -23,7 +23,7 @@ class DiscordBot():
         return requests.post(url, headers=self.headers, json=data)
     
 
-    def send_dm(self, message, user_id):
+    def send_dm(self, user_id, message, components=[], embeds=[]):
         dm_url = self.base_url + '/users/@me/channels'
         send_url = self.base_url + '/channels/{id}/messages'
 
@@ -31,7 +31,9 @@ class DiscordBot():
             'recipient_id': int(user_id)
         }
         send_data = {
-            'content': message
+            'content': message,
+            'components': components,
+            'embeds': embeds
         }
 
         dm_channel = requests.post(dm_url, headers=self.headers, json=dm_channel_data)

@@ -168,5 +168,3 @@ class TeamView(View):
         }, status=200)
 
         return response
-
-        
