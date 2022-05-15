@@ -33,10 +33,7 @@ class DiscordView(View):
         headers = request.headers
         public_key = os.getenv('DISCORD_BOT_PUBLIC_KEY')
 
-        try:
-            verify_key = VerifyKey(bytes.fromhex(public_key))
-        except:
-            return HttpResponse(401, 'invalid request signature')
+        verify_key = VerifyKey(bytes.fromhex(public_key))
 
         signature = headers['X-Signature-Ed25519']
         timestamp = headers['X-Signature-Timestamp']
@@ -44,7 +41,7 @@ class DiscordView(View):
 
         try:
             verify_key.verify(f'{timestamp}{body}'.encode(), bytes.fromhex(signature))
-        except:
+        except BadSignatureError:
             return HttpResponse(401, 'invalid request signature')
         
         if data['type'] == 1:
