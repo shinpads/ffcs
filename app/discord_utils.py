@@ -180,7 +180,7 @@ def create_team_embed(team):
         "type": "Rich",
         "title": team.name,
         "description": "",
-        "color": 0x5e7676,
+        "color": team.color,
         "thumbnail": {
             "url": 'https://ddragon.leagueoflegends.com/cdn/12.6.1/img/profileicon/10.png',
             "height": 0,
