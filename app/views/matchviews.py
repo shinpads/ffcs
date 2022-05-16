@@ -58,7 +58,9 @@ def get_match(request, match_id):
 def propose_schedule(request):
     data = json.loads(request.body)
     proposed_date_epoch = int(str(data['date'])[:-3])
-    proposed_date = pytz.utc.localize(datetime.fromtimestamp(proposed_date_epoch))
+    proposed_date = datetime.fromtimestamp(proposed_date_epoch)
+    est = pytz.timezone('US/Eastern')
+    proposed_date = proposed_date.astimezone(est)
     from_team_id = data.get('sendingTeamId')
     match_id = data.get('matchId')
 
