@@ -30,7 +30,7 @@ def get_info_by_account_id(account_id):
 
     if res.status_code != 200:
         return None
-    
+
     body = json.loads(res.text)
     return body
 
@@ -151,7 +151,7 @@ def get_game(gameid, tournament_code):
 def get_game_timeline(gameid):
     #url = "https://na1.api.riotgames.com/lol/match/v4/timelines/by-match/"
     url = "https://na1.api.riotgames.com/lol/match/v5/matches/" + gameid + "/timeline"
-    url = url "?api_key=" + os.getenv('RIOT_API_KEY')
+    url = url + "?api_key=" + os.getenv('RIOT_API_KEY')
 
     res = requests.get(url)
 
@@ -164,4 +164,3 @@ def get_game_timeline(gameid):
 
 def format_user_for_frontend(data):
     data['discord_user_id'] = str(data['discord_user_id'])
-    
