@@ -23,7 +23,6 @@ import { Participant } from '../League/Participant';
 import TeamName from '../TeamName';
 import ChampionIcon from '../League/ChampionIcon';
 import GoldGraph from '../GoldGraph';
-import OldMatch from './OldMatch';
 
 const ProgressBar = withStyles((theme) => ({
   root: {
@@ -90,7 +89,7 @@ const LANE_ROLE_ORDER = [
 function sortParticipants(participants) {
   const laneRoleKey = (participant) =>
     // put lane and role together so its like 'TOP SOLO' or 'BOTTOM DUO_SUPPORT'
-    `${participant.lane} ${participant.role}`
+    `${participant.timeline.lane} ${participant.timeline.role}`
   ;
 
   // sort participants by lane and role. If two partcipants have the same lane and role, determine role based off of order they were in.
@@ -120,32 +119,21 @@ function sortParticipants(participants) {
   return newParticipants;
 }
 
-const Match = (props) => {
+const OldMatch = (props) => {
   const classes = styles();
   const [loading, setLoading] = useState(true);
   const [matchData, setMatchData] = useState(null);
-  const [oldMatch, setOldMatch] = useState(false);
 
   useEffect(() => {
     async function getData() {
       const { id } = props.match.params;
       const matchData = await getMatch(id);
-      matchData.match.games.forEach(game => {
-        if (game.is_old_data_format) {
-          setOldMatch(true);
-        }
-      });
 
       setMatchData(matchData);
       setLoading(false);
     }
     getData();
   }, []);
-
-  if (oldMatch) {
-    return <OldMatch props={props} />;
-  }
-
   if (loading) {
     return (
       <>
@@ -157,8 +145,8 @@ const Match = (props) => {
     );
   }
 
-  const team1 = matchData.match?.teams[0];
-  const team2 = matchData.match?.teams[1];
+  const team1 = matchData.match.teams[0];
+  const team2 = matchData.match.teams[1];
   const numTeam1Wins = matchData.match.games.filter(game => game.winner === team1.id).length;
   const numTeam2Wins = matchData.match.games.filter(game => game.winner === team2.id).length;
   const winner = matchData.match.winner.id;
@@ -178,23 +166,23 @@ const Match = (props) => {
         <br />
 
         {matchData.match.games.map(game => {
-          const gameData = matchData.game_datas.find(curGameData => curGameData.info.gameId === parseInt(game.game_id, 10));
+          const gameData = matchData.game_datas.find(gameData => gameData.gameId == game.game_id);
           const gameWinner = matchData.match.teams.find(team => team.id === game.winner);
-          const team1TeamData = game.winner === team1.id ? gameData.info.teams.find(team => team.win === true) : gameData.info.teams.find(team => team.win === false);
-          const team2TeamData = game.winner === team2.id ? gameData.info.teams.find(team => team.win === true) : gameData.info.teams.find(team => team.win === false);
-          const team1Participants = sortParticipants(gameData.info.participants.filter(participant => participant.teamId === team1TeamData.teamId));
-          const team2Participants = sortParticipants(gameData.info.participants.filter(participant => participant.teamId === team2TeamData.teamId));
-          const team1Kills = team1Participants.reduce((acc, cur) => acc + cur.kills, 0);
-          const team1Deaths = team1Participants.reduce((acc, cur) => acc + cur.deaths, 0);
-          const team1Assists = team1Participants.reduce((acc, cur) => acc + cur.assists, 0);
-          const team2Kills = team2Participants.reduce((acc, cur) => acc + cur.kills, 0);
-          const team2Deaths = team2Participants.reduce((acc, cur) => acc + cur.deaths, 0);
-          const team2Assists = team2Participants.reduce((acc, cur) => acc + cur.assists, 0);
-          const mostDamage = gameData.info.participants.reduce((acc, cur) => Math.max(acc, cur.totalDamageDealtToChampions), 0);
+          const team1TeamData = game.winner === team1.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail');
+          const team2TeamData = game.winner === team2.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail');
+          const team1Participants = sortParticipants(gameData.participants.filter(participant => participant.teamId === team1TeamData.teamId));
+          const team2Participants = sortParticipants(gameData.participants.filter(participant => participant.teamId === team2TeamData.teamId));
+          const team1Kills = team1Participants.reduce((acc, cur) => acc + cur.stats.kills, 0);
+          const team1Deaths = team1Participants.reduce((acc, cur) => acc + cur.stats.deaths, 0);
+          const team1Assists = team1Participants.reduce((acc, cur) => acc + cur.stats.assists, 0);
+          const team2Kills = team2Participants.reduce((acc, cur) => acc + cur.stats.kills, 0);
+          const team2Deaths = team2Participants.reduce((acc, cur) => acc + cur.stats.deaths, 0);
+          const team2Assists = team2Participants.reduce((acc, cur) => acc + cur.stats.assists, 0);
+          const mostDamage = gameData.participants.reduce((acc, cur) => Math.max(acc, cur.stats.totalDamageDealtToChampions), 0);
 
           return (
             <div>
-              <div>Game {game.game_in_series} of {matchData.match.games.length} - <b>Winner: {gameWinner.name}</b> in {Math.floor(gameData.info.gameDuration / 60)}m</div>
+              <div>Game {game.game_in_series} of {matchData.match.games.length} - <b>Winner: {gameWinner.name}</b> in {Math.floor(gameData.gameDuration / 60)}m</div>
               <br />
 
               <TableContainer key={game.id} component={Paper}>
@@ -224,7 +212,7 @@ const Match = (props) => {
 
               <br />
 
-              <GoldGraph timeline={gameData.timeline.info} team1Participants={team1Participants} team2Participants={team2Participants} team1={team1} team2={team2} />
+              <GoldGraph timeline={gameData.timeline} team1Participants={team1Participants} team2Participants={team2Participants} team1={team1} team2={team2} />
 
               <br />
 
@@ -244,41 +232,43 @@ const Match = (props) => {
                   <TableBody>
                     {[0, 1, 2, 3, 4].map(index => {
                       const team1Participant = team1Participants[index];
-                      const team1Player = team1.players.find(player => player.account_id === team1Participant.summonerId) || {};
-                      const team1PlayerDamagePercent = (team1Participant.totalDamageDealtToChampions / mostDamage) * 100;
-                      const team1PlayerKp = Math.round(((team1Participant.kills + team1Participant.assists) / (team1Kills)) * 100);
+                      const team1ParticipantIdentity = gameData.participantIdentities.find(identity => team1Participant.participantId === identity.participantId) || {};
+                      const team1Player = team1.players.find(player => player.account_id === team1ParticipantIdentity.player.summonerId) || {};
+                      const team1PlayerDamagePercent = (team1Participant.stats.totalDamageDealtToChampions / mostDamage) * 100;
+                      const team1PlayerKp = Math.round(((team1Participant.stats.kills + team1Participant.stats.assists) / (team1Kills)) * 100);
 
                       const team2Participant = team2Participants[index];
-                      const team2Player = team2.players.find(player => player.account_id === team2Participant.summonerId) || {};
-                      const team2PlayerDamagePercent = (team2Participant.totalDamageDealtToChampions / mostDamage) * 100;
-                      const team2PlayerKp = Math.round(((team2Participant.kills + team2Participant.assists) / (team2Kills)) * 100);
+                      const team2ParticipantIdentity = gameData.participantIdentities.find(identity => team2Participant.participantId === identity.participantId) || {};
+                      const team2Player = team2.players.find(player => player.account_id === team2ParticipantIdentity.player.summonerId) || {};
+                      const team2PlayerDamagePercent = (team2Participant.stats.totalDamageDealtToChampions / mostDamage) * 100;
+                      const team2PlayerKp = Math.round(((team2Participant.stats.kills + team2Participant.stats.assists) / (team2Kills)) * 100);
 
                       return (
                         <TableRow key={index}>
                           <TableCell style={{ width: '25%' }} align="left" component="th" scope="row">
-                            <Participant isSub={!team1Player.id} mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1Participant.player} user={team1Player.user} />
+                            <Participant isSub={!team1Player.id} mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1ParticipantIdentity.player} user={team1Player.user} />
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
-                            <div className={classes.damage}>{team1Participant.totalDamageDealtToChampions}</div>
+                            <div className={classes.damage}>{team1Participant.stats.totalDamageDealtToChampions}</div>
                             <ProgressBar variant="determinate" value={team1PlayerDamagePercent} />
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
                             <div className={classes.kda}>
-                              {team1Participant.kills} / {team1Participant.deaths} / {team1Participant.assists} ({team1PlayerKp}%)
+                              {team1Participant.stats.kills} / {team1Participant.stats.deaths} / {team1Participant.stats.assists} ({team1PlayerKp}%)
                             </div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row"><Role role={ROLES[index].role} /></TableCell>
                           <TableCell align="center" component="th" scope="row">
                             <div className={classes.kda}>
-                              {team2Participant.kills} / {team2Participant.deaths} / {team2Participant.assists} ({team2PlayerKp}%)
+                              {team2Participant.stats.kills} / {team2Participant.stats.deaths} / {team2Participant.stats.assists} ({team2PlayerKp}%)
                             </div>
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
-                            <div className={classes.damage}>{team2Participant.totalDamageDealtToChampions}</div>
+                            <div className={classes.damage}>{team2Participant.stats.totalDamageDealtToChampions}</div>
                             <ProgressBar variant="determinate" value={team2PlayerDamagePercent} />
                           </TableCell>
                           <TableCell style={{ width: '25%' }} align="right" component="th" scope="row">
-                            <Participant isSub={!team2Player.id} mvp={game.mvp === team2Player.id} reverse participant={team2Participant} player={team1Participant} user={team2Player.user} />
+                            <Participant isSub={!team2Player.id} mvp={game.mvp === team2Player.id} reverse participant={team2Participant} player={team2ParticipantIdentity.player} user={team2Player.user} />
                           </TableCell>
                         </TableRow>
                       );
@@ -295,4 +285,4 @@ const Match = (props) => {
   );
 };
 
-export default Match;
+export default OldMatch;

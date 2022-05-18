@@ -317,6 +317,7 @@ class Game(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     game_data = models.JSONField(null=True, blank=True)
+    is_old_data_format = models.BooleanField(default=False)
     game_id = models.CharField(max_length=100, blank=True)
     tournament_code = models.CharField(max_length=50, blank=True)
     game_in_series = models.IntegerField()

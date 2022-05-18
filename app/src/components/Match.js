@@ -87,7 +87,7 @@ const Match = ({ match, user }) => {
   const team1 = match.teams[0];
   const team2 = match.teams[1];
 
-  const isCaptain = !![team1, team2].filter(team => team.captain.user.id === user.user.id)[0];
+  const isCaptain = !![team1, team2].filter(team => team.captain?.user.id === user.user.id)[0];
 
   const userTeam = [team1, team2].filter(team => !!team.players.filter(player => player.user.id === user.user.id)[0])[0];
 
