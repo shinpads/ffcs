@@ -80,6 +80,7 @@ class Team(models.Model):
     color = models.IntegerField(default=16777215)
     discord_channel_id = models.CharField(default=None, null=True, blank=True, max_length=64)
     discord_role_id = models.CharField(default=None, null=True, blank=True, max_length=64)
+    logo_url = models.CharField(default=None, null=True, blank=True, max_length=200)
     
     class Meta:
         indexes = [

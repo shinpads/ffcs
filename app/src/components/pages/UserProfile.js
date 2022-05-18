@@ -62,7 +62,7 @@ const styles = createUseStyles({
     marginBottom: '4px',
   },
   leftContainer: {
-    display: 'flex', 
+    display: 'flex',
     flexDirection: 'column',
   },
   listContainer: {
@@ -75,7 +75,7 @@ const styles = createUseStyles({
     },
   },
   smurfLink: {
-    color:'#3366BB',
+    color: '#3366BB',
   },
   seasonButtonsContainer: {
     marginBottom: '4px',
@@ -163,14 +163,17 @@ const UserProfile = (props) => {
           <div className={classes.leftContainer}>
             <div className={classes.sectionTitle}>Champion Stats</div>
             <PlayerChampionStats playerChampionStats={player.player_champion_stats} />
-            {user.smurfs && (<div><div className={classes.sectionTitle}>Smurfs</div>
+            {user.smurfs && (
+            <div><div className={classes.sectionTitle}>Smurfs</div>
               <Paper>
                 {user.smurfs.map(smurf => (
                   <div className={classes.listContainer}>
-                    <a href={"https://na.op.gg/summoners/na/" + smurf} className={classes.smurfLink}>{smurf}</a>
+                    <a href={`https://na.op.gg/summoners/na/${smurf}`} className={classes.smurfLink}>{smurf}</a>
                   </div>
                 ))}
-              </Paper></div>)}
+              </Paper>
+            </div>
+            )}
           </div>
           <div>
             <div className={classes.sectionTitle}>Games</div>

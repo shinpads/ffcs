@@ -232,3 +232,14 @@ def get_players(request):
         "message": "success",
         "data": data,
     }, status=200)
+
+def get_players_current_season(request):
+    current_season = Season.objects.get(is_current=True)
+    players = Player.objects.filter(team__season=current_season).prefetch_related('user').prefetch_related('stats')
+
+    data = [PlayerSerializer(player).data for player in players]
+
+    return JsonResponse({
+        "message": "success",
+        "data": data,
+    }, status=200)

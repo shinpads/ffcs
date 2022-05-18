@@ -134,8 +134,8 @@ def get_game(gameid, tournament_code):
         print('Using cached game data')
         return game.game_data
 
-    url = "https://na1.api.riotgames.com/lol/match/v4/matches/"
-    url = url + gameid + "/by-tournament-code/" + tournament_code + "?api_key=" + os.getenv('RIOT_API_KEY')
+    url = "https://americas.api.riotgames.com/lol/match/v5/matches/"
+    url = url + 'NA1_' + gameid + "?api_key=" + os.getenv('RIOT_API_KEY')
     res = requests.get(url)
     if res.status_code != 200:
         return None
@@ -150,7 +150,7 @@ def get_game(gameid, tournament_code):
 
 def get_game_timeline(gameid):
     #url = "https://na1.api.riotgames.com/lol/match/v4/timelines/by-match/"
-    url = "https://na1.api.riotgames.com/lol/match/v5/matches/" + gameid + "/timeline"
+    url = "https://americas.api.riotgames.com/lol/match/v5/matches/" + 'NA1_' + gameid + "/timeline"
     url = url + "?api_key=" + os.getenv('RIOT_API_KEY')
 
     res = requests.get(url)

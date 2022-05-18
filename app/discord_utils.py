@@ -182,7 +182,7 @@ def create_team_embed(team):
         "description": "",
         "color": team.color,
         "thumbnail": {
-            "url": 'https://ddragon.leagueoflegends.com/cdn/12.6.1/img/profileicon/10.png',
+            "url": team.logo_url if team.logo_url else 'https://ddragon.leagueoflegends.com/cdn/12.6.1/img/profileicon/2.png',
             "height": 0,
             "width": 0
         },

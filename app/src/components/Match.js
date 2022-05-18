@@ -9,7 +9,6 @@ import TeamName from './TeamName';
 import { copyTextToClipboard, getImage } from '../helpers';
 import twitchLogo from '../../public/twitch.png';
 
-import StartingSide from './StartingSide';
 import MatchScheduler from './MatchScheduler';
 
 const styles = createUseStyles({
@@ -83,7 +82,7 @@ const Match = ({ match, user }) => {
   //     });
   //   }
 
-  if (match.teams.length != 2) return <div />;
+  if (match.teams.length !== 2) return <div />;
 
   const team1 = match.teams[0];
   const team2 = match.teams[1];
@@ -100,7 +99,6 @@ const Match = ({ match, user }) => {
       </div>
       <div className={classes.middleContainer}>
         <div className={classes.teamContainer}>
-          <StartingSide side={match.blue_side === team1.id ? 'blue' : (match.blue_side ? 'red' : null)} />
           <TeamName
             key={team1.id}
             team={team1}
@@ -114,12 +112,11 @@ const Match = ({ match, user }) => {
             team={team2}
             nameClass={winner === team2.id ? classes.winningTeam : (winner !== null ? classes.losingTeam : '')}
           />
-          <StartingSide side={match.blue_side === team2.id ? 'blue' : (match.blue_side ? 'red' : null)} />
         </div>
       </div>
       <div className={classes.bottomContainer}>
         <div className={classes.scheduleContainer}>
-          {(isCaptain) && <MatchScheduler sendingTeam={userTeam} match={match} />}
+          {(isCaptain && !match.winner) && <MatchScheduler sendingTeam={userTeam} match={match} />}
         </div>
         <div className={classes.codeContainer}>
           {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (

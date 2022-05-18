@@ -19,7 +19,9 @@ const styles = createUseStyles({
   },
 });
 
-const ParticipantName = ({ participant, player, mvp, isSub, user }) => {
+const ParticipantName = ({
+  participant, mvp, isSub, user,
+}) => {
   const classes = styles();
 
   return (
@@ -27,10 +29,9 @@ const ParticipantName = ({ participant, player, mvp, isSub, user }) => {
       <ChampionIcon width={16} championId={participant.championId} />
       {user
         ? (<UserName user={user} nameClass={classes.summonerName} />)
-        : (<div className={classes.summonerName}>{player.summonerName}</div>)
-      }
+        : (<div className={classes.summonerName}>{participant.summonerName}</div>)}
     </div>
   );
-}
+};
 
 export default ParticipantName;

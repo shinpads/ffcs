@@ -185,5 +185,6 @@ LOGGING = {
 }
 
 django_heroku.settings(locals())
-del DATABASES['default']['OPTIONS']['sslmode']
+if os.getenv('DEBUG') != 'on':
+    del DATABASES['default']['OPTIONS']['sslmode']
 DATABASES['default']['CONN_MAX_AGE'] = 0

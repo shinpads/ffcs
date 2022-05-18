@@ -131,6 +131,7 @@ const Home = (props) => {
         <div className={classes.splitContainer}>
           <Matches enablePlayoffs matchesToShow={currentSeasonMatchesByWeek} />
           <div>
+            <Standings />
             <Leaderboard />
           </div>
         </div>

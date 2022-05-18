@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createUseStyles } from 'react-jss';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { getStandings } from '../api';
-import Match from './Match';
-import TeamName from './TeamName';
-import Spinner from './Spinner';
+import {
+  Tab, Tabs, TabList, TabPanel,
+} from 'react-tabs';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,6 +11,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Spinner from './Spinner';
+import TeamName from './TeamName';
+import Match from './Match';
+import { getStandings } from '../api';
 
 const styles = createUseStyles({
   container: {
@@ -25,7 +27,7 @@ const styles = createUseStyles({
     fontSize: '20px',
     padding: '8px 0px',
     borderBottom: '1px solid',
-  }
+  },
 });
 
 const Standings = () => {
@@ -35,9 +37,9 @@ const Standings = () => {
 
   useEffect(() => {
     async function start() {
-      const newStandings = await getStandings(2);
-      newStandings.sort((a, b) => a.l - b.l)
-      newStandings.sort((a, b) => b.w - a.w)
+      const newStandings = await getStandings(3);
+      newStandings.sort((a, b) => a.l - b.l);
+      newStandings.sort((a, b) => b.w - a.w);
       setStandings(newStandings);
       setLoading(false);
     }

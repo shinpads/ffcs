@@ -61,16 +61,16 @@ const styles = createUseStyles({
 const PlayersGame = ({ game, player }) => {
   const classes = styles();
   const { game_data: gameData } = game;
-  const participantIdentity = gameData.participantIdentities.find(participantIdentity => participantIdentity.player.summonerId === player.account_id);
-  if (!participantIdentity) return null;
-  const participant = gameData.participants.find(participant => participant.participantId === participantIdentity.participantId);
+  console.log(gameData);
+  const participant = gameData.info.participants.find(curParticipant => curParticipant.summonerId === player.account_id);
+  if (!participant) return null;
   const won = game.winner === player.team.id;
 
   const [team1, team2] = game.match.teams;
-  const team1TeamData = game.winner === team1.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail');
-  const team2TeamData = game.winner === team2.id ? gameData.teams.find(team => team.win === 'Win') : gameData.teams.find(team => team.win === 'Fail');
-  const team1Participants = gameData.participants.filter(participant => participant.teamId === team1TeamData.teamId);
-  const team2Participants = gameData.participants.filter(participant => participant.teamId === team2TeamData.teamId);
+  const team1TeamData = game.winner === team1.id ? gameData.info.teams.find(team => team.win) : gameData.info.teams.find(team => !team.win);
+  const team2TeamData = game.winner === team2.id ? gameData.info.teams.find(team => team.win) : gameData.info.teams.find(team => !team.win);
+  const team1Participants = gameData.info.participants.filter(curParticipant => curParticipant.teamId === team1TeamData.teamId);
+  const team2Participants = gameData.info.participants.filter(curParticipant => curParticipant.teamId === team2TeamData.teamId);
 
   const gameDurationMinutes = (gameData.gameDuration / 60).toFixed(0);
   const gameDurationSeconds = gameData.gameDuration % 60;
@@ -102,10 +102,10 @@ const TeamPartcipants = ({ participants, game, team }) => {
   return (
     <div className={classes.teamParticipantsContainer}>
       {participants.map(participant => {
-        const participantIdentity = gameData.participantIdentities.find(identity => participant.participantId === identity.participantId) || {};
-        const player = team.players.find(player => player.account_id === participantIdentity.player.summonerId) || {};
+        const player = team.players.find(curPlayer => curPlayer.account_id === participant.summonerId) || {};
+        console.log(player);
         return (
-          <ParticipantName participant={participant} player={participantIdentity.player} user={player.user} />
+          <ParticipantName participant={participant} user={player.user} />
         );
       })}
     </div>
