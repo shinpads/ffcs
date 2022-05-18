@@ -21,7 +21,9 @@ const styles = createUseStyles({
   },
 });
 
-const Matches = ({ matches, matchesToShow, enablePlayoffs }) => {
+const Matches = ({
+  matches, forTeamProfile = false, matchesToShow, enablePlayoffs,
+}) => {
   const classes = styles();
 
   const { playOffMatchesByFraction } = matches;
@@ -41,7 +43,6 @@ const Matches = ({ matches, matchesToShow, enablePlayoffs }) => {
     });
     if (currentWeek === -1) {
       // all regular season games are over
-      console.log(playOffMatchesByFraction);
       const unfinishedPlayoffStages = Object.keys(playOffMatchesByFraction).sort().filter(fraction => playOffMatchesByFraction[fraction].filter(match => !match.winner).length > 0).reverse();
       if (unfinishedPlayoffStages.length > 0) {
         currentPlayoffStage = unfinishedPlayoffStages[0];
@@ -53,11 +54,13 @@ const Matches = ({ matches, matchesToShow, enablePlayoffs }) => {
     <div>
       {loading ? <Spinner /> : (
         <div>
-          <h1 style={{ textAlign: 'center', margin: 0 }}>THIS WEEK'S MATCH{matchesToShow[currentWeek].length > 1 ? 'ES' : ''}</h1>
+          <h1 style={{ textAlign: 'center', margin: 0 }}>
+            {matchesToShow[currentWeek] && `${forTeamProfile ? 'UPCOMING' : 'THIS WEEK\'S'} MATCH${matchesToShow[currentWeek].length > 1 ? 'ES' : ''}`}
+          </h1>
           <div className={classes.container}>
             <>
               {currentWeek > 0 && matchesToShow[currentWeek].map(match => <Match match={match} />)}
-              {(currentWeek === -1 && enablePlayoffs) && playOffMatchesByFraction[currentPlayoffStage]?.map(match => <Match match={match} />)}
+              {(currentWeek === -1 && enablePlayoffs) && playOffMatchesByFraction[currentPlayoffStage].map(match => <Match match={match} />)}
             </>
             {Object.keys(matchesToShow).filter(week => (week !== currentWeek)).sort((a, b) => parseInt(a) - parseInt(b)).map(weekNum => (
               <>

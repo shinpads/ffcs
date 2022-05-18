@@ -86,7 +86,7 @@ const TeamProfile = (props) => {
     async function getData() {
       const data = await getTeam(teamId);
       data.players = sortTeamPlayers(data.players);
-      dispatch(getMatches());
+      dispatch(getMatches(data.season));
       setTeam(data);
       setLoading(false);
     }
@@ -126,7 +126,7 @@ const TeamProfile = (props) => {
             </Paper>
           </div>
           <div className={classes.matches}>
-            {matches.loaded && <Matches enablePlayoffs={false} matchesToShow={matches.matchesByTeam[teamId]} />}
+            {matches.loaded && <Matches forTeamProfile enablePlayoffs={false} matchesToShow={matches.matchesByTeam[teamId]} />}
           </div>
         </div>
       </div>

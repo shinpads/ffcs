@@ -24,6 +24,7 @@ import ChampionIcon from '../League/ChampionIcon';
 import PlayerChampionStats from '../PlayerChampionStats';
 import SummonerIcon from '../League/SummonerIcon';
 import PlayersGame from '../PlayersGame';
+import OldPlayersGame from '../OldPlayersGame';
 
 const styles = createUseStyles({
   topContainer: {
@@ -177,9 +178,7 @@ const UserProfile = (props) => {
           </div>
           <div>
             <div className={classes.sectionTitle}>Games</div>
-            {games.map(game => (
-              <PlayersGame game={game} player={player} />
-            ))}
+            {games.map(game => (game.is_old_data_format ? <OldPlayersGame game={game} player={player} /> : <PlayersGame game={game} player={player} />))}
           </div>
         </div>
       </div>

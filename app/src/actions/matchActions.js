@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SET_MATCHES } from './actionTypes';
 
-export const getMatches = () => async (dispatch) => {
+export const getMatches = (season = 0) => async (dispatch) => {
   try {
     const res = await axios.get('/api/matches/');
 
@@ -12,7 +12,7 @@ export const getMatches = () => async (dispatch) => {
 
     if (res.data) {
       const { matches } = res.data.data;
-      const currentSeasonId = res.data.data.current_season_id;
+      const currentSeasonId = season || res.data.data.current_season_id;
 
       let maxPlayoffFraction = 1;
 
