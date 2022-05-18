@@ -14,7 +14,6 @@ import requests
 
 def get_from_session(request):
     user = request.user
-    player_stats.calculate_player_stats()
     try:
         update_user_info(user)
     except AttributeError:
