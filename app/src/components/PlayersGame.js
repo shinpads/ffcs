@@ -72,8 +72,8 @@ const PlayersGame = ({ game, player }) => {
   const team1Participants = gameData.info.participants.filter(curParticipant => curParticipant.teamId === team1TeamData.teamId);
   const team2Participants = gameData.info.participants.filter(curParticipant => curParticipant.teamId === team2TeamData.teamId);
 
-  const gameDurationMinutes = (gameData.gameDuration / 60).toFixed(0);
-  const gameDurationSeconds = gameData.gameDuration % 60;
+  const gameDurationMinutes = (gameData.info.gameDuration / 60).toFixed(0);
+  const gameDurationSeconds = gameData.info.gameDuration % 60;
 
   return (
     <a href={`/match/${game.match.id}`} className={`${classes.container} ${won ? classes.win : classes.lose}`}>

@@ -155,7 +155,7 @@ const UserProfile = (props) => {
             <div>{user.summoner_name}</div>
             <div className={classes.teamContainer}>
               <Role role={player.role} />
-              <div>{player.team.name}</div>
+              <div><a href={`https://ffcsleague.com/team/${player.team.id}`}>{player.team.name}</a></div>
             </div>
           </div>
         </Paper>
