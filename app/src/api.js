@@ -89,13 +89,18 @@ export async function saveTeamManage(data) {
   return response.data;
 }
 
-export async function getStandings(season = 2) {
+export async function getStandings(season = 3) {
   const response = await axios.get('/api/season/standings/', { params: { season } });
   return response.data.data;
 }
 
 export async function getPlayers() {
   const response = await axios.get('/api/players/');
+  return response.data.data;
+}
+
+export async function getPlayersCurrentSeason() {
+  const response = await axios.get('/api/players/current/');
   return response.data.data;
 }
 

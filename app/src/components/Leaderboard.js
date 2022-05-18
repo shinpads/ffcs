@@ -16,7 +16,7 @@ import colors from '../colors';
 import Spinner from './Spinner';
 import TeamName from './TeamName';
 import Match from './Match';
-import { getPlayers } from '../api';
+import { getPlayersCurrentSeason } from '../api';
 
 // pictures
 import { getImage } from '../helpers';
@@ -146,10 +146,10 @@ const Leaderboard = () => {
 
   useEffect(() => {
     async function start() {
-      let allPlayers = await getPlayers();
-      allPlayers = allPlayers.filter(player => player.stats);
+      let getPlayersRes = await getPlayersCurrentSeason(true);
+      getPlayersRes = getPlayersRes.filter(player => player.stats);
 
-      setAllPlayers(allPlayers);
+      setAllPlayers(getPlayersRes);
 
       setLoading(false);
     }

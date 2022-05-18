@@ -67,6 +67,9 @@ const styles = createUseStyles({
   matches: {
     marginTop: '12px',
   },
+  teamLogo: {
+    borderRadius: '100%',
+  },
 });
 
 const TeamProfile = (props) => {
@@ -109,7 +112,9 @@ const TeamProfile = (props) => {
           <div>
             <Paper className={classes.topContainer}>
               <div className={classes.profileIconContainer}>
-                <SummonerIcon rounded iconId={2} />
+                {team.logo_url
+                  ? <img alt="" target="_blank" width={96} src={team.logo_url} className={classes.teamLogo} />
+                  : <SummonerIcon rounded iconId={2} />}
               </div>
               <div className={classes.userDetailsContainer}>
                 <div>{team.name}</div>

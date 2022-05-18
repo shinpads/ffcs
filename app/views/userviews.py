@@ -8,11 +8,13 @@ from ..serializers.game_serializer_with_match import GameSerializerWithMatch
 from django.http import JsonResponse
 from django.views import View
 from django.db import IntegrityError
+from ..scripts import player_stats
 import json, os
 import requests
 
 def get_from_session(request):
     user = request.user
+    player_stats.calculate_player_stats()
     try:
         update_user_info(user)
     except AttributeError:

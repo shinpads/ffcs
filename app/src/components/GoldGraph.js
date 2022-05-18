@@ -7,7 +7,6 @@ import { Paper, Button } from '@material-ui/core';
 import colors from '../colors';
 import TeamName from './TeamName';
 
-
 const styles = createUseStyles({
   container: {
     padding: '8px',
@@ -19,10 +18,8 @@ const styles = createUseStyles({
   },
   title: {
     padding: '16px',
-  }
+  },
 });
-
-
 
 const options = {
   scales: {
@@ -35,28 +32,27 @@ const options = {
     ],
   },
   elements: {
-    point:{
-      radius: 0
-    }
+    point: {
+      radius: 0,
+    },
   },
   plugins: {
     legend: {
       display: false,
-        labels: {
-          display: false
-        }
-    }
-  }
+      labels: {
+        display: false,
+      },
+    },
+  },
 };
 
-const GoldGraph = ({ timeline, team1Participants, team2Participants, team1, team2 }) => {
+const GoldGraph = ({
+  timeline, team1Participants, team2Participants, team1, team2,
+}) => {
   const classes = styles();
 
-  console.log(timeline);
-  console.log(team1Participants, team2Participants);
-  
   if (!timeline) {
-   return null; 
+    return null;
   }
 
   const labels = timeline.frames.map(frame => {
@@ -73,28 +69,26 @@ const GoldGraph = ({ timeline, team1Participants, team2Participants, team1, team
     let team1Gold = 0;
     let team2Gold = 0;
     team1Participants.forEach(p => {
-        team1Gold += frame.participantFrames[p.participantId].totalGold;
+      team1Gold += frame.participantFrames[p.participantId].totalGold;
     });
     team2Participants.forEach(p => {
-        team2Gold += frame.participantFrames[p.participantId].totalGold;
+      team2Gold += frame.participantFrames[p.participantId].totalGold;
     });
 
     const goldDiff = team1Gold - team2Gold;
     goldDiffDataSet.push(goldDiff);
-
   });
 
   const data = {
-    labels: labels,
+    labels,
     datasets: [
       {
         label: 'Gold Diff',
         data: goldDiffDataSet,
-        fill: { above: colors.primary, below: colors.red, target: { value: 0 } }
+        fill: { above: colors.primary, below: colors.red, target: { value: 0 } },
       },
     ],
   };
-
 
   return (
     <div className={classes.container}>
