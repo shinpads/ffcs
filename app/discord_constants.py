@@ -24,6 +24,11 @@ class InteractionCallbackTypes(IntEnum):
     APPLICATION_COMMAND_AUTOCOMPLETE_RESULT = 8
     MODAL = 9
 
+class ScheduledEventEntityType(IntEnum):
+    STAGE_INSTANCE = 1
+    VOICE = 2
+    EXTERNAL = 3
+
 permissions = {
     'CREATE_INSTANT_INVITE': (1 << 0),
     'KICK_MEMBERS': (1 << 1),

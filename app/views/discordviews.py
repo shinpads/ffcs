@@ -1,10 +1,11 @@
+from datetime import timedelta
 from django.http import HttpResponse, JsonResponse, HttpRequest
 from django.views import View
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from app.discord_bot import DiscordBot
 
-from app.discord_constants import InteractionCallbackTypes
+from app.discord_constants import InteractionCallbackTypes, ScheduledEventEntityType
 from ..models import Match, Team, User, Season, RegistrationForm
 import json
 import requests
@@ -83,6 +84,8 @@ def game_confirm_response(data, interaction_response):
             to_team_captain.summoner_name,
         )
         discord_bot.send_dm(from_team_captain.discord_user_id, from_captain_message)
+
+        set_match_event(match, os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL'), proposed_time, match.event_id)
 
         match.scheduled_for = proposed_time
         match.proposed_for = None
@@ -167,3 +170,29 @@ def exchange_code(code: str):
     response = requests.get('https://discord.com/api/v6/users/@me', headers=headers)
 
     return response.json()
+
+def set_match_event(match, channel, time, event_id=None):
+    end_time = time + timedelta(hours=match.match_format)
+    data = {
+        'entity_metadata': {
+            'location': 'https://www.twitch.tv/forfunchampionshipseries'
+        },
+        'name': f'{match.teams.all()[0].name} vs {match.teams.all()[1].name}',
+        'scheduled_start_time': time.isoformat(),
+        'scheduled_end_time': end_time.isoformat(),
+        'description': f'FFCS {match.season.name} match, week {match.week}',
+        'entity_type': ScheduledEventEntityType.EXTERNAL,
+        'privacy_level': 2
+    }
+
+    if event_id:
+        res = discord_bot.modify_event(data, event_id).json()
+    else:
+        res = discord_bot.create_event(data).json()
+
+    event_link = f'https://discord.com/events/{res["guild_id"]}/{res["id"]}'
+
+    if not event_id:
+        discord_bot.send_message(event_link, channel)
+
+    match.event_id = res["id"]
