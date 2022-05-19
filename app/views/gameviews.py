@@ -26,24 +26,21 @@ class CallbackView(View):
             }, status=500)
             return response
 
-        winner_acc_username = data["winningTeam"][0]["summonerName"]
-        winner_acc_id = get_riot_account_id(winner_acc_username)
-        current_season = Season.objects.get(is_current=True)
-        winner_player = Player.objects.filter(account_id=winner_acc_id, team__season=current_season).first()
-        if winner_player == None:
-            response = JsonResponse({
-                "message": "Error finding player.",
-                "data": out_data,
-            }, status=500)
-            return response
+        for i in range(5):
+            winner_acc_username = data["winningTeam"][i]["summonerName"]
+            winner_acc_id = get_riot_account_id(winner_acc_username)
+            current_season = Season.objects.get(is_current=True)
 
-        winner_team = winner_player.team
-        if winner_team == None:
-            response = JsonResponse({
-                "message": "Player does not have a team.",
-                "data": out_data,
-            }, status=500)
-            return response
+            winner_player = Player.objects.filter(account_id=winner_acc_id, team__season=current_season).first()
+            if winner_player == None:
+                continue
+            
+            winner_team = winner_player.team
+            if winner_team == None:
+                continue
+
+            if winner_team.id in [team.id for team in game.match.teams.all()]:
+                break
 
         if game.winner != None or game.game_id != '':
             response = JsonResponse({
