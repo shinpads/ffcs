@@ -20,6 +20,7 @@ def calculate_player_stats():
     player_stats = {}
     for game in game_datas:
         if game.is_old_data_format:
+            print(game)
             continue
         for participant in game['info']['participants']:
             summoner_id = participant['summonerId']
