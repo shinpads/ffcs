@@ -26,15 +26,17 @@ class CallbackView(View):
             }, status=500)
             return response
 
+
+        current_season = Season.objects.get(is_current=True)
+
         for i in range(5):
             winner_acc_username = data["winningTeam"][i]["summonerName"]
             winner_acc_id = get_riot_account_id(winner_acc_username)
-            current_season = Season.objects.get(is_current=True)
 
             winner_player = Player.objects.filter(account_id=winner_acc_id, team__season=current_season).first()
             if winner_player == None:
                 continue
-            
+
             winner_team = winner_player.team
             if winner_team == None:
                 continue
