@@ -28,6 +28,7 @@ class CallbackView(View):
 
 
         current_season = Season.objects.get(is_current=True)
+        winner_team = None
 
         for i in range(5):
             winner_acc_username = data["winningTeam"][i]["summonerName"]
@@ -37,16 +38,24 @@ class CallbackView(View):
             if winner_player == None:
                 continue
 
-            winner_team = winner_player.team
-            if winner_team == None:
+            player_team = winner_player.team
+            if player_team == None:
                 continue
 
-            if winner_team.id in [team.id for team in game.match.teams.all()]:
+            if player_team.id in [team.id for team in game.match.teams.all()]:
+                winner_team = player_team
                 break
 
         if game.winner != None or game.game_id != '':
             response = JsonResponse({
                 "message": "That game has already been updated.",
+                "data": out_data,
+            }, status=500)
+            return response
+        
+        if winner_team == None:
+            response = JsonResponse({
+                "message": "Found no winning team!",
                 "data": out_data,
             }, status=500)
             return response
