@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
-from ..models import Game, Player
+from ..models import Game, Player, Season
 from ..utils import get_riot_account_id
 from ..scripts import player_stats
 from ..utils import get_game_timeline
@@ -28,7 +28,8 @@ class CallbackView(View):
 
         winner_acc_username = data["winningTeam"][0]["summonerName"]
         winner_acc_id = get_riot_account_id(winner_acc_username)
-        winner_player = Player.objects.filter(account_id=winner_acc_id).first()
+        current_season = Season.objects.get(is_current=True)
+        winner_player = Player.objects.filter(account_id=winner_acc_id, team__season=current_season).first()
         if winner_player == None:
             response = JsonResponse({
                 "message": "Error finding player.",
