@@ -88,3 +88,13 @@ class DiscordBot():
         url = self.base_url + '/users/{}'.format(user_id)
 
         return requests.get(url, headers=self.headers)
+
+    def create_event(self, data):
+        url = self.base_url + '/guilds/{}/scheduled-events'.format(self.guild_id)
+
+        return requests.post(url, headers=self.headers, json=data)
+
+    def modify_event(self, data, event_id):
+        url = self.base_url + '/guilds/{}/scheduled-events/{}'.format(self.guild_id, event_id)
+
+        return requests.patch(url, headers=self.headers, json=data)
