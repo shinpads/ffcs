@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
-from ..models import Game, Player
+from ..models import Game, Player, Season
 from ..utils import get_riot_account_id
 from ..scripts import player_stats
 from ..utils import get_game_timeline
@@ -26,27 +26,36 @@ class CallbackView(View):
             }, status=500)
             return response
 
-        winner_acc_username = data["winningTeam"][0]["summonerName"]
-        winner_acc_id = get_riot_account_id(winner_acc_username)
-        winner_player = Player.objects.filter(account_id=winner_acc_id).first()
-        if winner_player == None:
-            response = JsonResponse({
-                "message": "Error finding player.",
-                "data": out_data,
-            }, status=500)
-            return response
 
-        winner_team = winner_player.team
-        if winner_team == None:
-            response = JsonResponse({
-                "message": "Player does not have a team.",
-                "data": out_data,
-            }, status=500)
-            return response
+        current_season = Season.objects.get(is_current=True)
+        winner_team = None
+
+        for i in range(5):
+            winner_acc_username = data["winningTeam"][i]["summonerName"]
+            winner_acc_id = get_riot_account_id(winner_acc_username)
+
+            winner_player = Player.objects.filter(account_id=winner_acc_id, team__season=current_season).first()
+            if winner_player == None:
+                continue
+
+            player_team = winner_player.team
+            if player_team == None:
+                continue
+
+            if player_team.id in [team.id for team in game.match.teams.all()]:
+                winner_team = player_team
+                break
 
         if game.winner != None or game.game_id != '':
             response = JsonResponse({
                 "message": "That game has already been updated.",
+                "data": out_data,
+            }, status=500)
+            return response
+        
+        if winner_team == None:
+            response = JsonResponse({
+                "message": "Found no winning team!",
                 "data": out_data,
             }, status=500)
             return response

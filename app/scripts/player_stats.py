@@ -12,15 +12,13 @@ def calculate_player_stats():
     current_season = Season.objects.get(is_current=True)
     all_matches = Match.objects.filter(season=current_season)
     all_games = Game.objects.filter(match__in=all_matches).exclude(game_id='')
-    game_datas = [get_game(game.game_id, game.tournament_code) for game in list(all_games)]
+    game_datas = [get_game(game.game_id, game.tournament_code) for game in list(all_games) if not game.is_old_data_format]
 
     ##########################
     #      PLAYER STATS     #
     #########################
     player_stats = {}
     for game in game_datas:
-        if game.is_old_data_format:
-            continue
         for participant in game['info']['participants']:
             summoner_id = participant['summonerId']
             summoner_name = participant['summonerName']
