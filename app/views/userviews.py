@@ -1,4 +1,4 @@
-from app.discord_utils import update_user_info, test_mvp
+from app.discord_utils import update_user_info
 from app.utils import format_user_for_frontend
 from ..models import Player, Team, Season, User, Match, Game
 from ..serializers.userserializer import UserSerializer
@@ -26,7 +26,6 @@ def get_from_session(request):
 
     out_data = UserSerializer(user).data
     format_user_for_frontend(out_data)
-    test_mvp()
 
     return JsonResponse({
         "message": "success",

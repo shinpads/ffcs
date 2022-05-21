@@ -129,13 +129,6 @@ def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
 
     return res.json()
 
-def test_mvp():
-    game = Game.objects.get(id=76)
-    players = []
-    players.append(Player.objects.get(id=63))
-    players.append(Player.objects.get(id=75))
-    send_mvp_vote_dm(game, players)
-
 def send_mvp_vote_dm(game, players):
     message = (
         "Congrats on the win! Please vote for the game MVP "
