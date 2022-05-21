@@ -1,6 +1,8 @@
 from django.http import JsonResponse
 from django.views import View
-from ..models import Game, Player, Season
+
+from app.discord_utils import send_mvp_vote_dm
+from ..models import Game, Match, Player, Season
 from ..utils import get_riot_account_id
 from ..scripts import player_stats
 from ..utils import get_game_timeline
@@ -26,17 +28,21 @@ class CallbackView(View):
             }, status=500)
             return response
 
-
         current_season = Season.objects.get(is_current=True)
         winner_team = None
+
+        winning_players = []
 
         for i in range(5):
             winner_acc_username = data["winningTeam"][i]["summonerName"]
             winner_acc_id = get_riot_account_id(winner_acc_username)
 
             winner_player = Player.objects.filter(account_id=winner_acc_id, team__season=current_season).first()
+
             if winner_player == None:
                 continue
+
+            winning_players.append(winner_player)
 
             player_team = winner_player.team
             if player_team == None:
@@ -66,6 +72,8 @@ class CallbackView(View):
 
         # update player stats with new data
         player_stats.calculate_player_stats()
+
+        send_mvp_vote_dm(game.match, winning_players)
 
         response = JsonResponse({
             "message": "Successfully recieved callback.",

@@ -327,6 +327,7 @@ class Game(models.Model):
     tournament_code = models.CharField(max_length=50, blank=True)
     game_in_series = models.IntegerField()
     meta_key = models.CharField(max_length=100, blank=True, unique=True)
+    mvp_votes = models.JSONField(null=True, blank=True, default=dict)
     winner = models.ForeignKey(
         Team,
         related_name='won_games',

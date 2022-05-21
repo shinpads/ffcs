@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from app.discord_bot import DiscordBot
 
 from app.discord_constants import InteractionCallbackTypes, ScheduledEventEntityType
-from ..models import Match, Team, User, Season, RegistrationForm
+from ..models import Game, Match, Player, Team, User, Season, RegistrationForm
 import json
 import requests
 import os
@@ -54,6 +54,9 @@ class DiscordView(View):
         
         if interaction_response['i_type'] == 'match_confirm':
             return game_confirm_response(data, interaction_response)
+        
+        if interaction_response['i_type'] == 'mvp_vote':
+            return mvp_vote_response(data, interaction_response, data['data']['values'][0])
 
         return JsonResponse({
                 "status": "success"
@@ -130,6 +133,38 @@ def game_confirm_response(data, interaction_response):
             }
         })
 
+def mvp_vote_response(data, interaction_response, voted_player_id):
+    num_of_voters = interaction_response['voters']
+    original_message = data['message']['content']
+    game_id = interaction_response['g_id']
+    game = Game.objects.get(id=game_id)
+
+    if voted_player_id not in game.mvp_votes.keys():
+        game.mvp_votes[voted_player_id] = 0
+    
+    game.mvp_votes[voted_player_id] += 1
+    game.save()
+    
+    if sum(game.mvp_votes.values()) >= num_of_voters:
+        mvp_player_id = max(game.mvp_votes, key=game.mvp_votes.get)
+        mvp_player = Player.objects.get(id=mvp_player_id)
+        game.mvp = mvp_player
+        game.save()
+
+        mvp_message = "**Congrats! You have been voted the Match MVP!** 🥳🎉"
+        discord_bot.send_dm(mvp_player.user.discord_user_id, mvp_message)
+    
+
+    return JsonResponse({
+        "type": InteractionCallbackTypes.UPDATE_MESSAGE,
+        "data": {
+            "content": (
+                "{}\n\n"
+                "Thank you for voting!"
+                ).format(original_message),
+            "components": []
+        }
+    })
 
 def discord_login(request: HttpRequest):
     if not request.session.session_key:

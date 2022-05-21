@@ -1,5 +1,5 @@
 import json
-from app.models import Match, Player, Team, User
+from app.models import Game, Match, Player, Team, User
 from django.utils import timezone
 import pytz
 from app.serializers.teamserializer import TeamSerializer
@@ -128,6 +128,52 @@ def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
     )
 
     return res.json()
+
+def test_mvp():
+    game = Game.objects.get(id=76)
+    players = []
+    players.append(Player.objects.get(id=63))
+    players.append(Player.objects.get(id=75))
+    send_mvp_vote_dm(game, players)
+
+def send_mvp_vote_dm(game, players):
+    message = (
+        "Congrats on the win! Please vote for the game MVP "
+        "(you cannot vote yourself)."
+    )
+
+    for player in players:
+        player_choices = [p for p in players if p != player]
+        if len(player_choices) == 0:
+            continue
+        components = create_mvp_vote_components(len(players), player_choices, game)
+        print(discord_bot.send_dm(player.user.discord_user_id, message, components).json())
+
+def create_mvp_vote_components(num_of_voters, players, game):
+    components = [
+        {
+            "type": 1,
+            "components": [
+                {
+                    "type": 3,
+                    "custom_id": json.dumps({
+                        "i_type": "mvp_vote",
+                        "g_id": game.id,
+                        "voters": num_of_voters
+                    }),
+                    "options": [
+                        {
+                            "label": player.user.summoner_name,
+                            "value": player.id
+                        } for player in players
+                    ],
+                    "placeholder": "Vote for game MVP"
+                }
+            ]
+        }
+    ]
+
+    return components
 
 def create_message_confirmation_components(
     from_team_id,
