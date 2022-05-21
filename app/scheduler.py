@@ -26,6 +26,7 @@ def update_summoner_info():
         player.profile_icon_id = player_info['profileIconId']
         user.summoner_name = player_info['name']
         user.summoner_level = player_info['summonerLevel']
+        user.summoner_id = player_info['id']
 
         user.save()
         player.save()

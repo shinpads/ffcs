@@ -10,6 +10,7 @@ urlpatterns = [
   path('api/matches/', matchviews.MatchesView.as_view()),
   path('api/match/<match_id>', matchviews.get_match),
   path('api/match/proposeschedule/', matchviews.propose_schedule),
+  path('api/match/updatecasters/', matchviews.update_casters),
   path('api/admin/player/assignteam/', playerviews.AssignPlayerToTeam.as_view()),
   path('api/admin/player/assignrole/', playerviews.ChangePlayerRole.as_view()),
   path('api/signup/', registrationviews.signup),

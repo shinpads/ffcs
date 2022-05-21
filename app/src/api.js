@@ -113,3 +113,9 @@ export async function postDateProposal(data) {
 
   return response;
 }
+
+export async function updateCasters(data) {
+  const response = await axios.patch('/api/match/updatecasters/', data);
+
+  return response.data;
+}

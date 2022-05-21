@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from app.discord_utils import send_game_confirmation_dm
-from ..models import Match, Season, Team
+from ..models import Match, Season, Team, User
 from ..utils import get_game, get_game_timeline
 from ..serializers.matchserializer import MatchSerializer
 from django.http import JsonResponse
@@ -15,6 +15,7 @@ class MatchesView(View):
         current_season_id = Season.objects.get(is_current=True).id
         matches = Match.objects.all() \
         .order_by('scheduled_for', '-week') \
+        .prefetch_related('casters') \
         .prefetch_related('games') \
         .prefetch_related('teams') \
         .prefetch_related('teams__captain') \
@@ -118,3 +119,24 @@ def propose_schedule(request):
             "data": {},
         }, status=500)
         return response
+
+def update_casters(request):
+    data = json.loads(request.body)
+    match = Match.objects.get(id=data['matchId'])
+    user = User.objects.get(id=data['userId'])
+
+    if user in match.casters.all():
+        match.casters.remove(user)
+    else:
+        match.casters.add(user)
+    
+    match.save()
+
+    out_data = {}
+    out_data['casters'] = MatchSerializer(match).data['casters']
+
+    response = JsonResponse({
+            "message": "Successfully updated casters.",
+            "data": out_data
+        }, status=200)
+    return response

@@ -93,6 +93,54 @@ class Team(models.Model):
         return self.name + ", season: " + str(self.season)
 
 
+class User(AbstractBaseUser):
+    objects = DiscordUserOAuthManager()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    last_updated_discord_info = models.DateTimeField(null=True)
+    is_admin = models.BooleanField(default=False)
+
+    # Stuff from discord
+    discord_username = models.CharField(max_length=64, unique=True)
+    email = models.CharField(max_length=254, unique=True)
+    avatar = models.CharField(max_length=64)
+    discord_user_id = models.BigIntegerField()
+
+    # League stuff
+    summoner_id = models.CharField(max_length=64, null=True, default=None)
+    summoner_name = models.CharField(max_length=64)
+    summoner_level = models.IntegerField(default=1)
+    smurfs = ArrayField(
+        models.CharField(max_length=64, default='', blank=True),
+        null=True
+    )
+
+    # last_login = models.DateTimeField(null=True)
+
+    REQUIRED_FIELDS = []
+
+    USERNAME_FIELD = 'email'
+
+    is_authenticated = True
+    is_anonymous = False
+
+    def is_active(self, request):
+        return True
+
+    def is_staff(self, request):
+        return self.is_admin
+
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return self.is_admin
+
+    def __str__(self):
+        return self.discord_username
+
+
 class Match(models.Model):
     BO1 = 1
     BO3 = 3
@@ -113,6 +161,7 @@ class Match(models.Model):
     proposed_for    = models.DateTimeField(null=True, blank=True, default=None)
     twitch_vod      = models.CharField(max_length=120, blank=True)
     blue_side       = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
+    casters         = models.ManyToManyField(User, related_name="caster_of")
 
     event_id = models.CharField(max_length=120, default=None, null=True)
 
@@ -153,52 +202,6 @@ class Match(models.Model):
             ", week " + str(self.week) + \
             ", " + self.season.__str__()
         )
-
-class User(AbstractBaseUser):
-    objects = DiscordUserOAuthManager()
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    last_updated_discord_info = models.DateTimeField(null=True)
-    is_admin = models.BooleanField(default=False)
-
-    # Stuff from discord
-    discord_username = models.CharField(max_length=64, unique=True)
-    email = models.CharField(max_length=254, unique=True)
-    avatar = models.CharField(max_length=64)
-    discord_user_id = models.BigIntegerField()
-
-    # League stuff
-    summoner_name = models.CharField(max_length=64)
-    summoner_level = models.IntegerField(default=1)
-    smurfs = ArrayField(
-        models.CharField(max_length=64, default='', blank=True),
-        null=True
-    )
-
-    # last_login = models.DateTimeField(null=True)
-
-    REQUIRED_FIELDS = []
-
-    USERNAME_FIELD = 'email'
-
-    is_authenticated = True
-    is_anonymous = False
-
-    def is_active(self, request):
-        return True
-
-    def is_staff(self, request):
-        return self.is_admin
-
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return self.is_admin
-
-    def __str__(self):
-        return self.discord_username
 
 
 class Player(models.Model):
