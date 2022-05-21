@@ -109,7 +109,6 @@ def generate_tournament_code(game, all_players):
             summoners.append(user.summoner_id)
 
     data = {
-        "allowedSummonerIds": summoners,
         "mapType": map_type,
         "metadata": str(metadata),
         "pickType": pick_type,
