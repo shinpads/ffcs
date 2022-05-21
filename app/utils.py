@@ -104,9 +104,9 @@ def generate_tournament_code(game, all_players):
     if len(summoners) < 10:
         return None
 
-    for player in all_players.objects.filter(caster=True):
-        if player.account_id not in summoners:
-            summoners.append(player.account_id)
+    for user in game.match.casters.all():
+        if user.summoner_id:
+            summoners.append(user.summoner_id)
 
     data = {
         "allowedSummonerIds": summoners,
