@@ -1,6 +1,6 @@
-const path = require("path");
-const BundleTracker = require("webpack-bundle-tracker");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const path = require('path');
+const BundleTracker = require('webpack-bundle-tracker');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   watch: true,
@@ -10,17 +10,17 @@ module.exports = {
   },
   devtool: 'eval-source-map',
   entry: {
-    app: "./app/src/index.js",
+    app: './app/src/index.js',
   },
   output: {
-    path: path.resolve("./app/static/app/"),
-    filename: "[name]-[hash].js",
+    path: path.resolve('./app/static/app/'),
+    filename: '[name]-[hash].js',
   },
   plugins: [
     new CleanWebpackPlugin(),
     new BundleTracker({
       path: __dirname,
-      filename: "./webpack-stats.json",
+      filename: './webpack-stats.json',
     }),
   ],
   module: {
@@ -28,22 +28,22 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: ["babel-loader"],
+        use: ['babel-loader'],
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|svg|jpg|gifz|pdf)$/,
         use: ['file-loader'],
       },
       {
         test: /favicon\.ico$/,
         loader: 'file-loader',
         options: {
-          name: 'favicon.ico'
-        }
+          name: 'favicon.ico',
+        },
       },
     ],
   },

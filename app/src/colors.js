@@ -11,6 +11,7 @@ const colors = {
   primary: '#45a2fe',
   secondary: '#9aacb3',
   mvp: '#e19205',
+  captain: '#e3c439',
   gold: '#e19205',
   silver: '#C5C6C7',
   bronze: '#874f18',

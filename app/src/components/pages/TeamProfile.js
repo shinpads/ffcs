@@ -6,12 +6,13 @@ import Paper from '@material-ui/core/Paper';
 import Header from '../Header';
 import PlayerDetailed from '../PlayerDetailed';
 import colors from '../../colors';
-import { getTeam } from '../../api';
+import { getPlayer, getTeam } from '../../api';
 import Spinner from '../Spinner';
 import SummonerIcon from '../League/SummonerIcon';
 import sortTeamPlayers from '../../util/sortTeamPlayers';
 import Matches from '../Matches';
 import { getMatches } from '../../actions/matchActions';
+import { intToHexColorCode } from '../../helpers';
 
 const styles = createUseStyles({
   topContainer: {
@@ -64,6 +65,9 @@ const styles = createUseStyles({
       textDecoration: 'underline',
     },
   },
+  teamName: ({ teamColor }) => ({
+    color: teamColor,
+  }),
   matches: {
     marginTop: '12px',
   },
@@ -73,9 +77,9 @@ const styles = createUseStyles({
 });
 
 const TeamProfile = (props) => {
-  const classes = styles();
   const [loading, setLoading] = useState(true);
   const [team, setTeam] = useState(null);
+  const classes = styles({ teamColor: intToHexColorCode(team?.color) });
 
   const {
     league, matches, match, dispatch,
@@ -117,12 +121,12 @@ const TeamProfile = (props) => {
                   : <SummonerIcon rounded iconId={2} />}
               </div>
               <div className={classes.userDetailsContainer}>
-                <div>{team.name}</div>
+                <div className={classes.teamName}>{team.name}</div>
                 {team.is_captain && <a href={`/team/${team.id}/manage`} className={classes.manageTeam}>Manage Team</a>}
               </div>
             </Paper>
             <Paper className={classes.players}>
-              {team.players.map(player => <PlayerDetailed player={player} />)}
+              {team.players.map(player => <PlayerDetailed player={player} isCaptain={player.user.id === team.captain.user.id} />)}
             </Paper>
           </div>
           <div className={classes.matches}>

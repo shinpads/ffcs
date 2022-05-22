@@ -1,34 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import {
   Button, ClickAwayListener, Grow, MenuList, Paper, Popper,
 } from '@material-ui/core';
-import { getAllCurrentSeasonTeams } from '../api';
 
 const styles = createUseStyles({
-  container: {
-
+  dropdownContainer: {
+    zIndex: '11',
   },
   dropdown: {
     padding: '8px',
     display: 'flex',
     textAlign: 'center',
   },
-  teamText: {
-    fontSize: '18px',
-    fontWeight: 'bold',
-    padding: '2px',
-    '&:hover': {
-      textDecoration: 'underline',
-    },
-  },
 });
 
-const TeamListMenu = () => {
+const HeaderMenu = ({ name, children }) => {
   const classes = styles();
-  const [loading, setLoading] = useState(true);
+
   const [menuAnchor, setMenuAnchor] = useState(null);
-  const [teams, setTeams] = useState(null);
 
   const handleClick = (e) => {
     setMenuAnchor(e.currentTarget);
@@ -38,45 +28,25 @@ const TeamListMenu = () => {
     setMenuAnchor(null);
   };
 
-  useEffect(() => {
-    async function getData() {
-      const data = await getAllCurrentSeasonTeams();
-      setTeams(data);
-      setLoading(false);
-    }
-
-    getData();
-  }, []);
-
-  if (loading) {
-    return (
-      <>
-      </>
-    );
-  }
-
   return (
-    <div className={classes.container}>
+    <div>
       <Button
         aria-controls={menuAnchor ? 'team-menu' : null}
         aria-haspopup="true"
         onClick={handleClick}
         onMouseOver={handleClick}
-      >Teams
+      >{name}
       </Button>
       <Popper
         anchorEl={menuAnchor}
         open={!!menuAnchor}
+        className={classes.dropdownContainer}
       >
         <Grow>
           <ClickAwayListener onClickAway={handleClose}>
             <Paper className={classes.dropdown}>
               <MenuList id="team-menu" autoFocusItem={!!menuAnchor}>
-                {teams.map(team => (
-                  <a href={`/team/${team.id}`}>
-                    <div id={team.id} className={classes.teamText}>{team.name}</div>
-                  </a>
-                ))}
+                {children}
               </MenuList>
             </Paper>
           </ClickAwayListener>
@@ -86,4 +56,4 @@ const TeamListMenu = () => {
   );
 };
 
-export default TeamListMenu;
+export default HeaderMenu;
