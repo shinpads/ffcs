@@ -39,6 +39,9 @@ export function copyTextToClipboard(text) {
 }
 
 export function intToHexColorCode(num) {
+  if (!num) {
+    return null;
+  }
   return `#${num.toString(16)}`;
 }
 

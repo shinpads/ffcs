@@ -4,6 +4,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Player from './Player';
 import colors from '../colors';
+import { intToHexColorCode } from '../helpers';
 
 const DarkTooltip = withStyles((theme) => ({
   tooltip: {
@@ -22,9 +23,10 @@ const sortIndex = {
 };
 
 const styles = createUseStyles({
-  name: {
+  name: ({ teamColor }) => ({
     cursor: 'pointer',
-  },
+    color: teamColor,
+  }),
   tooltip: {
     width: '100%',
     height: '100%',
@@ -32,7 +34,7 @@ const styles = createUseStyles({
 });
 
 const TeamName = ({ team, nameClass }) => {
-  const classes = styles();
+  const classes = styles({ teamColor: intToHexColorCode(team?.color) });
   team.players.sort((a, b) => sortIndex[b.role] - sortIndex[a.role]);
   return (
     <a href={`/team/${team.id}`}>

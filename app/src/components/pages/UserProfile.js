@@ -25,6 +25,7 @@ import PlayerChampionStats from '../PlayerChampionStats';
 import SummonerIcon from '../League/SummonerIcon';
 import PlayersGame from '../PlayersGame';
 import OldPlayersGame from '../OldPlayersGame';
+import { intToHexColorCode } from '../../helpers';
 
 const styles = createUseStyles({
   topContainer: {
@@ -86,16 +87,25 @@ const styles = createUseStyles({
   seasonButton: {
     padding: '4px',
   },
+  teamName: ({ teamColor }) => ({
+    color: teamColor,
+  }),
 });
 
 const UserProfile = (props) => {
-  const classes = styles();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [selectedSeason, setSelectedSeason] = useState();
   const [allSeasons, setAllSeasons] = useState();
   const [games, setGames] = useState([]);
   const [allGames, setAllGames] = useState([]);
+
+  let player = user?.players?.filter(curPlayer => curPlayer.team.season === selectedSeason)[0];
+  if (!player) {
+    player = user?.players[user.players.length - 1];
+  }
+
+  const classes = styles({ teamColor: intToHexColorCode(player?.team?.color) });
 
   const { league } = props;
 
@@ -132,11 +142,6 @@ const UserProfile = (props) => {
     );
   }
 
-  let player = user.players.filter(curPlayer => curPlayer.team.season === selectedSeason)[0];
-  if (!player) {
-    player = user.players[user.players.length - 1];
-  }
-
   return (
     <>
       <Header />
@@ -156,7 +161,11 @@ const UserProfile = (props) => {
             <div>{user.summoner_name}</div>
             <div className={classes.teamContainer}>
               <Role role={player.role} />
-              <div><a href={`https://ffcsleague.com/team/${player.team.id}`}>{player.team.name}</a></div>
+              <div>
+                <a href={`https://ffcsleague.com/team/${player.team.id}`} className={classes.teamName}>
+                  {player.team.name}
+                </a>
+              </div>
             </div>
           </div>
         </Paper>

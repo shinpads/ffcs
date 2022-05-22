@@ -30,9 +30,12 @@ const styles = createUseStyles({
     alignItems: 'center',
     marginBottom: '0.5rem',
   },
+  captainText: {
+    color: colors.captain,
+  },
 });
 
-const PlayerDetailed = ({ player }) => {
+const PlayerDetailed = ({ player, isCaptain }) => {
   const classes = styles();
 
   return (
@@ -42,7 +45,9 @@ const PlayerDetailed = ({ player }) => {
       </div>
       <a href={`/user/${player.user.id}`} className={classes.summonerDetails}>
         <SummonerIcon rounded iconId={player.profile_icon_id} width={32} />
-        <div className={classes.playerName}>{player.user.summoner_name}</div>
+        <div className={classes.playerName}>
+          {player.user.summoner_name} {isCaptain && (<inline className={classes.captainText}>(C)</inline>)}
+        </div>
       </a>
       <PlayerChampionStats noContainer compact limit={5} playerChampionStats={player.player_champion_stats} />
     </div>
