@@ -9,9 +9,9 @@ class DiscordAuthenticationBackend(BaseBackend):
             return User.objects.create_new_discord_user(user)
 
         dbUser = find_user[0]
-        
         dbUser.avatar = user['avatar'] or 1
         dbUser.save()
+        
         return dbUser
 
     def get_user(self, user_id):
