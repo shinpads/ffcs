@@ -73,7 +73,7 @@ class CallbackView(View):
         # update player stats with new data
         player_stats.calculate_player_stats()
 
-        send_mvp_vote_dm(game.match, winning_players)
+        send_mvp_vote_dm(game, winning_players)
 
         response = JsonResponse({
             "message": "Successfully recieved callback.",
