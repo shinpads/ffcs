@@ -163,3 +163,8 @@ def get_game_timeline(gameid):
 
 def format_user_for_frontend(data):
     data['discord_user_id'] = str(data['discord_user_id'])
+
+def get_role_choices_default():
+    ROLE_CHOICES = ["TOP", "JG", "MID", "ADC", "SUPP"]
+
+    return list(choice[1] for choice in ROLE_CHOICES)

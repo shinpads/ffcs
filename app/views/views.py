@@ -12,6 +12,10 @@ def signup_index(request):
     return render(request, 'index.html')
 
 @login_required(login_url="/")
+def rumblesignup_index(request):
+    return render(request, 'index.html')
+
+@login_required(login_url="/")
 def match_index(request, match_id):
     return render(request, 'index.html')
 

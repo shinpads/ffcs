@@ -9,6 +9,7 @@ import { getUser } from '../actions/userActions';
 import { getLeagueData } from '../actions/leagueActions';
 import Home from './pages/Home';
 import Signup from './pages/Signup';
+import RumbleSignup from './pages/RumbleSignup';
 import Match from './pages/Match';
 import UserProfile from './pages/UserProfile';
 import TeamProfile from './pages/TeamProfile';
@@ -46,6 +47,7 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <Switch>
           <Route path="/" component={Home} exact />
+          <Route path="/rumblesignup" component={RumbleSignup} exact />
           <Route path="/signup" component={Signup} exact />
           <Route path="/match/:id" component={Match} exact />
           <Route path="/user/:id" component={UserProfile} exact />

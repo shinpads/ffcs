@@ -1,20 +1,17 @@
+import {
+  Button,
+  FormControl, InputLabel, MenuItem, Select, TextField,
+} from '@material-ui/core';
 import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
-import { ReactSortable as Sortable } from 'react-sortablejs';
-import {
-  Button, TextField, Select, MenuItem, InputLabel, FormControl, FormControlLabel, Checkbox,
-} from '@material-ui/core';
 import { connect } from 'react-redux';
-import Teams from './Teams';
-import Matches from '../Matches';
+import { ReactSortable as Sortable } from 'react-sortablejs';
+import colors from '../../colors';
+import DiscordUser from '../discord/DiscordUser';
 import Header from '../Header';
 import Role from '../Role';
-import { signup } from '../../api';
-import colors from '../../colors';
-import { getImage } from '../../helpers';
-import discordLogo from '../../../public/discord.png';
-import DiscordUser from '../discord/DiscordUser';
 import ranks from '../../util/ranks';
+import { rumbleSignup } from '../../api';
 
 const styles = createUseStyles({
   title: {
@@ -104,41 +101,38 @@ const ROLES = [
   { role: 'support', id: 5 },
 ];
 
-const Signup = (props) => {
+const RumbleSignup = (props) => {
   const classes = styles();
 
   const [summonerName, setSummonerName] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [rolePrefrences, setRolePrefrences] = useState(ROLES);
+  const [rolePreferences, setRolePreferences] = useState(ROLES);
   const [rank, setRank] = useState('Unranked');
+  const [highestRank, setHighestRank] = useState('Unranked');
   const [rankShouldBe, setRankShouldBe] = useState('Unranked');
-
-  const [submitted, setSubmitted] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isCaptain, setIsCaptain] = useState(false);
   const [heardFrom, setHeardFrom] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
-  const { loaded: userLoaded, user } = props.user;
+  const { user } = props.user;
 
   const submit = async (e) => {
     e.preventDefault();
     const data = {
       summonerName,
-      firstName,
+      rolePreferences: rolePreferences.map(curRolePref => curRolePref.role),
       rank,
+      highestRank,
       rankShouldBe,
       heardFrom,
-      firstRole: rolePrefrences[0].role,
-      secondRole: rolePrefrences[1].role,
-      thirdRole: rolePrefrences[2].role,
-      fourthRole: rolePrefrences[3].role,
-      fifthRole: rolePrefrences[4].role,
-      isCaptain,
     };
 
-    const response = await signup(data);
+    const response = await rumbleSignup(data);
+    if (response.status === 200) {
+      setResponseMessage(response.data.message);
+    } else {
+      setResponseMessage('Failed to sign up :( please contact Fenryn.');
+    }
 
-    setMessage(response.message);
     setSubmitted(true);
   };
 
@@ -147,10 +141,8 @@ const Signup = (props) => {
       <>
         <Header />
         <div className={classes.submitted}>
-          <div style={{ fontSize: '22px' }}>{message}</div>
-          <br />
-          <div style={{ fontSize: '22px' }}>Teams will be determined in the upcoming weeks!</div>
-          <Button onClick={() => window.location.href = '/'} className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary">Home</Button>
+          <div style={{ fontSize: '22px' }}>{responseMessage}</div>
+          <Button href="/" className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary">Home</Button>
         </div>
       </>
     );
@@ -160,36 +152,27 @@ const Signup = (props) => {
     <>
       <Header />
       <div className={classes.container}>
-        <div className={classes.title}>Season 3 Signup</div>
-        <div className={classes.questionInfo}>You can change your signup information by resubmitting this form.</div>
-        <br />
+        <div className={classes.title}>
+          Rumble Signup
+        </div>
         <form className={classes.form} onSubmit={submit}>
-
           <div>Registering as:</div>
           <DiscordUser user={user} />
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: '2rem' }}>
-            <div className={classes.questionContainer}>
-              <div className={classes.question}>What is your summoner name?</div>
-              <div className={classes.questionInfo}>Please make sure this is <b>exact</b></div>
-              <TextField value={summonerName} onChange={(e) => setSummonerName(e.target.value)} variant="filled" color="secondary" label="SUMMONER NAME" inputProps={{ maxLength: 32 }} />
-            </div>
-
-            <div className={classes.questionContainer}>
-              <div className={classes.question}>What is your first name?</div>
-              <div className={classes.questionInfo}>(Optional)</div>
-              <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} variant="filled" color="secondary" label="FIRST NAME" inputProps={{ maxLength: 32 }} />
-            </div>
+          <div className={classes.questionContainer}>
+            <div className={classes.question}>What is your summoner name?</div>
+            <div className={classes.questionInfo}>Please make sure this is <b>exact</b></div>
+            <TextField value={summonerName} onChange={(e) => setSummonerName(e.target.value)} variant="filled" color="secondary" label="SUMMONER NAME" inputProps={{ maxLength: 32 }} />
           </div>
 
           <div className={classes.question}>Please order the roles in order of preference (Drag to move)</div>
           <div className={classes.rolesContainer}>
             <Sortable
               animation={150}
-              list={rolePrefrences}
-              setList={(next) => setTimeout(() => setRolePrefrences(next))}
+              list={rolePreferences}
+              setList={(next) => setTimeout(() => setRolePreferences(next))}
             >
-              {rolePrefrences.map((role) => (
+              {rolePreferences.map((role) => (
                 <div className={classes.role} key={role.id}>
                   <Role role={role.role} />
                   <div className={classes.roleText}>{role.role}</div>
@@ -205,11 +188,30 @@ const Signup = (props) => {
               value={rank}
               onChange={(e) => setRank(e.target.value)}
             >
-              {ranks.map((rank) => (
-                <MenuItem value={rank.name}>
+              {ranks.map((curRank) => (
+                <MenuItem value={curRank.name}>
                   <div className={classes.rankMenuItem}>
-                    <img width="32" src={rank.icon} alt="" />
-                    {rank.name}
+                    <img width="32" src={curRank.icon} alt="" />
+                    {curRank.name}
+                  </div>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <div className={classes.question}>What is the highest rank you've ever achieved?</div>
+          <FormControl variant="filled" className={classes.rankFormControl}>
+            <InputLabel id="rank-input-label">RANK</InputLabel>
+            <Select
+              labelId="rank-input-label"
+              value={highestRank}
+              onChange={(e) => setHighestRank(e.target.value)}
+            >
+              {ranks.map((curRank) => (
+                <MenuItem value={curRank.name}>
+                  <div className={classes.rankMenuItem}>
+                    <img width="32" src={curRank.icon} alt="" />
+                    {curRank.name}
                   </div>
                 </MenuItem>
               ))}
@@ -236,21 +238,6 @@ const Signup = (props) => {
             </Select>
           </FormControl>
 
-          <div className={classes.question}>Would you like to be a captain for Season 3?</div>
-          <div className={classes.questionInfo}>Captains will play a big part in determining the teams for Season 3.</div>
-
-          <FormControlLabel
-            control={(
-              <Checkbox
-                checked={isCaptain}
-                onChange={(e) => setIsCaptain(e.target.checked)}
-                name="checkedB"
-                color="primary"
-              />
-            )}
-            label="I would like to be a captain"
-          />
-
           <div className={classes.question}>How did you hear about FFCS?</div>
           <div className={classes.questionInfo}>If you heard from a friend, please put their name.</div>
           <TextField value={heardFrom} onChange={(e) => setHeardFrom(e.target.value)} variant="filled" color="secondary" label="" inputProps={{ maxLength: 32 }} />
@@ -270,4 +257,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Signup);
+export default connect(mapStateToProps)(RumbleSignup);

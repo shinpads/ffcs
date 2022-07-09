@@ -43,6 +43,10 @@ const styles = createUseStyles({
     margin: '0 auto',
     paddingTop: '5rem',
   },
+  rumbleSignupButton: {
+    textAlign: 'center',
+    paddingTop: '0.5rem',
+  },
   splitContainer: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
@@ -128,6 +132,13 @@ const Home = (props) => {
         <img className={classes.loadingImage} style={loaded ? { transform: 'scale(0)', animation: 'none' } : { transform: 'scale(1)' }} alt="" width={128} src={getImage(logo)} />
       </div>
       <div className={classes.container}>
+        {user.is_admin && (
+        <div className={classes.rumbleSignupButton}>
+          <Button variant="contained" color="primary" href="/rumblesignup" size="large">
+            ⚡ Sign up for FFCS Rumble! ⚡
+          </Button>
+        </div>
+        )}
         <div className={classes.splitContainer}>
           <Matches enablePlayoffs matchesToShow={currentSeasonMatchesByWeek} />
           <div>

@@ -1,4 +1,4 @@
-from .utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code
+from .utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code, get_role_choices_default
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
@@ -41,6 +41,7 @@ class Season(models.Model):
     name = models.CharField(max_length=20, blank=True)
     is_mock = models.BooleanField(default=False)
     is_current = models.BooleanField(default=False)
+    is_rumble = models.BooleanField(default=False)
     provider = models.ForeignKey(Provider, on_delete=models.SET_NULL, null=True)
     tournament_id = models.CharField(max_length=70, blank=True)
 
@@ -221,6 +222,7 @@ class Player(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_rumble = models.BooleanField(default=False)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -237,6 +239,13 @@ class Player(models.Model):
         max_length=10,
         blank=True,
         choices=ROLE_CHOICES
+    )
+    role_preferences = ArrayField(
+        models.CharField(
+            max_length=10,
+            blank=True,
+            choices=ROLE_CHOICES
+        ), default=get_role_choices_default
     )
     account_id = models.CharField(max_length=70, blank=True)
     smurf_account_ids = ArrayField(
@@ -266,8 +275,34 @@ class Player(models.Model):
     def __str__(self):
         return self.user.discord_username
 
+
+class RumbleWeek(models.Model):
+    is_current = models.BooleanField(default=False)
+    season = models.ForeignKey(
+        Season,
+        related_name='rumble_weeks',
+        on_delete=models.CASCADE
+    )
+
+
+class RumbleTeam(models.Model):
+    rumble_week = models.ForeignKey(
+        RumbleWeek,
+        related_name='teams',
+        on_delete=models.CASCADE
+    )
+    players = models.ManyToManyField(
+        Player,
+        related_name='rumble_teams'
+    )
+
+
 class PlayerStats(models.Model):
-    player = models.OneToOneField(Player, related_name='stats', on_delete=models.CASCADE)
+    player = models.OneToOneField(
+        Player,
+        related_name='stats',
+        on_delete=models.CASCADE
+    )
 
     # stats from game data
     games_played    = models.IntegerField(default=0)
@@ -378,6 +413,7 @@ class RegistrationForm(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_rumble = models.BooleanField(default=False)
 
     first_name = models.CharField(max_length=32, null=True, blank=True)
 
@@ -388,6 +424,12 @@ class RegistrationForm(models.Model):
     fifth_role = models.CharField(max_length=32)
 
     current_rank = models.CharField(max_length=32)
+    highest_rank = models.CharField(
+        max_length=32,
+        null=True,
+        blank=True,
+        default=None
+    )
     rank_should_be = models.CharField(max_length=32)
     heard_from = models.CharField(max_length=64)
     summoner_name = models.CharField(max_length=32)

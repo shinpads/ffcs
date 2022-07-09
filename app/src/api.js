@@ -84,6 +84,16 @@ export async function signup(data) {
   return response.data;
 }
 
+export async function rumbleSignup(data) {
+  const response = await axios.post('/api/rumblesignup/', data)
+    .catch((error) => ({
+      status: error.response.status,
+      data: error.response.data,
+    }));
+
+  return response;
+}
+
 export async function saveTeamManage(data) {
   const response = await axios.patch('/api/team/', data);
   return response.data;
