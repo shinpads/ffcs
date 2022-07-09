@@ -19,7 +19,16 @@ class PlayerAdmin(admin.ModelAdmin):
 
     get_id.short_description = 'ID'
 
-    list_display = ('user', 'get_summoner_name', 'team', 'role', 'account_id', 'get_id')
+    list_display = (
+        'user',
+        'get_summoner_name',
+        'team',
+        'role',
+        'account_id',
+        'get_id',
+        'proposed_rumble_elo',
+        'rumble_elo'
+    )
 
     fieldsets = (
         (None, {

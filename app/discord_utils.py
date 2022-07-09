@@ -1,5 +1,5 @@
 import json
-from app.models import Game, Match, Player, Team, User
+from app.models import Game, Match, Player, RegistrationForm, Team, User
 from django.utils import timezone
 import pytz
 from app.serializers.teamserializer import TeamSerializer
@@ -129,6 +129,21 @@ def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
 
     return res.json()
 
+def send_rumble_proposed_elo_message(player):
+    channel = os.getenv('RUMBLE_ELO_CONFIRMATION_CHANNEL')
+    registration_form = RegistrationForm.objects.get(
+        is_rumble=True, user=player.user
+    )
+    rank_should_be = registration_form.rank_should_be
+    message = (
+        f"**{player.user.summoner_name}** just signed up! Their proposed ELO is "
+        f"**{player.proposed_rumble_elo}**. They also mentioned their rank "
+        f"should be **{rank_should_be}**. If the proposed ELO is accurate, "
+        f"please press 'Confirm'. Otherwise, select a value from the dropdown."
+    )
+    components = create_rumble_proposed_elo_components(player)
+    print(discord_bot.send_message(message, channel, components).json())
+
 def send_mvp_vote_dm(game, players):
     message = (
         "Congrats on the win! Please vote for the game MVP "
@@ -141,6 +156,51 @@ def send_mvp_vote_dm(game, players):
             continue
         components = create_mvp_vote_components(len(players), player_choices, game)
         discord_bot.send_dm(player.user.discord_user_id, message, components)
+
+def create_rumble_proposed_elo_components(player):
+    elo_choice_increment = 25
+    components = [
+        {
+            "type": 1,
+            "components": [
+                {
+                    "type": 2,
+                    "label": "Confirm",
+                    "style": 3,
+                    "custom_id": json.dumps({
+                        "i_type": "proposed_elo_confirm",
+                        "val": True,
+                        "p_id": player.id
+                    })
+                },
+            ]
+        },
+        {
+            "type": 1,
+            "components": [
+                {
+                    "type": 3,
+                    "custom_id": json.dumps({
+                        "i_type": "proposed_elo_change",
+                        "p_id": player.id,
+                    }),
+                    "options": [
+                        {
+                            "label": elo,
+                            "value": elo
+                        } for elo in range(
+                            max(player.proposed_rumble_elo - 300, 0),
+                            player.proposed_rumble_elo + 300,
+                            elo_choice_increment
+                        )
+                    ],
+                    "placeholder": "Select new ELO"
+                }
+            ]
+        }
+    ]
+
+    return components
 
 def create_mvp_vote_components(num_of_voters, players, game):
     components = [

@@ -14,10 +14,11 @@ class DiscordBot():
         self.guild_id = guild_id
     
 
-    def send_message(self, message, channel):
+    def send_message(self, message, channel, components=[]):
         url = self.base_url + '/channels/{}/messages'.format(channel)
         data = {
-            'content': message
+            'content': message,
+            'components': components
         }
 
         return requests.post(url, headers=self.headers, json=data)
