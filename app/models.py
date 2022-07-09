@@ -252,6 +252,8 @@ class Player(models.Model):
         models.CharField(max_length=70, blank=True, default=''),
         null=True
     )
+    rumble_elo = models.IntegerField(blank=True, null=True)
+    proposed_rumble_elo = models.IntegerField(blank=True, null=True)
 
     profile_icon_id = models.IntegerField(default=0)
 
@@ -435,6 +437,8 @@ class RegistrationForm(models.Model):
     summoner_name = models.CharField(max_length=32)
 
     wants_to_be_captain = models.BooleanField(default=False)
+
+    is_rumble = models.BooleanField(default=False)
 
 
     def clean(self):
