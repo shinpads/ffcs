@@ -56,15 +56,18 @@ def rumblesignup(request):
     form.save()
 
     user.summoner_name = form.summoner_name
+    user.is_rumble_player = True
     user.save()
 
     if created:
+        print('reached')
         player = Player()
         player.user = user
         player.role_preferences = json_data['rolePreferences']
         player.is_rumble = True
-        player.proposed_rumble_elo = calculate_initial_elo(rank, highest_rank)
+        player.rumble_elo = calculate_initial_elo(rank, highest_rank)
         player.save()
+        print('reached')
         send_rumble_proposed_elo_message(player)
 
     response = JsonResponse({

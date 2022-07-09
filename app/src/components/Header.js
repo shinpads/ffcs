@@ -63,8 +63,6 @@ const Header = (props) => {
     );
   }
 
-  console.log(teams);
-
   return (
     <header className={classes.header}>
       <img style={{ padding: '4px' }} alt="" width={48} src={getImage(logo)} />

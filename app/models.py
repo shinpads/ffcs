@@ -101,6 +101,7 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     last_updated_discord_info = models.DateTimeField(null=True)
     is_admin = models.BooleanField(default=False)
+    is_rumble_player = models.BooleanField(default=False)
 
     # Stuff from discord
     discord_username = models.CharField(max_length=64, unique=True)
@@ -223,6 +224,7 @@ class Player(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_rumble = models.BooleanField(default=False)
+    is_rumble_ready = models.BooleanField(default=False)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -296,6 +298,22 @@ class RumbleTeam(models.Model):
     players = models.ManyToManyField(
         Player,
         related_name='rumble_teams'
+    )
+
+
+class RumbleSignup(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    rumble_week = models.ForeignKey(
+        RumbleWeek,
+        related_name='signups',
+        on_delete=models.CASCADE
+    )
+    player = models.ForeignKey(
+        Player,
+        related_name='signups',
+        on_delete=models.CASCADE,
+        default=None
     )
 
 

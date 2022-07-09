@@ -1,7 +1,11 @@
+from dotenv import load_dotenv
 from .models import Player
 from .utils import get_info_by_account_id
 from apscheduler.schedulers.background import BackgroundScheduler
 import sys
+import os
+
+load_dotenv()
 
 def start():
     scheduler = BackgroundScheduler()
@@ -9,6 +13,9 @@ def start():
     scheduler.start()
 
 def update_summoner_info():
+    debug = os.getenv('DEBUG')
+    if debug:
+        return
     all_players = Player.objects.all()
     print('updating summoners')
     sys.stdout.flush()

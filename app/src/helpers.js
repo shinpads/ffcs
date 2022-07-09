@@ -2,6 +2,10 @@ export function getImage(name) {
   return `/static/app/${name}`;
 }
 
+export function isEmptyObject(obj) {
+  return obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype;
+}
+
 function fallbackCopyTextToClipboard(text) {
   const textArea = document.createElement('textarea');
   textArea.value = text;

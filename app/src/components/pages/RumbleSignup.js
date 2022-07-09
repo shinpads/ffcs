@@ -12,6 +12,8 @@ import Header from '../Header';
 import Role from '../Role';
 import ranks from '../../util/ranks';
 import { rumbleSignup } from '../../api';
+import Spinner from '../Spinner';
+import { isEmptyObject } from '../../helpers';
 
 const styles = createUseStyles({
   title: {
@@ -112,11 +114,13 @@ const RumbleSignup = (props) => {
   const [heardFrom, setHeardFrom] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { user } = props.user;
 
   const submit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const data = {
       summonerName,
       rolePreferences: rolePreferences.map(curRolePref => curRolePref.role),
@@ -133,8 +137,25 @@ const RumbleSignup = (props) => {
       setResponseMessage('Failed to sign up :( please contact Fenryn.');
     }
 
+    setLoading(false);
     setSubmitted(true);
   };
+
+  if (isEmptyObject(user)) {
+    return <Spinner />;
+  }
+
+  if (user.is_rumble_player) {
+    return (
+      <>
+        <Header />
+        <div className={classes.submitted}>
+          <div style={{ fontSize: '22px' }}>You have already signed up!</div>
+          <Button href="/" className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary">Home</Button>
+        </div>
+      </>
+    );
+  }
 
   if (submitted) {
     return (
@@ -242,7 +263,7 @@ const RumbleSignup = (props) => {
           <div className={classes.questionInfo}>If you heard from a friend, please put their name.</div>
           <TextField value={heardFrom} onChange={(e) => setHeardFrom(e.target.value)} variant="filled" color="secondary" label="" inputProps={{ maxLength: 32 }} />
 
-          <Button className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>
+          <Button disabled={loading} className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>
             <div className={classes.buttonText}>Submit</div>
           </Button>
         </form>

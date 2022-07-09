@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Season, Team, Match, Player, Game, Provider, User, RegistrationForm, Vote
+from .models import RumbleWeek, Season, Team, Match, Player, Game, Provider, User, RegistrationForm, Vote
 
 class DontLog:
     def log_addition(self, *args):
@@ -164,3 +164,12 @@ class RegistrationFormAdmin(admin.ModelAdmin):
     get_id.short_description = 'ID'
 
     list_display = ('created_at', 'season_id', 'summoner_name', 'first_name', 'first_role', 'second_role', 'third_role', 'fourth_role', 'fifth_role', 'current_rank', 'rank_should_be', 'wants_to_be_captain', 'heard_from')
+
+@admin.register(RumbleWeek)
+class RumbleWeekAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+
+    get_id.short_description = 'ID'
+
+    list_display = ('season', 'is_current')
