@@ -69,11 +69,11 @@ class CallbackView(View):
         game.winner = winner_team
         game.game_id = game_id
         game.save()
+        
+        send_mvp_vote_dm(game, winning_players)
 
         # update player stats with new data
         player_stats.calculate_player_stats()
-
-        send_mvp_vote_dm(game.match, winning_players)
 
         response = JsonResponse({
             "message": "Successfully recieved callback.",

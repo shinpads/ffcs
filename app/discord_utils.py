@@ -140,7 +140,7 @@ def send_mvp_vote_dm(game, players):
         if len(player_choices) == 0:
             continue
         components = create_mvp_vote_components(len(players), player_choices, game)
-        print(discord_bot.send_dm(player.user.discord_user_id, message, components).json())
+        discord_bot.send_dm(player.user.discord_user_id, message, components)
 
 def create_mvp_vote_components(num_of_voters, players, game):
     components = [
