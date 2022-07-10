@@ -139,5 +139,5 @@ export async function updateCasters(data) {
 export async function signupForRumble(data) {
   const response = await axios.post('/api/rumbleweeksignup/', data);
 
-  return response.data;
+  return response;
 }

@@ -281,6 +281,7 @@ class Player(models.Model):
 
 
 class RumbleWeek(models.Model):
+    signups_open = models.BooleanField(default=False)
     is_current = models.BooleanField(default=False)
     season = models.ForeignKey(
         Season,

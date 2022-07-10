@@ -9,7 +9,7 @@ import discordLogo from '../../../public/discord.png';
 import DiscordUser from '../discord/DiscordUser';
 import TournamentSeason from '../TournamentSeason';
 import { getCurrentSeason } from '../../api';
-import Rumble from '../Rumble';
+import Rumble from '../Rumble/Rumble';
 
 const styles = createUseStyles({
   title: {
