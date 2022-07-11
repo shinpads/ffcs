@@ -53,8 +53,6 @@ def create_teams(players):
     for match_combinations in all_match_combinations:
         match_combinations.sort(key=elo_difference)
     
-    
-    
     return
 
 def elo_difference(combination):
