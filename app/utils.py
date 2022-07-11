@@ -1,3 +1,5 @@
+from math import comb
+from itertools import combinations
 from dotenv import load_dotenv
 import os
 import json
@@ -168,3 +170,17 @@ def get_role_choices_default():
     ROLE_CHOICES = ["TOP", "JG", "MID", "ADC", "SUPP"]
 
     return list(choice[1] for choice in ROLE_CHOICES)
+
+def create_all_team_combinations(players):
+    team_combinations = []
+
+    for combination in combinations(players, 5):
+        rest_of_players = list(set(players) - set(combination))
+        team_combinations.append(
+            [
+                combination,
+                rest_of_players
+            ]
+        )
+    
+    return team_combinations

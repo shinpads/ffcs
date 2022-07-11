@@ -103,20 +103,21 @@ const Rumble = (props) => {
     By signing up, you agree to show up on time. Failure to do so may result
     in a week-long suspension.`,
   );
-  const [isTimerExpired, setIsTimerExpired] = useState(false);
+  const [showTimer, setshowTimer] = useState(true);
 
   const {
     seconds,
     minutes,
     hours,
     days,
-  } = useTimer({ expiryTimestamp: nearestWednesday(), onExpire: () => setIsTimerExpired(true) });
+  } = useTimer({ expiryTimestamp: nearestWednesday(), onExpire: () => setshowTimer(false) });
 
   const { season, user } = props;
 
   useEffect(() => {
     const curWeek = season.rumble_weeks.find(week => week.is_current);
     setCurrentWeek(curWeek);
+    setshowTimer(curWeek.is_signups_open);
     setIsRegistered(!!curWeek.signups.find(signup => signup.player.user.id === user.id));
   }, []);
 
@@ -156,7 +157,7 @@ const Rumble = (props) => {
         </Button>
         )}
         <div className={classes.title}>This week's rumble</div>
-        {!isTimerExpired && (
+        {showTimer && (
         <div>
           <span>{days}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
         </div>

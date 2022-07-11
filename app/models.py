@@ -6,6 +6,7 @@ from django.db import models
 from django.core import serializers
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
+from django.utils.timezone import now
 from .managers import DiscordUserOAuthManager
 import json
 import math
@@ -281,7 +282,9 @@ class Player(models.Model):
 
 
 class RumbleWeek(models.Model):
-    signups_open = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=now, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+    signups_open = models.BooleanField(default=True)
     is_current = models.BooleanField(default=False)
     season = models.ForeignKey(
         Season,

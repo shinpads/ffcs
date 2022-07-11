@@ -1,3 +1,7 @@
+from random import shuffle
+
+from app.utils import create_all_team_combinations
+
 RANK_VALUES = {
     "Iron 4": 600,
     "Iron 3": 650,
@@ -36,3 +40,29 @@ def calculate_initial_elo(current_rank, highest_rank):
     highest_rank_weighted = highest_rank_weighting * RANK_VALUES[highest_rank]
 
     return int(current_rank_weighted + highest_rank_weighted)
+
+def create_teams(players):
+    shuffle(players)
+    all_match_combinations = []
+
+    for i in range(int(len(players) / 10)):
+        all_match_combinations.append(
+            create_all_team_combinations(players[i*10:(i+1)*10])
+        )
+
+    for match_combinations in all_match_combinations:
+        match_combinations.sort(key=elo_difference)
+    
+    
+    
+    return
+
+def elo_difference(combination):
+    return abs(
+        team_elo_average(combination[0]) - team_elo_average(combination[1])
+    )
+
+def team_elo_average(players):
+    return sum(list(map(
+        lambda player: player.rumble_elo, players
+    ))) / len(players);

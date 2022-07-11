@@ -32,7 +32,7 @@ class PlayerAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('user', 'team', 'role', 'caster')
+            'fields': ('user', 'team', 'role', 'caster', 'rumble_elo')
         }),
     )
 
