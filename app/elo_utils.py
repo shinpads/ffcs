@@ -1,6 +1,5 @@
 from random import shuffle
-
-from app.utils import create_all_team_combinations
+from itertools import combinations
 
 RANK_VALUES = {
     "Iron 4": 600,
@@ -64,3 +63,17 @@ def team_elo_average(players):
     return sum(list(map(
         lambda player: player.rumble_elo, players
     ))) / len(players);
+
+def create_all_team_combinations(players):
+    team_combinations = []
+
+    for combination in combinations(players, 5):
+        rest_of_players = list(set(players) - set(combination))
+        team_combinations.append(
+            [
+                combination,
+                rest_of_players
+            ]
+        )
+    
+    return team_combinations
