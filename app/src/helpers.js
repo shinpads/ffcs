@@ -53,7 +53,7 @@ export function hexColorCodeToInt(hex) {
   return parseInt(hex.substring(1), 16);
 }
 
-export function timeToDay() {
+export function nearestWednesday() {
   const targetDayVal = 3; // Sunday - Saturday: 0 - 6
   const targetHour = 17;
   const targetMins = 30;
@@ -66,19 +66,19 @@ export function timeToDay() {
   targetDay.setDate(targetDay.getDate() + daysToTarget);
   targetDay.setHours(targetHour, targetMins, 0, 0);
 
-  const totalMillisecondsToTarget = targetDay - now;
-  const hoursToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60 * 60)) % 24);
-  const minutesToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60)) % 60);
-  const secondsToTarget = Math.floor((totalMillisecondsToTarget / 1000) % 60);
-  const millisecondsToTarget = Math.floor(totalMillisecondsToTarget % 1000);
+  // const totalMillisecondsToTarget = targetDay - now;
+  // const hoursToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60 * 60)) % 24);
+  // const minutesToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60)) % 60);
+  // const secondsToTarget = Math.floor((totalMillisecondsToTarget / 1000) % 60);
+  // const millisecondsToTarget = Math.floor(totalMillisecondsToTarget % 1000);
 
-  const data = {
-    daysToTarget,
-    hoursToTarget,
-    minutesToTarget,
-    secondsToTarget,
-    millisecondsToTarget,
-  };
+  // const data = {
+  //   daysToTarget,
+  //   hoursToTarget,
+  //   minutesToTarget,
+  //   secondsToTarget,
+  //   millisecondsToTarget,
+  // };
 
-  return data;
+  return targetDay;
 }

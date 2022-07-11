@@ -1,9 +1,10 @@
 import { Button, Modal, Paper } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
+import { useTimer } from 'react-timer-hook';
 import { signupForRumble } from '../../api';
 import colors from '../../colors';
-import { timeToDay } from '../../helpers';
+import { nearestWednesday } from '../../helpers';
 import RumbleSignups from './RumbleSignups';
 
 const styles = createUseStyles({
@@ -102,6 +103,14 @@ const Rumble = (props) => {
     By signing up, you agree to show up on time. Failure to do so may result
     in a week-long suspension.`,
   );
+  const [isTimerExpired, setIsTimerExpired] = useState(false);
+
+  const {
+    seconds,
+    minutes,
+    hours,
+    days,
+  } = useTimer({ expiryTimestamp: nearestWednesday(), onExpire: () => setIsTimerExpired(true) });
 
   const { season, user } = props;
 
@@ -109,7 +118,6 @@ const Rumble = (props) => {
     const curWeek = season.rumble_weeks.find(week => week.is_current);
     setCurrentWeek(curWeek);
     setIsRegistered(!!curWeek.signups.find(signup => signup.player.user.id === user.id));
-    console.log(timeToDay());
   }, []);
 
   const handleClick = () => {
@@ -148,6 +156,11 @@ const Rumble = (props) => {
         </Button>
         )}
         <div className={classes.title}>This week's rumble</div>
+        {!isTimerExpired && (
+        <div>
+          <span>{days}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
+        </div>
+        )}
         <div />
         {
         user.is_rumble_player
