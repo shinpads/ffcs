@@ -73,16 +73,37 @@ class Season(models.Model):
         return string
 
 
+class RumbleWeek(models.Model):
+    created_at = models.DateTimeField(default=now, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+    signups_open = models.BooleanField(default=True)
+    is_current = models.BooleanField(default=False)
+    season = models.ForeignKey(
+        Season,
+        related_name='rumble_weeks',
+        on_delete=models.CASCADE
+    )
+
+
+
 class Team(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=100)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
     captain = models.ForeignKey('Player', on_delete=models.CASCADE, null=True, blank=True, related_name="captain_of")
     color = models.IntegerField(default=16777215)
     discord_channel_id = models.CharField(default=None, null=True, blank=True, max_length=64)
     discord_role_id = models.CharField(default=None, null=True, blank=True, max_length=64)
     logo_url = models.CharField(default=None, null=True, blank=True, max_length=200)
+    is_rumble = models.BooleanField(default=False)
+    rumble_week = models.ForeignKey(
+        RumbleWeek,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='teams'
+    )
     
     class Meta:
         indexes = [
@@ -158,13 +179,24 @@ class Match(models.Model):
     match_format = models.IntegerField(choices=FORMAT_CHOICES)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
 
+    is_rumble = models.BooleanField(default=False)
+    rumble_week = models.ForeignKey(
+        RumbleWeek,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='matches'
+    )
+    elo_difference = models.DecimalField(max_digits=6, decimal_places=2, default=0, null=True, blank=True)
+    role_pref_coefficient = models.DecimalField(max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+
     teams           = models.ManyToManyField(Team, related_name="matches")
     week            = models.IntegerField(default=1)
     scheduled_for   = models.DateTimeField(null=True, blank=True)
     proposed_for    = models.DateTimeField(null=True, blank=True, default=None)
     twitch_vod      = models.CharField(max_length=120, blank=True)
     blue_side       = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
-    casters         = models.ManyToManyField(User, related_name="caster_of")
+    casters         = models.ManyToManyField(User, related_name="caster_of", blank=True, null=True)
 
     event_id = models.CharField(max_length=120, default=None, null=True)
 
@@ -238,6 +270,11 @@ class Player(models.Model):
         blank=True, null=True,
         related_name='players',
     )
+    rumble_teams = models.ManyToManyField(
+        Team,
+        blank=True,
+        related_name='rumble_players'
+    )
     role = models.CharField(
         max_length=10,
         blank=True,
@@ -281,28 +318,17 @@ class Player(models.Model):
         return self.user.discord_username
 
 
-class RumbleWeek(models.Model):
-    created_at = models.DateTimeField(default=now, editable=False)
-    updated_at = models.DateTimeField(auto_now=True)
-    signups_open = models.BooleanField(default=True)
-    is_current = models.BooleanField(default=False)
-    season = models.ForeignKey(
-        Season,
-        related_name='rumble_weeks',
-        on_delete=models.CASCADE
-    )
-
-
 class RumbleTeam(models.Model):
     rumble_week = models.ForeignKey(
         RumbleWeek,
-        related_name='teams',
         on_delete=models.CASCADE
     )
     players = models.ManyToManyField(
         Player,
-        related_name='rumble_teams'
     )
+
+    def __str__(self):
+        return 'Rumble Team ' + self.id
 
 
 class RumbleSignup(models.Model):

@@ -7,6 +7,14 @@ from app.elo_utils import calculate_initial_elo
 from ..models import Player, RegistrationForm, Season
 import json
 
+ROLES = {
+    'top': 'TOP',
+    'jungle': 'JG',
+    'mid': 'MID',
+    'bot': 'ADC',
+    'support': 'SUPPORT'
+}
+
 @login_required(login_url="/")
 def signup(request):
     user = request.user
@@ -63,7 +71,10 @@ def rumblesignup(request):
         print('reached')
         player = Player()
         player.user = user
-        player.role_preferences = json_data['rolePreferences']
+        player.role_preferences = list(map(
+            lambda role: ROLES[role],
+            json_data['rolePreferences']
+        ))
         player.is_rumble = True
         player.rumble_elo = calculate_initial_elo(rank, highest_rank)
         player.save()

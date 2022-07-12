@@ -167,4 +167,4 @@ def format_user_for_frontend(data):
 def get_role_choices_default():
     ROLE_CHOICES = ["TOP", "JG", "MID", "ADC", "SUPP"]
 
-    return list(choice[1] for choice in ROLE_CHOICES)
+    return list(choice for choice in ROLE_CHOICES)
