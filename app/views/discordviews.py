@@ -41,7 +41,9 @@ class DiscordView(View):
         body = request.body.decode("utf-8")
 
         try:
-            verify_key.verify(f'{timestamp}{body}'.encode(), bytes.fromhex(signature))
+            verify_key.verify(
+                f'{timestamp}{body}'.encode(), bytes.fromhex(signature)
+            )
         except BadSignatureError:
             return HttpResponse(401, 'invalid request signature')
         
@@ -55,8 +57,29 @@ class DiscordView(View):
         if interaction_response['i_type'] == 'match_confirm':
             return game_confirm_response(data, interaction_response)
         
-        if interaction_response['i_type'] == 'mvp_vote':
-            return mvp_vote_response(data, interaction_response, data['data']['values'][0])
+        elif interaction_response['i_type'] == 'mvp_vote':
+            return mvp_vote_response(
+                data,
+                interaction_response,
+                data['data']['values'][0]
+            )
+        
+        elif interaction_response['i_type'] == 'proposed_elo_confirm':
+            elo_change = False
+            return elo_confirm_response(
+                data,
+                interaction_response,
+                elo_change
+            )
+        
+        elif interaction_response['i_type'] == 'proposed_elo_change':
+            elo_change = True
+            return elo_confirm_response(
+                data,
+                interaction_response,
+                elo_change,
+                chosen_elo=data['data']['values'][0]
+            )
 
         return JsonResponse({
                 "status": "success"
@@ -80,15 +103,24 @@ def game_confirm_response(data, interaction_response):
     if response_value:
         from_captain_message = (
             "The schedule you proposed for your game with **{}** at **{}** "
-            "has been approved by the enemy captain, **{}**. Good luck, summoner!"
+            "has been approved by the enemy captain, **{}**. Good luck, "
+            "summoner!"
         ).format(
             to_team.name,
             proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST'),
             to_team_captain.summoner_name,
         )
-        discord_bot.send_dm(from_team_captain.discord_user_id, from_captain_message)
+        discord_bot.send_dm(
+            from_team_captain.discord_user_id,
+            from_captain_message
+        )
 
-        set_match_event(match, os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL'), proposed_time, match.event_id)
+        set_match_event(
+            match,
+            os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL'),
+            proposed_time,
+            match.event_id
+        )
 
         match.scheduled_for = proposed_time
         match.proposed_for = None
@@ -116,7 +148,10 @@ def game_confirm_response(data, interaction_response):
             proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST'),
             to_team_captain.summoner_name,
         )
-        discord_bot.send_dm(from_team_captain.discord_user_id, from_captain_message)
+        discord_bot.send_dm(
+            from_team_captain.discord_user_id,
+            from_captain_message
+        )
 
         match.proposed_for = None
         match.save()
@@ -166,6 +201,37 @@ def mvp_vote_response(data, interaction_response, voted_player_id):
         }
     })
 
+def elo_confirm_response(
+    data,
+    interaction_response,
+    is_elo_change,
+    chosen_elo=None):
+    original_message = data['message']['content']
+    player_id = interaction_response['p_id']
+    player = Player.objects.get(id=player_id)
+
+    response_message = "Thank you for confirming!"
+
+    if is_elo_change:
+        old_elo = player.rumble_elo
+        player.rumble_elo = chosen_elo
+        response_message = (
+            f'Their elo has been changed from **{old_elo}** to '
+            f'**{chosen_elo}**. Thank you!'
+        )
+    
+    player.is_rumble_ready = True
+
+    player.save()
+
+    return JsonResponse({
+        "type": InteractionCallbackTypes.UPDATE_MESSAGE,
+        "data": {
+            "content": f"{original_message}\n\n{response_message}",
+            "components": []
+        }
+    })
+
 def discord_login(request: HttpRequest):
     if not request.session.session_key:
         request.session.save()
@@ -194,7 +260,11 @@ def exchange_code(code: str):
         'Content-Type': 'application/x-www-form-urlencoded'
     }
 
-    response = requests.post('https://discord.com/api/oauth2/token', data=data, headers=headers)
+    response = requests.post(
+        'https://discord.com/api/oauth2/token',
+        data=data, 
+        headers=headers
+    )
     credentials = response.json();
     access_token = credentials['access_token']
 
@@ -202,7 +272,10 @@ def exchange_code(code: str):
         'Authorization': 'Bearer %s' % access_token
     }
 
-    response = requests.get('https://discord.com/api/v6/users/@me', headers=headers)
+    response = requests.get(
+        'https://discord.com/api/v6/users/@me',
+        headers=headers
+    )
 
     return response.json()
 

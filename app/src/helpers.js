@@ -2,6 +2,10 @@ export function getImage(name) {
   return `/static/app/${name}`;
 }
 
+export function isEmptyObject(obj) {
+  return obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype;
+}
+
 function fallbackCopyTextToClipboard(text) {
   const textArea = document.createElement('textarea');
   textArea.value = text;
@@ -47,4 +51,34 @@ export function intToHexColorCode(num) {
 
 export function hexColorCodeToInt(hex) {
   return parseInt(hex.substring(1), 16);
+}
+
+export function nearestWednesday() {
+  const targetDayVal = 3; // Sunday - Saturday: 0 - 6
+  const targetHour = 17;
+  const targetMins = 30;
+
+  const now = new Date();
+  const day = now.getDay();
+  const daysToTarget = targetDayVal - (day <= targetDayVal ? day : day - 7);
+
+  const targetDay = new Date(+now);
+  targetDay.setDate(targetDay.getDate() + daysToTarget);
+  targetDay.setHours(targetHour, targetMins, 0, 0);
+
+  // const totalMillisecondsToTarget = targetDay - now;
+  // const hoursToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60 * 60)) % 24);
+  // const minutesToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60)) % 60);
+  // const secondsToTarget = Math.floor((totalMillisecondsToTarget / 1000) % 60);
+  // const millisecondsToTarget = Math.floor(totalMillisecondsToTarget % 1000);
+
+  // const data = {
+  //   daysToTarget,
+  //   hoursToTarget,
+  //   minutesToTarget,
+  //   secondsToTarget,
+  //   millisecondsToTarget,
+  // };
+
+  return targetDay;
 }

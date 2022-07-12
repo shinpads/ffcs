@@ -137,10 +137,11 @@ def send_rumble_proposed_elo_message(player):
     rank_should_be = registration_form.rank_should_be
     message = (
         f"**{player.user.summoner_name}** just signed up! Their proposed ELO is "
-        f"**{player.proposed_rumble_elo}**. They also mentioned their rank "
+        f"**{player.rumble_elo}**. They also mentioned their rank "
         f"should be **{rank_should_be}**. If the proposed ELO is accurate, "
         f"please press 'Confirm'. Otherwise, select a value from the dropdown."
     )
+    print('reached')
     components = create_rumble_proposed_elo_components(player)
     print(discord_bot.send_message(message, channel, components).json())
 
@@ -189,8 +190,8 @@ def create_rumble_proposed_elo_components(player):
                             "label": elo,
                             "value": elo
                         } for elo in range(
-                            max(player.proposed_rumble_elo - 300, 0),
-                            player.proposed_rumble_elo + 300,
+                            max(player.rumble_elo - 300, 0),
+                            player.rumble_elo + 300,
                             elo_choice_increment
                         )
                     ],

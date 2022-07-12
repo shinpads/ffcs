@@ -8,6 +8,12 @@ export async function getSeason(season, cb) {
   return result;
 }
 
+export async function getCurrentSeason() {
+  const response = await axios.get('/api/season/', { params: { current: true } });
+
+  return response;
+}
+
 export async function getAllSeasons() {
   const response = await axios.get('/api/season/', { params: { all: true } });
 
@@ -128,4 +134,10 @@ export async function updateCasters(data) {
   const response = await axios.patch('/api/match/updatecasters/', data);
 
   return response.data;
+}
+
+export async function signupForRumble(data) {
+  const response = await axios.post('/api/rumbleweeksignup/', data);
+
+  return response;
 }

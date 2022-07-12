@@ -14,14 +14,18 @@ class SeasonView(View):
         out_data = {}
         season_num  = request.GET.get('season', None)
         season_name = request.GET.get('season_name', None)
-        all_seasons = request.GET.get('all', False);
+        get_current = request.GET.get('current', False)
+        all_seasons = False
         season = None
         
         if season_num != None:
             season = Season.objects.filter(number=season_num).first()
         elif season_name != None:
             season = Season.objects.filter(name=season_name).first()
-        elif all_seasons != None:
+        elif get_current:
+            season = Season.objects.get(is_current=True)
+        else:
+            all_seasons = True
             season = Season.objects.all()
         if season == None:
             response = JsonResponse({
@@ -30,7 +34,13 @@ class SeasonView(View):
             }, status=500)
             return response
 
-        out_data = SeasonSerializer(season, many=all_seasons).data
+        if all_seasons:
+            out_data = []
+            for cur_season in season:
+                out_data.append(SeasonSerializer(cur_season).data)
+        else:
+            out_data = SeasonSerializer(season).data
+
         response = JsonResponse({
             "message": "successfully found the season.",
             "data": out_data,
