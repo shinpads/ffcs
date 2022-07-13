@@ -5,6 +5,7 @@ import { useTimer } from 'react-timer-hook';
 import { signupForRumble } from '../../api';
 import colors from '../../colors';
 import { nearestWednesday } from '../../helpers';
+import RumbleMatch from './RumbleMatch';
 import RumbleSignups from './RumbleSignups';
 
 const styles = createUseStyles({
@@ -31,12 +32,18 @@ const styles = createUseStyles({
     textTransform: 'uppercase',
   },
   subtitle: {
-    fontSize: '22px',
+    fontSize: '34px',
+    fontWeight: 'bold',
+    padding: '1rem',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  subSubtitle: {
+    fontSize: '26px',
     fontWeight: 500,
     padding: '1rem',
     textAlign: 'center',
     textTransform: 'uppercase',
-    color: colors.offwhite,
   },
   description: {
     textAlign: 'center',
@@ -178,7 +185,21 @@ const Rumble = (props) => {
         </Modal>
         <div className={classes.splitContainer}>
           <div>
-            <RumbleSignups week={currentWeek} />
+            {currentWeek.matches
+              ? (
+                <div>
+                  <div className={classes.subtitle}>Matches</div>
+                  <hr />
+                  {currentWeek.matches.map((match, i) => (
+                    <div>
+                      <div className={classes.subSubtitle}>Match {i + 1}</div>
+                      <RumbleMatch match={match} />
+                    </div>
+                  ))}
+                </div>
+
+              )
+              : <RumbleSignups week={currentWeek} />}
           </div>
           <div />
         </div>

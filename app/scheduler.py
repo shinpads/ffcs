@@ -111,6 +111,7 @@ def calculate_teams():
         new_match = Match()
         new_match.match_format = 1
         new_match.season = current_rumble_week.season
+        new_match.rumble_week = current_rumble_week
         new_match.is_rumble = True
         new_match.elo_difference = match['elo_difference']
         new_match.role_pref_coefficient = match['role_pref_coefficient']
