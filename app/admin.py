@@ -179,7 +179,7 @@ class RumbleWeekAdmin(admin.ModelAdmin):
 
     get_id.short_description = 'ID'
 
-    list_display = ('season', 'is_current')
+    list_display = ('season', 'signups_open')
 
 @admin.register(RumbleSignup)
 class RumbleSignupAdmin(admin.ModelAdmin):

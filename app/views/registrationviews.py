@@ -71,10 +71,7 @@ def rumblesignup(request):
         print('reached')
         player = Player()
         player.user = user
-        player.role_preferences = list(map(
-            lambda role: ROLES[role],
-            json_data['rolePreferences']
-        ))
+        player.role_preferences = json_data['rolePreferences']
         player.is_rumble = True
         player.rumble_elo = calculate_initial_elo(rank, highest_rank)
         player.save()

@@ -122,7 +122,7 @@ const Rumble = (props) => {
   const { season, user } = props;
 
   useEffect(() => {
-    const curWeek = season.rumble_weeks.find(week => week.is_current);
+    const curWeek = season.current_week;
     setCurrentWeek(curWeek);
     setshowTimer(curWeek.is_signups_open);
     setIsRegistered(!!curWeek.signups.find(signup => signup.player.user.id === user.id));

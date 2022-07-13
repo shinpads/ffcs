@@ -77,7 +77,6 @@ class RumbleWeek(models.Model):
     created_at = models.DateTimeField(default=now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
     signups_open = models.BooleanField(default=True)
-    is_current = models.BooleanField(default=False)
     season = models.ForeignKey(
         Season,
         related_name='rumble_weeks',
@@ -97,6 +96,43 @@ class Team(models.Model):
     discord_role_id = models.CharField(default=None, null=True, blank=True, max_length=64)
     logo_url = models.CharField(default=None, null=True, blank=True, max_length=200)
     is_rumble = models.BooleanField(default=False)
+
+    rumble_top = models.ForeignKey(
+        'Player',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='teams_as_top'
+    )
+    rumble_jg = models.ForeignKey(
+        'Player',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='teams_as_jg'
+    )
+    rumble_mid = models.ForeignKey(
+        'Player',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='teams_as_mid'
+    )
+    rumble_adc = models.ForeignKey(
+        'Player',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='teams_as_adc'
+    )
+    rumble_supp = models.ForeignKey(
+        'Player',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='teams_as_supp'
+    )
+
     rumble_week = models.ForeignKey(
         RumbleWeek,
         on_delete=models.CASCADE,
@@ -196,7 +232,7 @@ class Match(models.Model):
     proposed_for    = models.DateTimeField(null=True, blank=True, default=None)
     twitch_vod      = models.CharField(max_length=120, blank=True)
     blue_side       = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
-    casters         = models.ManyToManyField(User, related_name="caster_of", blank=True, null=True)
+    casters         = models.ManyToManyField(User, related_name="caster_of", blank=True)
 
     event_id = models.CharField(max_length=120, default=None, null=True)
 
@@ -254,6 +290,15 @@ class Player(models.Model):
         (SUPPORT, "Support"),
     ]
 
+    def role_preferences_default():
+        return {
+            'top': 1,
+            'jungle': 1,
+            'mid': 1,
+            'bot': 1,
+            'support': 1
+        }
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_rumble = models.BooleanField(default=False)
@@ -270,22 +315,15 @@ class Player(models.Model):
         blank=True, null=True,
         related_name='players',
     )
-    rumble_teams = models.ManyToManyField(
-        Team,
-        blank=True,
-        related_name='rumble_players'
-    )
     role = models.CharField(
         max_length=10,
         blank=True,
         choices=ROLE_CHOICES
     )
-    role_preferences = ArrayField(
-        models.CharField(
-            max_length=10,
-            blank=True,
-            choices=ROLE_CHOICES
-        ), default=get_role_choices_default
+    role_preferences = models.JSONField(
+        null=True,
+        blank=True,
+        default=role_preferences_default
     )
     account_id = models.CharField(max_length=70, blank=True)
     smurf_account_ids = ArrayField(

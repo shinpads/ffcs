@@ -30,7 +30,7 @@ RANK_VALUES = {
     "Grandmaster": 2800,
     "Challenger": 2900,
 }
-ROLES = ['TOP', 'JG', 'MID', 'ADC', 'SUPP']
+ROLES = ['top', 'jungle', 'mid', 'bot', 'support']
 PREFERRED_ROLE_COEFFICIENTS = [1, 0.5, 0.25, 0.1, 0]
 MIN_ROLE_PREF_COEFFICIENT = 8
 
@@ -138,7 +138,6 @@ def calculate_team_role_pref_coefficient(team):
     roles_coefficient = 0
     for i, player in enumerate(team):
         role = ROLES[i]
-        role_pref_index = player.role_preferences.index(role)
-        roles_coefficient += PREFERRED_ROLE_COEFFICIENTS[role_pref_index]
+        roles_coefficient += player.role_preferences[role]
     
     return roles_coefficient

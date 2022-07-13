@@ -83,6 +83,7 @@ const styles = createUseStyles({
 });
 
 const ROLES = ['TOP', 'JG', 'MID', 'ADC', 'SUPP'];
+const RUMBLE_ROLES = ['rumble_top', 'rumble_jg', 'rumble_mid', 'rumble_adc', 'rumble_supp'];
 
 const RumbleMatch = ({ match, user }) => {
   const classes = styles();
@@ -143,9 +144,9 @@ const RumbleMatch = ({ match, user }) => {
       </div>
       <div className={classes.middleContainer}>
         <div className={classes.teamContainer}>
-          <div style={{ color: '#16a0d3' }}>Team 1</div>
+          <div style={{ color: '#16a0d3' }}>Blue Side</div>
           <br />
-          {team1.rumble_players.map(player => <div>{player.user.summoner_name}</div>)}
+          {RUMBLE_ROLES.map(role => <div>{team1[role].user.summoner_name}</div>)}
         </div>
         <div className={classes.teamContainer}>
           <div> VS </div>
@@ -153,9 +154,9 @@ const RumbleMatch = ({ match, user }) => {
           {ROLES.map(role => <Role role={role} />)}
         </div>
         <div className={classes.teamContainer}>
-          <div style={{ color: '#f96260' }}>Team 2</div>
+          <div style={{ color: '#f96260' }}>Red Side</div>
           <br />
-          {team2.rumble_players.map(player => <div>{player.user.summoner_name}</div>)}
+          {RUMBLE_ROLES.map(role => <div>{team2[role].user.summoner_name}</div>)}
         </div>
       </div>
       <div className={classes.bottomContainer}>
