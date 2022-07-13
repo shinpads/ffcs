@@ -2,6 +2,7 @@ from ..models import Season, Match
 from ..serializers.seasonserializer import SeasonSerializer
 from ..serializers.matchserializer import MatchSerializer
 from ..serializers.teamserializer import TeamSerializer
+from ..serializers.rumbleweekserializer import RumbleWeekSerializer
 from django.core import serializers
 from django.http import JsonResponse, HttpRequest
 from django.db import IntegrityError
@@ -40,6 +41,11 @@ class SeasonView(View):
                 out_data.append(SeasonSerializer(cur_season).data)
         else:
             out_data = SeasonSerializer(season).data
+            if season.is_rumble:
+                latest_rumble_week =  season.rumble_weeks.latest('created_at')
+                out_data['current_week'] = RumbleWeekSerializer(
+                    latest_rumble_week
+                ).data
 
         response = JsonResponse({
             "message": "successfully found the season.",

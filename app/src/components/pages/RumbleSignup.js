@@ -1,6 +1,6 @@
 import {
   Button,
-  FormControl, InputLabel, MenuItem, Select, TextField,
+  FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { createUseStyles } from 'react-jss';
@@ -53,7 +53,15 @@ const styles = createUseStyles({
     borderRadius: '4px',
   },
   rolesContainer: {
-    width: '300px',
+    width: '900px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  roleRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   roleText: {
     flexGrow: 1,
@@ -103,11 +111,19 @@ const ROLES = [
   { role: 'support', id: 5 },
 ];
 
+const DEFAULT_ROLE_PREFERENCES = {
+  top: 1,
+  jungle: 1,
+  mid: 1,
+  bot: 1,
+  support: 1,
+};
+
 const RumbleSignup = (props) => {
   const classes = styles();
 
   const [summonerName, setSummonerName] = useState('');
-  const [rolePreferences, setRolePreferences] = useState(ROLES);
+  const [rolePreferences, setRolePreferences] = useState(DEFAULT_ROLE_PREFERENCES);
   const [rank, setRank] = useState('Unranked');
   const [highestRank, setHighestRank] = useState('Unranked');
   const [rankShouldBe, setRankShouldBe] = useState('Unranked');
@@ -123,7 +139,7 @@ const RumbleSignup = (props) => {
     setLoading(true);
     const data = {
       summonerName,
-      rolePreferences: rolePreferences.map(curRolePref => curRolePref.role),
+      rolePreferences,
       rank,
       highestRank,
       rankShouldBe,
@@ -141,11 +157,19 @@ const RumbleSignup = (props) => {
     setSubmitted(true);
   };
 
+  const changeRolePrefs = (role, value) => {
+    const newRolePrefs = {
+      ...rolePreferences,
+    };
+    newRolePrefs[role] = parseInt(value, 10);
+    setRolePreferences(newRolePrefs);
+  };
+
   if (isEmptyObject(user)) {
     return <Spinner />;
   }
 
-  if (user.is_rumble_player) {
+  if (!user.is_rumble_player) {
     return (
       <>
         <Header />
@@ -185,21 +209,24 @@ const RumbleSignup = (props) => {
             <div className={classes.questionInfo}>Please make sure this is <b>exact</b></div>
             <TextField value={summonerName} onChange={(e) => setSummonerName(e.target.value)} variant="filled" color="secondary" label="SUMMONER NAME" inputProps={{ maxLength: 32 }} />
           </div>
-
-          <div className={classes.question}>Please order the roles in order of preference (Drag to move)</div>
+          <div className={classes.question}>Please indicate how comfortable you are on each role (you can select same comfort for multiple roles)</div>
+          <div className={classes.questionInfo}>This information will be used during matchmaking. Please select <strong>at least</strong> one role as super comfortable.</div>
           <div className={classes.rolesContainer}>
-            <Sortable
-              animation={150}
-              list={rolePreferences}
-              setList={(next) => setTimeout(() => setRolePreferences(next))}
-            >
-              {rolePreferences.map((role) => (
-                <div className={classes.role} key={role.id}>
-                  <Role role={role.role} />
-                  <div className={classes.roleText}>{role.role}</div>
-                </div>
-              ))}
-            </Sortable>
+            {ROLES.map(role => (
+              <div className={classes.roleRow}>
+                <Role role={role.role} />
+                <RadioGroup
+                  onChange={(e) => changeRolePrefs(role.role, e.target.value)}
+                  value={rolePreferences[role.role]}
+                  row
+                >
+                  <FormControlLabel value="1" control={<Radio />} label="Super comfortable" labelPlacement="top" />
+                  <FormControlLabel value="0.5" control={<Radio />} label="Pretty comfortable" labelPlacement="top" />
+                  <FormControlLabel value="0.25" control={<Radio />} label="Somewhat comfortable" labelPlacement="top" />
+                  <FormControlLabel value="0" control={<Radio />} label="Not comfortable at all" labelPlacement="top" />
+                </RadioGroup>
+              </div>
+            ))}
           </div>
           <div className={classes.question}>What is your current rank?</div>
           <FormControl variant="filled" className={classes.rankFormControl}>

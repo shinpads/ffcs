@@ -1,9 +1,11 @@
 from dotenv import load_dotenv
-from datetime import datetime
+import datetime
+
+import pytz
 
 from app.elo_utils import create_teams
-from .models import Match, Player, RumbleWeek, Team
-from .utils import get_info_by_account_id
+from .models import Match, Player, RumbleWeek, Season, Team
+from .utils import generate_tournament_code, get_info_by_account_id
 from apscheduler.schedulers.background import BackgroundScheduler
 import sys
 import os
@@ -20,8 +22,26 @@ def start():
         minute='30',
         timezone='est'
     )
+    scheduler.add_job(
+        create_new_rumble_week,
+        'cron',
+        day_of_week='sat',
+        hour='0',
+        minute='0',
+        timezone='est'
+    )
     scheduler.add_job(update_summoner_info, 'interval', minutes=20, max_instances=1)
     scheduler.start()
+
+def create_new_rumble_week():
+    print('Creating new Rumble week...')
+    sys.stdout.flush()
+
+    rumble_season = Season.objects.get(is_rumble=True)
+
+    rumble_week = RumbleWeek()
+    rumble_week.season = rumble_season
+    rumble_week.save()
 
 def calculate_teams():
     print('Calculating teams...')
@@ -61,11 +81,12 @@ def calculate_teams():
         blue_team.season = current_rumble_week.season
         blue_team.is_rumble = True
         blue_team.rumble_week = current_rumble_week
+        blue_team.rumble_top = match['blue'][0]
+        blue_team.rumble_jg = match['blue'][1]
+        blue_team.rumble_mid = match['blue'][2]
+        blue_team.rumble_adc = match['blue'][3]
+        blue_team.rumble_supp = match['blue'][4]
         blue_team.save()
-
-        for player in match['blue']:
-            player.rumble_teams.add(blue_team)
-            player.save()
 
         red_team = Team()
         red_team.name = (
@@ -74,11 +95,12 @@ def calculate_teams():
         red_team.season = current_rumble_week.season
         red_team.is_rumble = True
         red_team.rumble_week = current_rumble_week
+        red_team.rumble_top = match['red'][0]
+        red_team.rumble_jg = match['red'][1]
+        red_team.rumble_mid = match['red'][2]
+        red_team.rumble_adc = match['red'][3]
+        red_team.rumble_supp = match['red'][4]
         red_team.save()
-
-        for player in match['red']:
-            player.rumble_teams.add(red_team)
-            player.save()
 
         new_match = Match()
         new_match.match_format = 1
@@ -90,7 +112,21 @@ def calculate_teams():
         new_match.save()
         new_match.teams.add(blue_team)
         new_match.teams.add(red_team)
+
+        est = pytz.timezone('US/Eastern')
+        today = datetime.datetime.now(est)
+        friday = today + datetime.timedelta((4 - today.weekday()) % 7)
+        match_time = friday.replace(hour=20, minute=30, second=0)
+        new_match.scheduled_for = match_time
+
         new_match.save()
+
+        game = new_match.games.all()[0]
+        if not game.tournament_code:
+            tournament_code = generate_tournament_code(game, Player)
+            if tournament_code:
+                game.tournament_code = tournament_code
+                game.save()
 
     print('Finished calculating teams.')
     sys.stdout.flush()

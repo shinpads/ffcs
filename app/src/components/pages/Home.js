@@ -10,6 +10,7 @@ import DiscordUser from '../discord/DiscordUser';
 import TournamentSeason from '../TournamentSeason';
 import { getCurrentSeason } from '../../api';
 import Rumble from '../Rumble/Rumble';
+import logo from '../../../public/logo_transparent.png';
 
 const styles = createUseStyles({
   title: {
@@ -36,12 +37,32 @@ const styles = createUseStyles({
     margin: '0 auto',
     paddingTop: '5rem',
   },
+  loadingScreen: {
+    transition: 'opacity 0.75s ease',
+    backgroundColor: colors.darkGrey,
+    opacity: 1,
+    zIndex: 100,
+    position: 'fixed',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  loadingImage: {
+    animation: 'loading-image 2.4s infinite ease-in-out both',
+    padding: '4px',
+    transform: 'scale(1)',
+    transition: 'transform 1s ease',
+  },
 });
 
 const Home = (props) => {
   const classes = styles();
 
   const [currentSeason, setCurrentSeason] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const openLogin = () => {
     window.location.href = `${window.location.origin}/oauth2/login`;
@@ -51,6 +72,7 @@ const Home = (props) => {
     const getData = async () => {
       const response = await getCurrentSeason();
       setCurrentSeason(response.data.data);
+      setLoading(false);
     };
     getData();
   }, []);
@@ -66,6 +88,14 @@ const Home = (props) => {
           <SignIn user={user} />
         </div>
       </>
+    );
+  }
+
+  if (!userLoaded || loading) {
+    return (
+      <div className={classes.loadingScreen}>
+        <img className={classes.loadingImage} style={{ transform: 'scale(1)' }} alt="" width={128} src={getImage(logo)} />
+      </div>
     );
   }
 
