@@ -169,7 +169,7 @@ const RumbleSignup = (props) => {
     return <Spinner />;
   }
 
-  if (!user.is_rumble_player) {
+  if (user.is_rumble_player) {
     return (
       <>
         <Header />
