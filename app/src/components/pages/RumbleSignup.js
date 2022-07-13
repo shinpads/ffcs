@@ -141,7 +141,7 @@ const RumbleSignup = (props) => {
       summonerName,
       rolePreferences: {
         top: parseInt(rolePreferences.top, 10),
-        jungle: parseInt(rolePreferences.jungle, 10)',
+        jungle: parseInt(rolePreferences.jungle, 10),
         mid: parseInt(rolePreferences.mid, 10),
         bot: parseInt(rolePreferences.bot, 10),
         support: parseInt(rolePreferences.support, 10)',
