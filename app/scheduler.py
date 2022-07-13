@@ -22,14 +22,14 @@ def start():
         minute='30',
         timezone='est'
     )
-    scheduler.add_job(
-        create_new_rumble_week,
-        'cron',
-        day_of_week='sat',
-        hour='0',
-        minute='0',
-        timezone='est'
-    )
+    # scheduler.add_job(
+    #     create_new_rumble_week,
+    #     'cron',
+    #     day_of_week='sat',
+    #     hour='0',
+    #     minute='0',
+    #     timezone='est'
+    # )
     scheduler.add_job(update_summoner_info, 'interval', minutes=20, max_instances=1)
     scheduler.start()
 
@@ -44,6 +44,12 @@ def create_new_rumble_week():
     rumble_week.save()
 
 def calculate_teams():
+    debug = os.getenv('DEBUG')
+    if not debug:
+        print('Calculating teams...')
+        sys.stdout.flush()
+        return
+
     print('Calculating teams...')
     sys.stdout.flush()
 
