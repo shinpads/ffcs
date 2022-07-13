@@ -112,11 +112,11 @@ const ROLES = [
 ];
 
 const DEFAULT_ROLE_PREFERENCES = {
-  top: 1,
-  jungle: 1,
-  mid: 1,
-  bot: 1,
-  support: 1,
+  top: '1',
+  jungle: '1',
+  mid: '1',
+  bot: '1',
+  support: '1',
 };
 
 const RumbleSignup = (props) => {
@@ -139,7 +139,13 @@ const RumbleSignup = (props) => {
     setLoading(true);
     const data = {
       summonerName,
-      rolePreferences,
+      rolePreferences: {
+        top: parseInt(rolePreferences.top, 10),
+        jungle: parseInt(rolePreferences.jungle, 10)',
+        mid: parseInt(rolePreferences.mid, 10),
+        bot: parseInt(rolePreferences.bot, 10),
+        support: parseInt(rolePreferences.support, 10)',
+      },
       rank,
       highestRank,
       rankShouldBe,
@@ -161,7 +167,7 @@ const RumbleSignup = (props) => {
     const newRolePrefs = {
       ...rolePreferences,
     };
-    newRolePrefs[role] = parseInt(value, 10);
+    newRolePrefs[role] = value;
     setRolePreferences(newRolePrefs);
   };
 
