@@ -32,8 +32,7 @@ const styles = createUseStyles({
     flexDirection: 'column',
   },
   container: {
-    maxWidth: '1000px',
-    minWidth: '1000px',
+    width: '100%',
     margin: '0 auto',
     paddingTop: '5rem',
   },

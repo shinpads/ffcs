@@ -22,8 +22,15 @@ const styles = createUseStyles({
     textAlign: 'center',
     paddingTop: '0.5rem',
   },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   splitContainer: {
     display: 'grid',
+    maxWidth: '1000px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
     gridTemplateColumns: '1fr 1fr',
     gridGap: '4rem',
   },
@@ -67,7 +74,7 @@ const TournamentSeason = (props) => {
       <div className={`${classes.loadingScreen} ${loaded ? classes.loadedScreen : ''}`}>
         <img className={classes.loadingImage} style={loaded ? { transform: 'scale(0)', animation: 'none' } : { transform: 'scale(1)' }} alt="" width={128} src={getImage(logo)} />
       </div>
-      <div>
+      <div className={classes.container}>
         <div className={classes.splitContainer}>
           <Matches enablePlayoffs matchesToShow={currentSeasonMatchesByWeek} />
           <div>
@@ -79,13 +86,6 @@ const TournamentSeason = (props) => {
     </>
   );
 };
-
-// <iframe
-//     src="https://player.twitch.tv/?video=974287088&parent=www.ffcsleague.com&muted=true&autoplay=true&time=17m3s"
-//     width="100%"
-//     height="507"
-//     allowFullScreen={true}>
-// </iframe>
 
 function mapStateToProps(state) {
   return {

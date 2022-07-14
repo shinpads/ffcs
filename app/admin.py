@@ -26,6 +26,7 @@ class PlayerAdmin(admin.ModelAdmin):
         'role',
         'account_id',
         'get_id',
+        'role_preferences',
         'proposed_rumble_elo',
         'rumble_elo'
     )
@@ -38,6 +39,8 @@ class PlayerAdmin(admin.ModelAdmin):
                 'role',
                 'caster',
                 'rumble_elo',
+                'is_rumble',
+                'is_rumble_ready',
                 'role_preferences'
             )
         }),
@@ -97,7 +100,16 @@ class MatchAdmin(admin.ModelAdmin):
     get_id.short_description = 'ID'
     get_teams.short_description = 'Teams'
 
-    list_display = ('get_id', 'week', 'scheduled_for', 'get_teams', 'winner', 'blue_side')
+    list_display = (
+        'get_id',
+        'week',
+        'scheduled_for', 
+        'get_teams',
+        'winner',
+        'blue_side',
+        'elo_difference',
+        'role_pref_coefficient'
+    )
 
     filter_horizontal = ('teams',)
 

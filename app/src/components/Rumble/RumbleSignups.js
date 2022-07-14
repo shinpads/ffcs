@@ -30,14 +30,18 @@ const RumbleSignups = (props) => {
       <div className={classes.title}>
         Players registered for this week
       </div>
-      <div className={classes.container}>
-        {week.signups.map((signup, i) => (
-          <div>
-            {!(i % 10 || !i) && <hr />}
-            <div>{signup.player.user.summoner_name}</div>
+      {week.signups.length > 0
+        ? (
+          <div className={classes.container}>
+            {week.signups.map((signup, i) => (
+              <div>
+                {!(i % 10 || !i) && <hr />}
+                <div>{signup.player.user.summoner_name}</div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )
+        : <div><br />No signups for this week yet! Be the first :)</div>}
     </div>
   );
 };
