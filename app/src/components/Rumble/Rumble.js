@@ -180,7 +180,7 @@ const Rumble = (props) => {
         <div />
         {
         user.is_rumble_player
-          ? <Button variant="outlined" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
+          ? currentWeek.signups_open && <Button variant="outlined" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
           : <div>You must sign up for Rumble in order to register for the week! Sign up above.</div>
         }
         <Modal className={classes.modal} open={open} onClose={handleClose}>
