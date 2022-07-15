@@ -214,6 +214,7 @@ class Match(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     match_format = models.IntegerField(choices=FORMAT_CHOICES)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    on_game_in_series = models.IntegerField(default=1)
 
     is_rumble = models.BooleanField(default=False)
     rumble_week = models.ForeignKey(
@@ -261,10 +262,12 @@ class Match(models.Model):
         return None
 
     def finished_game(self, game_in_series):
-        if self.winner == None:
+        if self.winner == None and \
+           not game_in_series == self.on_game_in_series:
             new_game = Game()
             new_game.match = self
             new_game.game_in_series = game_in_series + 1
+            self.on_game_in_series += 1
             new_game.save()
 
     def __str__(self):
@@ -445,6 +448,7 @@ class Game(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     game_data = models.JSONField(null=True, blank=True)
+    game_timeline = models.JSONField(null=True, blank=True)
     is_old_data_format = models.BooleanField(default=False)
     game_id = models.CharField(max_length=100, blank=True)
     tournament_code = models.CharField(max_length=50, blank=True)

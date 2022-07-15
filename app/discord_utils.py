@@ -6,6 +6,7 @@ from app.serializers.teamserializer import TeamSerializer
 from .discord_bot import DiscordBot
 from .discord_constants import ChannelTypes, permissions
 from dotenv import load_dotenv
+from prettytable import PrettyTable
 import os
 import sys
 
@@ -128,6 +129,34 @@ def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
     )
 
     return res.json()
+
+def give_user_rumble_role(user):
+    rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
+    discord_bot.assign_user_to_role(user.discord_user_id, rumble_role_id)
+    return
+
+def send_rumble_match_announcement(matches):
+    rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
+    channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
+    message = (
+        f"<@&{rumble_role_id}> "
+        "This week's rumble signups have closed, and teams have been created! "
+        "\n**TEAMS:**"
+    )
+
+    for match in matches:
+        table = PrettyTable()
+        table.field_names = ["Blue Side", "Red Side"]
+        for i in range(min(len(match['red']), len(match['blue']))):
+            table.add_row([
+                match['blue'][i].user.summoner_name,
+                match['red'][i].user.summoner_name
+            ])
+        
+        message += f'\n```\n{str(table)}\n```'
+    
+    discord_bot.send_message(message, channel)
+    return
 
 def send_rumble_proposed_elo_message(player):
     channel = os.getenv('RUMBLE_ELO_CONFIRMATION_CHANNEL')

@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import datetime
 
 import pytz
+from app.discord_utils import send_rumble_match_announcement
 
 from app.elo_utils import create_teams
 from .models import Match, Player, RumbleWeek, Season, Team
@@ -135,6 +136,8 @@ def calculate_teams():
             if tournament_code:
                 game.tournament_code = tournament_code
                 game.save()
+        
+    send_rumble_match_announcement(matches)
 
     print('Finished calculating teams.')
     sys.stdout.flush()
