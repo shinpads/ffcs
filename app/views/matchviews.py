@@ -37,13 +37,14 @@ def get_match(request, match_id):
     match = Match.objects.get(pk=match_id)
     match_data = MatchSerializer(match).data
 
-    game_datas = [get_game(game['game_id'], game['tournament_code']) for game in match_data['games']]
-    game_timelines = [get_game_timeline(game['game_id']) for game in match_data['games']]
-
     game_datas = []
 
     for game in match_data['games']:
+        if not game['game_id']:
+            continue
         game_data = get_game(game['game_id'], game['tournament_code'])
+        if not game_data:
+            continue
         game_timeline = get_game_timeline(game['game_id'])
         game_data['timeline'] = game_timeline
         game_datas.append(game_data)

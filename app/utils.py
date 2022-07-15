@@ -127,7 +127,7 @@ def generate_tournament_code(game, all_players):
 
 def get_game(gameid, tournament_code):
     Game = apps.get_model('app', 'Game')
-    game = Game.objects.get(game_id=gameid)
+    game = Game.objects.filter(game_id=gameid).all()[0]
 
     if game.game_data != None:
         print('Using cached game data')
@@ -141,14 +141,19 @@ def get_game(gameid, tournament_code):
 
     body = json.loads(res.text)
 
-    # save this to the game object
-    game.game_data = body;
+    game.game_data = body
     game.save()
 
     return body
 
 def get_game_timeline(gameid):
-    #url = "https://na1.api.riotgames.com/lol/match/v4/timelines/by-match/"
+    Game = apps.get_model('app', 'Game')
+    game = Game.objects.filter(game_id=gameid).all()[0]
+
+    if game.game_timeline != None:
+        print('Using cached game timeline')
+        return game.game_timeline
+    
     url = "https://americas.api.riotgames.com/lol/match/v5/matches/" + 'NA1_' + gameid + "/timeline"
     url = url + "?api_key=" + os.getenv('RIOT_API_KEY')
 
@@ -158,6 +163,9 @@ def get_game_timeline(gameid):
         return None
 
     body = json.loads(res.text)
+
+    game.game_timeline = body
+    game.save()
 
     return body 
 

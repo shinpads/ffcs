@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from app.discord_utils import send_rumble_proposed_elo_message
+from app.discord_utils import give_user_rumble_role, send_rumble_proposed_elo_message
 
 from app.elo_utils import calculate_initial_elo
 from ..models import Player, RegistrationForm, Season
@@ -65,6 +65,7 @@ def rumblesignup(request):
 
     user.summoner_name = form.summoner_name
     user.is_rumble_player = True
+    give_user_rumble_role(user)
     user.save()
 
     if created:

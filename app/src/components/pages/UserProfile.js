@@ -100,7 +100,7 @@ const UserProfile = (props) => {
   const [games, setGames] = useState([]);
   const [allGames, setAllGames] = useState([]);
 
-  let player = user?.players?.filter(curPlayer => curPlayer.team.season === selectedSeason)[0];
+  let player = user?.players?.filter(curPlayer => curPlayer.team?.season === selectedSeason)[0];
   if (!player) {
     player = user?.players[user.players.length - 1];
   }
@@ -119,7 +119,9 @@ const UserProfile = (props) => {
       const { id } = props.match.params;
       const data = await getUser(id);
       const seasons = await getAllSeasons();
-      const allUserSeasons = data.user.players.map(player => player.team.season);
+      const allUserSeasons = data.user.players
+        .filter(curPlayer => curPlayer.team !== null)
+        .map(curPlayer => curPlayer.team.season);
       const userMostRecentSeason = Math.max(...allUserSeasons);
       setUser(data.user);
       setAllGames(data.games);
