@@ -2,6 +2,7 @@ from random import shuffle
 from itertools import permutations
 
 RANK_VALUES = {
+    "unranked": 1100,
     "Iron 4": 600,
     "Iron 3": 650,
     "Iron 2": 700,
@@ -9,7 +10,7 @@ RANK_VALUES = {
     "Bronze 4": 800,
     "Bronze 3": 850,
     "Bronze 2": 900,
-    "Bronze 1": 100,
+    "Bronze 1": 1000,
     "Silver 4": 1100,
     "Silver 3": 1200,
     "Silver 2": 1300,

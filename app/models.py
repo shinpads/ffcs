@@ -356,7 +356,7 @@ class Player(models.Model):
         ]
 
     def __str__(self):
-        return self.user.discord_username
+        return f'{self.user.discord_username}, id: {self.id}'
 
 
 class RumbleTeam(models.Model):

@@ -2,7 +2,7 @@ import { Button, Modal, Paper } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useTimer } from 'react-timer-hook';
-import { signupForRumble } from '../../api';
+import { signupForRumble, withdrawFromCurrentRumbleWeek } from '../../api';
 import colors from '../../colors';
 import { nearestWednesday } from '../../helpers';
 import RumbleMatch from './RumbleMatch';
@@ -55,7 +55,9 @@ const styles = createUseStyles({
   },
   splitContainer: {
     display: 'grid',
-    padding: '1rem',
+    maxWidth: '1000px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
     gridTemplateColumns: '1fr 1fr',
     gridGap: '4rem',
   },
@@ -98,6 +100,12 @@ const styles = createUseStyles({
   },
 });
 
+const REGISTER_WARNING_MESSAGE = `This week's Rumble occurs at exactly 8:30 PM EST this upcoming Friday.
+By signing up, you agree to show up on time. Failure to do so may result
+in a week-long suspension.`;
+
+const DEREGISTER_WARNING_MESSAGE = "You are deregistering for this week's rumble. Click 'deregister' to proceed.";
+
 const Rumble = (props) => {
   const classes = styles();
 
@@ -105,11 +113,8 @@ const Rumble = (props) => {
   const [loading, setLoading] = useState(false);
   const [currentWeek, setCurrentWeek] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [modalMessage, setModalMessage] = useState(
-    `This week's Rumble occurs at exactly 8:30 PM EST this upcoming Friday.
-    By signing up, you agree to show up on time. Failure to do so may result
-    in a week-long suspension.`,
-  );
+  const [hideRegisterButton, setHideRegisterButton] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const [showTimer, setshowTimer] = useState(true);
 
   const {
@@ -124,30 +129,33 @@ const Rumble = (props) => {
   useEffect(() => {
     const curWeek = season.current_week;
     setCurrentWeek(curWeek);
-    setshowTimer(curWeek.is_signups_open);
+    setshowTimer(curWeek.signups_open);
     setIsRegistered(!!curWeek.signups.find(signup => signup.player.user.id === user.id));
   }, []);
 
   const handleClick = () => {
+    setModalMessage(isRegistered ? DEREGISTER_WARNING_MESSAGE : REGISTER_WARNING_MESSAGE);
     setOpen(true);
   };
 
   const handleClose = () => {
+    setHideRegisterButton(false);
     setOpen(false);
   };
 
-  const rumbleSignup = async () => {
+  const rumbleSignup = async (signingUp) => {
     setLoading(true);
     const data = {
       week: currentWeek,
     };
 
-    const response = await signupForRumble(data);
+    const response = signingUp ? await signupForRumble(data) : await withdrawFromCurrentRumbleWeek(data);
 
     setModalMessage(response.data.message);
 
     if (response.status === 200) {
-      setIsRegistered(true);
+      setIsRegistered(signingUp);
+      setHideRegisterButton(true);
       setCurrentWeek(response.data.data.week);
     }
 
@@ -163,7 +171,7 @@ const Rumble = (props) => {
           ⚡ Sign up for FFCS Rumble! ⚡
         </Button>
         )}
-        <div className={classes.title}>This week's rumble</div>
+        <div className={classes.title}>FFCS Rumble</div>
         {showTimer && (
         <div>
           <span>{days}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
@@ -172,7 +180,7 @@ const Rumble = (props) => {
         <div />
         {
         user.is_rumble_player
-          ? !isRegistered && <Button variant="outlined" onClick={handleClick}>Register for this week's rumble!</Button>
+          ? <Button variant="outlined" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
           : <div>You must sign up for Rumble in order to register for the week! Sign up above.</div>
         }
         <Modal className={classes.modal} open={open} onClose={handleClose}>
@@ -180,15 +188,19 @@ const Rumble = (props) => {
             <div className={classes.modalText}>
               {modalMessage}
             </div>
-            {!isRegistered && <Button disabled={loading} variant="contained" onClick={rumbleSignup}>Register</Button>}
+            {!hideRegisterButton && (
+            <Button disabled={loading} variant="contained" onClick={() => rumbleSignup(!isRegistered)}>
+              {isRegistered ? 'Deregister' : 'Register'}
+            </Button>
+            )}
           </Paper>
         </Modal>
         <div className={classes.splitContainer}>
           <div>
-            {currentWeek.matches
+            {!currentWeek.signups_open
               ? (
                 <div>
-                  <div className={classes.subtitle}>Matches</div>
+                  <div className={classes.subtitle}>This week's matches</div>
                   <hr />
                   {currentWeek.matches.map((match, i) => (
                     <div>

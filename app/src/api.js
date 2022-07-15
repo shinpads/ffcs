@@ -141,3 +141,9 @@ export async function signupForRumble(data) {
 
   return response;
 }
+
+export async function withdrawFromCurrentRumbleWeek(data) {
+  const response = await axios.delete('/api/rumbleweeksignup/', { data });
+
+  return response;
+}

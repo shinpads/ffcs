@@ -62,6 +62,7 @@ def calculate_teams():
         return
     
     current_rumble_week.signups_open = False
+    current_rumble_week.save()
 
     signups = list(current_rumble_week.signups.all())
     if len(signups) < 10:
