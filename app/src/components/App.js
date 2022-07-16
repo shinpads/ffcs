@@ -14,6 +14,7 @@ import Match from './pages/Match';
 import UserProfile from './pages/UserProfile';
 import TeamProfile from './pages/TeamProfile';
 import TeamManage from './pages/TeamManage';
+import UserManage from './pages/UserManage';
 
 const theme = createMuiTheme({
   palette: {
@@ -53,6 +54,7 @@ class App extends Component {
           <Route path="/user/:id" component={UserProfile} exact />
           <Route path="/team/:id" component={TeamProfile} exact />
           <Route path="/team/:id/manage" component={TeamManage} exact />
+          <Route path="/user/:id/manage" component={UserManage} exact />
           <Redirect from="*" to="/" />
         </Switch>
       </MuiThemeProvider>

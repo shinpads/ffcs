@@ -54,6 +54,12 @@ const styles = createUseStyles({
     marginRight: '1rem',
     display: 'flex',
   },
+  manageProfileContainer: {
+    marginRight: '1rem',
+    marginLeft: 'auto',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
   content: {
     display: 'grid',
     gridTemplateColumns: '4fr 8fr',
@@ -87,6 +93,12 @@ const styles = createUseStyles({
   seasonButton: {
     padding: '4px',
   },
+  managerUserButton: {
+    color: '#3366BB',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
   teamName: ({ teamColor }) => ({
     color: teamColor,
   }),
@@ -100,7 +112,8 @@ const UserProfile = (props) => {
   const [games, setGames] = useState([]);
   const [allGames, setAllGames] = useState([]);
 
-  let player = user?.players?.filter(curPlayer => curPlayer.team?.season === selectedSeason)[0];
+  const selectedSeasonIsRumble = allSeasons?.find(curSeason => curSeason.id === selectedSeason).is_rumble;
+  let player = user?.players?.find(curPlayer => curPlayer.team?.season === selectedSeason || (curPlayer.is_rumble && selectedSeasonIsRumble));
   if (!player) {
     player = user?.players[user.players.length - 1];
   }
@@ -108,6 +121,8 @@ const UserProfile = (props) => {
   const classes = styles({ teamColor: intToHexColorCode(player?.team?.color) });
 
   const { league } = props;
+
+  const { loaded: userLoaded, user: loggedInUser } = props.user;
 
   const changeSeasons = (id) => {
     setSelectedSeason(id);
@@ -122,6 +137,10 @@ const UserProfile = (props) => {
       const allUserSeasons = data.user.players
         .filter(curPlayer => curPlayer.team !== null)
         .map(curPlayer => curPlayer.team.season);
+      const rumblePlayer = (data.user.players.find(curPlayer => curPlayer.is_rumble));
+      if (rumblePlayer) {
+        allUserSeasons.push(seasons.find(curSeason => curSeason.is_rumble).id);
+      }
       const userMostRecentSeason = Math.max(...allUserSeasons);
       setUser(data.user);
       setAllGames(data.games);
@@ -133,7 +152,7 @@ const UserProfile = (props) => {
     getData();
   }, []);
 
-  if (loading || !league.loaded) {
+  if (loading || !league.loaded || !userLoaded) {
     return (
       <>
         <Header />
@@ -151,7 +170,7 @@ const UserProfile = (props) => {
         <div className={classes.seasonButtonsContainer}>
           {allSeasons.map(season => (
             <div className={classes.seasonButton}>
-              <Button variant={season.id === selectedSeason ? 'contained' : 'outlined'} onClick={() => changeSeasons(season.id)}> Season {season.number} </Button>
+              <Button variant={season.id === selectedSeason ? 'contained' : 'outlined'} onClick={() => changeSeasons(season.id)}> {season.name} </Button>
             </div>
           ))}
         </div>
@@ -161,6 +180,7 @@ const UserProfile = (props) => {
           </div>
           <div className={classes.userDetailsContainer}>
             <div>{user.summoner_name}</div>
+            {!selectedSeasonIsRumble && (
             <div className={classes.teamContainer}>
               <Role role={player.role} />
               <div>
@@ -169,7 +189,13 @@ const UserProfile = (props) => {
                 </a>
               </div>
             </div>
+            )}
           </div>
+          {loggedInUser.id === user.id && (
+          <div className={classes.manageProfileContainer}>
+            <a href={`/user/${user.id}/manage`} className={classes.managerUserButton}>Manage Profile</a>
+          </div>
+          )}
         </Paper>
         <div className={classes.content}>
           <div className={classes.leftContainer}>
@@ -199,6 +225,7 @@ const UserProfile = (props) => {
 
 function mapStateToProps(state) {
   return {
+    user: state.user,
     league: state.league,
   };
 }
