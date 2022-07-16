@@ -16,6 +16,7 @@
     "chart.js": "^3.4.1",
     "classnames": "^2.2.6",
     "moment": "^2.29.1",
+    "node": "15.4.0",
     "react": "^16.13.1",
     "react-chartjs-2": "^3.0.4",
     "react-colorful": "^5.5.1",

@@ -15,7 +15,9 @@ const DiscordUser = ({ user }) => {
   return (
     <div className={classes.user}>
       <DiscordAvatar userId={user.discord_user_id} avatar={user.avatar} />
-      <div style={{ marginLeft: '0.5rem' }}>{user.discord_username}</div>
+      <a href={`/user/${user.id}`} style={{ marginLeft: '0.5rem' }}>
+        {user.discord_username}
+      </a>
     </div>
   );
 };

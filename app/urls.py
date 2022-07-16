@@ -26,6 +26,7 @@ urlpatterns = [
   path('rumblesignup', views.rumblesignup_index),
   path('match/<match_id>', views.match_index),
   path('user/<user_id>', views.user_index),
+  path('user/<user_id>/manage', views.user_index),
   path('team/<team_id>', views.team_index),
   path('team/<team_id>/manage', views.team_index),
   path('riot.txt', views.riot),
