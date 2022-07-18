@@ -134,7 +134,7 @@ class GameAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('winner', 'mvp')
+            'fields': ('winner', 'mvp', 'game_in_series', 'match')
         }),
     )
 
