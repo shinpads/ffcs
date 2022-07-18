@@ -263,7 +263,7 @@ class Match(models.Model):
 
     def finished_game(self, game_in_series):
         if self.winner == None and \
-           not game_in_series == self.on_game_in_series:
+           game_in_series == self.on_game_in_series:
             new_game = Game()
             new_game.match = self
             new_game.game_in_series = game_in_series + 1
