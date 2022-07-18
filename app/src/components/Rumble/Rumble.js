@@ -1,10 +1,14 @@
-import { Button, Modal, Paper } from '@material-ui/core';
+import {
+  Button, Modal, Paper, Tooltip,
+  withStyles,
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useTimer } from 'react-timer-hook';
 import { signupForRumble, withdrawFromCurrentRumbleWeek } from '../../api';
 import colors from '../../colors';
 import { nearestWednesday } from '../../helpers';
+import RumbleLeaderboard from './RumbleLeaderboard';
 import RumbleMatch from './RumbleMatch';
 import RumbleSignups from './RumbleSignups';
 
@@ -30,6 +34,7 @@ const styles = createUseStyles({
     padding: '1rem',
     textAlign: 'center',
     textTransform: 'uppercase',
+    paddingBottom: '0rem',
   },
   subtitle: {
     fontSize: '34px',
@@ -53,6 +58,10 @@ const styles = createUseStyles({
     textAlign: 'center',
     paddingTop: '0.5rem',
   },
+  timerContainer: {
+    marginBottom: '1rem',
+    fontSize: '30px',
+  },
   splitContainer: {
     display: 'grid',
     maxWidth: '1000px',
@@ -60,6 +69,7 @@ const styles = createUseStyles({
     marginRight: 'auto',
     gridTemplateColumns: '1fr 1fr',
     gridGap: '4rem',
+    marginTop: '1rem',
   },
   buttonText: {
     color: colors.black,
@@ -97,6 +107,22 @@ const styles = createUseStyles({
   },
   modalText: {
     padding: '1rem',
+  },
+  rumbleInfoText: {
+    display: 'inline-block',
+    color: colors.primary,
+    fontSize: '16px',
+  },
+  rumbleInfoTooltip: {
+    backgroundColor: colors.darkGrey,
+  },
+  rumbleInfoTooltipText: {
+    textAlign: 'center',
+  },
+  footnote: {
+    textAlign: 'center',
+    color: colors.offwhite,
+    fontSize: '12px',
   },
 });
 
@@ -172,12 +198,56 @@ const Rumble = (props) => {
         </Button>
         )}
         <div className={classes.title}>FFCS Rumble</div>
+        <HtmlTooltip
+          title={(
+            <>
+              <div className={classes.rumbleInfoTooltipText}>
+                <div>
+                  <strong>FFCS Rumble</strong> is essentially FFCS Solo Queue! Players compete in
+                  weekly matches to rise the Rumble ranks and top the leaderboards.
+                </div>
+                <br />
+                <div>
+                  Every week, players will sign up to play a Rumble match on
+                  <strong> Friday</strong>, at <strong>8:30 PM EST</strong>.
+                  Players are not required to sign up every week, and can selectively sign up each
+                  week as they prefer!
+                </div>
+                <br />
+                <div>
+                  Teams will be formed for the week using a matchmaking algorithm that balances players
+                  based on the skill level of the players, and the role preferences each player indicated
+                  when they signed up*.
+                </div>
+                <br />
+                <div>
+                  After each match, everyone's rank will be adjusted based on if they won or lost.
+                </div>
+                <br />
+                <div>
+                  Every week, signups open on <strong>Saturday</strong>, at <strong>12:00 AM EST</strong>,
+                  and close on <strong>Wednesday</strong>, at <strong>5:30 PM EST</strong>.
+                </div>
+                <br />
+                <br />
+                <div className={classes.footnote}>
+                  *You can change your preferred roles in your user profile.
+                </div>
+              </div>
+            </>
+          )}
+        >
+          <div className={classes.rumbleInfoText}>What is Rumble?</div>
+        </HtmlTooltip>
         {showTimer && (
-        <div>
-          <span>{days}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
+        <div className={classes.timerContainer}>
+          Signups close in:
+          <span> {days}</span> day{days === 1 ? '' : 's'},
+          <span> {hours}</span> hour{hours === 1 ? '' : 's'},
+          <span> {minutes}</span> minute{minutes === 1 ? '' : 's'},
+          <span> {seconds}</span> second{seconds === 1 ? '' : 's'}
         </div>
         )}
-        <div />
         {
         user.is_rumble_player
           ? currentWeek.signups_open && <Button variant="outlined" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
@@ -213,12 +283,22 @@ const Rumble = (props) => {
               )
               : <RumbleSignups week={currentWeek} />}
           </div>
-          <div />
+          <div>
+            <RumbleLeaderboard />
+          </div>
         </div>
       </div>
       )}
     </>
   );
 };
+
+const HtmlTooltip = withStyles({
+  tooltip: {
+    fontSize: '12px',
+    backgroundColor: colors.darkGrey,
+    border: '1px solid white',
+  },
+})(Tooltip);
 
 export default Rumble;

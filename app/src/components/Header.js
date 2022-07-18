@@ -69,13 +69,7 @@ const Header = (props) => {
       <div />
       <div />
       <a href="/"><div className={classes.title}>For Fun Championship Series</div></a>
-      <HeaderMenu name="teams">
-        {teams.map(team => (
-          <a href={`/team/${team.id}`}>
-            <div id={team.id} className={classes.teamText}>{team.name}</div>
-          </a>
-        ))}
-      </HeaderMenu>
+      <div />
       <div />
       <div style={{ paddingRight: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
         {userLoaded && <DiscordUser user={user} />}

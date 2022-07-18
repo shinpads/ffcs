@@ -335,6 +335,7 @@ class Player(models.Model):
     )
     rumble_elo = models.IntegerField(blank=True, null=True)
     proposed_rumble_elo = models.IntegerField(blank=True, null=True)
+    has_rumble_priority = models.BooleanField(default=False)
 
     profile_icon_id = models.IntegerField(default=0)
 

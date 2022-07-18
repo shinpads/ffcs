@@ -5,6 +5,9 @@ import colors from '../colors';
 const styles = createUseStyles({
   name: {
     cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
   },
 });
 
