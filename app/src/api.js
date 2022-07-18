@@ -115,6 +115,11 @@ export async function getPlayers() {
   return response.data.data;
 }
 
+export async function getRumblePlayers() {
+  const response = await axios.get('/api/players/rumble/');
+  return response.data.data;
+}
+
 export async function getPlayersCurrentSeason() {
   const response = await axios.get('/api/players/current/');
   return response.data.data;
@@ -144,6 +149,12 @@ export async function signupForRumble(data) {
 
 export async function withdrawFromCurrentRumbleWeek(data) {
   const response = await axios.delete('/api/rumbleweeksignup/', { data });
+
+  return response;
+}
+
+export async function updateUser(data, userId) {
+  const response = await axios.patch(`/api/user/${userId}/`, data);
 
   return response;
 }

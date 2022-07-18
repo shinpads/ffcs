@@ -1,3 +1,4 @@
+from itertools import chain
 from dotenv import load_dotenv
 import datetime
 
@@ -72,11 +73,33 @@ def calculate_teams():
         key=lambda signup: signup.created_at
     )
 
+    priority_signups = []
+
+    for signup in signups:
+        if signup.player.has_rumble_priority:
+            priority_signups.append(signup)
+            player = signup.player
+            player.has_rumble_priority = False
+            player.save()
+    
+    for signup in priority_signups:
+        signups.remove(signup)
+
+    
+    sorted_signups = list(chain(*[priority_signups, signups]))
+
     players = list(map(
         lambda signup: signup.player,
-        signups
+        sorted_signups
     ))
+    num_of_remaining_players = len(players) % 10
+    if num_of_remaining_players > 0:
+        not_added_players = players[-num_of_remaining_players:]
     players = players[:int(len(players) / 10) * 10]
+    
+    for player in not_added_players:
+        player.has_rumble_priority = True
+        player.save()
 
     matches = create_teams(players)
     

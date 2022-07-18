@@ -28,7 +28,8 @@ class PlayerAdmin(admin.ModelAdmin):
         'get_id',
         'role_preferences',
         'proposed_rumble_elo',
-        'rumble_elo'
+        'rumble_elo',
+        'has_rumble_priority'
     )
 
     fieldsets = (
@@ -41,7 +42,8 @@ class PlayerAdmin(admin.ModelAdmin):
                 'rumble_elo',
                 'is_rumble',
                 'is_rumble_ready',
-                'role_preferences'
+                'role_preferences',
+                'has_rumble_priority'
             )
         }),
     )
