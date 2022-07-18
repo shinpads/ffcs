@@ -134,11 +134,11 @@ class TeamView(View):
 
         team = Team.objects.get(id=data['id'])
         if team == None:
-                response = JsonResponse({
-                    "message": "could not find team with id: " + data['id'],
-                    "data": {},
-                }, status=500)
-                return response
+            response = JsonResponse({
+                "message": "could not find team with id: " + data['id'],
+                "data": {},
+            }, status=500)
+            return response
 
         if (request.user.id != team.captain.user.id) and not request.user.is_admin:
             response = JsonResponse({

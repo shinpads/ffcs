@@ -16,6 +16,10 @@ const colors = {
   silver: '#C5C6C7',
   bronze: '#874f18',
   red: '#c6443e',
+  green: '#58D68D',
+  ranks: {
+    wench: '#874f18',
+  },
 };
 
 export default colors;

@@ -243,3 +243,13 @@ def get_players_current_season(request):
         "message": "success",
         "data": data,
     }, status=200)
+
+def get_players_rumble(request):
+    players = Player.objects.filter(is_rumble=True).prefetch_related('user').prefetch_related('stats')
+
+    data = [PlayerSerializer(player).data for player in players]
+
+    return JsonResponse({
+        "message": "success",
+        "data": data,
+    }, status=200)
