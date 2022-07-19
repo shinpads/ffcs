@@ -27,8 +27,8 @@ def start():
     scheduler.add_job(
         test_scheduler,
         'cron',
-        day_of_week='mon',
-        hour='11',
+        day_of_week='tue',
+        hour='16',
         minute='00',
         timezone='est'
     )
@@ -46,6 +46,8 @@ def start():
 def test_scheduler():
     sched_test = ScheduleTest()
     sched_test.reached = True
+    print('Creating new Rumble week...')
+    sys.stdout.flush()
     sched_test.save()
 
 def create_new_rumble_week():

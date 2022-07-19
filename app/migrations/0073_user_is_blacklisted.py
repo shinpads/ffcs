@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0071_player_has_rumble_priority'),
+        ('app', '0072_scheduletest'),
     ]
 
     operations = [
