@@ -43,7 +43,7 @@ def signup(request):
 @login_required(login_url="/")
 def rumblesignup(request):
     user = request.user
-    if user.is_blacklisted:
+    if user.is_blacklisted != None and user.is_blacklisted:
         response = JsonResponse({
             "message": (
                 "You are not permitted to sign up. Please contact Fenryn if "
