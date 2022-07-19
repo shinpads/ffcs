@@ -160,6 +160,7 @@ class User(AbstractBaseUser):
     last_updated_discord_info = models.DateTimeField(null=True)
     is_admin = models.BooleanField(default=False)
     is_rumble_player = models.BooleanField(default=False)
+    is_blacklisted = models.BooleanField(default=False)
 
     # Stuff from discord
     discord_username = models.CharField(max_length=64, unique=True)
