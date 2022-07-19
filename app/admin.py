@@ -175,7 +175,12 @@ class UserAdmin(admin.ModelAdmin):
 
     get_id.short_description = 'ID'
 
-    list_display = ('discord_username', 'email', 'summoner_name')
+    list_display = (
+        'discord_username',
+        'email',
+        'summoner_name',
+        'is_blacklisted'
+    )
 
 @admin.register(RegistrationForm)
 class RegistrationFormAdmin(admin.ModelAdmin):

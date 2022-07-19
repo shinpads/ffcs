@@ -43,6 +43,14 @@ def signup(request):
 @login_required(login_url="/")
 def rumblesignup(request):
     user = request.user
+    if user.is_blacklisted != None and user.is_blacklisted:
+        response = JsonResponse({
+            "message": (
+                "You are not permitted to sign up. Please contact Fenryn if "
+                "you believe this is a mistake."
+            )
+        }, status=401)
+    
     json_data = json.loads(request.body)
     rumble_season = Season.objects.get(is_rumble=True)
     rank = json_data['rank']
