@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views import View
 
 from app.discord_utils import send_mvp_vote_dm
-from ..models import Game, Match, Player, Season
+from ..models import Game, Match, Player, Season, User
 from ..utils import get_riot_account_id
 from ..scripts import player_stats
 from ..utils import get_game_timeline
@@ -36,23 +36,46 @@ class CallbackView(View):
         for i in range(5):
             winner_acc_username = data["winningTeam"][i]["summonerName"]
             winner_acc_id = get_riot_account_id(winner_acc_username)
+            
+            try:
+                winner_user = User.objects.get(summoner_id=winner_acc_id)
+                winner_player = None
 
-            winner_player = Player.objects.filter(account_id=winner_acc_id, team__season=current_season).first()
-
+                for player in winner_user.players.all():
+                    if player.is_rumble and current_season.is_rumble:
+                        winner_player = player
+                        break
+                    elif player.team.season.id == current_season.id:
+                        winner_player = player
+                        break
+            except:
+                print('error finding winner player.')
+                continue
+            
             if winner_player == None:
                 continue
 
             winning_players.append(winner_player)
+            
+            winner_team = None
+            
+            for team in game.match.teams.all():
+                if player.is_rumble:
+                    if player in [
+                        team.rumble_top,
+                        team.rumble_jg,
+                        team.rumble_mid,
+                        team.rumble_adc,
+                        team.rumble_supp
+                    ]:
+                        winner_team = team
+                        break
+                else:
+                    if player in team.players.all():
+                        winner_team = team
+                        break
 
-            player_team = winner_player.team
-            if player_team == None:
-                continue
-
-            if player_team.id in [team.id for team in game.match.teams.all()]:
-                winner_team = player_team
-                break
-
-        if game.winner != None or game.game_id != '':
+        if game.winner != None:
             response = JsonResponse({
                 "message": "That game has already been updated.",
                 "data": out_data,
@@ -65,12 +88,15 @@ class CallbackView(View):
                 "data": out_data,
             }, status=500)
             return response
-
+        
         game.winner = winner_team
         game.game_id = game_id
         game.save()
         
-        send_mvp_vote_dm(game, winning_players)
+        try:
+            send_mvp_vote_dm(game, winning_players)
+        except:
+            print('failed sending MVP Vote DM.')
 
         # update player stats with new data
         player_stats.calculate_player_stats()

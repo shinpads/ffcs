@@ -23,9 +23,9 @@ const styles = createUseStyles({
     margin: '1rem 4px 1rem 4px',
     backgroundColor: colors.darkGrey,
     borderRadius: '4px',
-    flexBasis: '400px',
+    flexBasis: '540px',
     boxShadow: `1px 1px 2px ${colors.black}`,
-    height: '400px',
+    height: '540px',
     overflowY: 'scroll',
   },
   descriptionContainer: {
@@ -50,7 +50,8 @@ const styles = createUseStyles({
     color: colors.ranks.wench,
   },
   leaderboardColumnTitle: {
-    fontSize: '24px',
+    fontSize: '20px',
+    textTransform: 'uppercase',
   },
 });
 
@@ -78,12 +79,17 @@ const RumbleLeaderboard = () => {
             <TableRow>
               <TableCell align="left">
                 <div className={classes.leaderboardColumnTitle}>
-                  <strong>Player</strong>
+                  Player
                 </div>
               </TableCell>
               <TableCell align="left">
                 <div className={classes.leaderboardColumnTitle}>
-                  <strong>Rank</strong>
+                  W/L
+                </div>
+              </TableCell>
+              <TableCell align="left">
+                <div className={classes.leaderboardColumnTitle}>
+                  Rank
                 </div>
               </TableCell>
             </TableRow>
@@ -94,6 +100,9 @@ const RumbleLeaderboard = () => {
                 <TableCell component="th" scope="row">
                   <span>{i + 1}. </span>
                   <UserName user={player.user} />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  2 W, 3 L
                 </TableCell>
                 <TableCell component="th" scope="row">
                   <div className={classes.leaderboardRank}>Wench</div>

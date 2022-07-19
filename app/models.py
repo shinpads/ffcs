@@ -501,6 +501,9 @@ class Game(models.Model):
             models.Index(fields=['meta_key'])
         ]
 
+class ScheduleTest(models.Model):
+    reached = models.BooleanField(default=False)
+
 class RegistrationForm(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -6,7 +6,7 @@ import pytz
 from app.discord_utils import send_rumble_match_announcement
 
 from app.elo_utils import create_teams
-from .models import Match, Player, RumbleWeek, Season, Team
+from .models import Match, Player, RumbleWeek, ScheduleTest, Season, Team
 from .utils import generate_tournament_code, get_info_by_account_id
 from apscheduler.schedulers.background import BackgroundScheduler
 import sys
@@ -24,6 +24,14 @@ def start():
         minute='30',
         timezone='est'
     )
+    scheduler.add_job(
+        test_scheduler,
+        'cron',
+        day_of_week='mon',
+        hour='11',
+        minute='00',
+        timezone='est'
+    )
     # scheduler.add_job(
     #     create_new_rumble_week,
     #     'cron',
@@ -34,6 +42,11 @@ def start():
     # )
     scheduler.add_job(update_summoner_info, 'interval', minutes=20, max_instances=1)
     scheduler.start()
+
+def test_scheduler():
+    sched_test = ScheduleTest()
+    sched_test.reached = True
+    sched_test.save()
 
 def create_new_rumble_week():
     print('Creating new Rumble week...')
