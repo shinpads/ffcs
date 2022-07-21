@@ -102,10 +102,10 @@ const RumbleLeaderboard = () => {
                   <UserName user={player.user} />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  2 W, 3 L
+                  {player.rumble_wins} W {player.rumble_losses} L
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <div className={classes.leaderboardRank}>Wench</div>
+                  <div className={classes.leaderboardRank}>{player.rumble_rank?.name}</div>
                 </TableCell>
               </TableRow>
             ))}

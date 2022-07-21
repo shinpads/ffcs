@@ -58,6 +58,7 @@ def adjust_player_lp_and_rank_on_loss(player):
             player.rumble_lp = lp_loss
     
     player.rumble_lp -= lp_loss
+    player.rumble_losses += 1
     player.save()
 
 def adjust_player_lp_and_rank_on_win(player):
@@ -74,6 +75,6 @@ def adjust_player_lp_and_rank_on_win(player):
             player.rumble_rank = next_rumble_rank
             send_rumble_promotion_announcement(player, next_rumble_rank)
             
-    
     player.rumble_lp += lp_gain
+    player.rumble_wins += 1
     player.save()
