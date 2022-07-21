@@ -1,5 +1,5 @@
 import json
-from app.models import Game, Match, Player, RegistrationForm, Team, User
+from app.models import Game, Match, Player, Rank, RegistrationForm, Team, User
 from django.utils import timezone
 import pytz
 from app.serializers.teamserializer import TeamSerializer
@@ -196,6 +196,26 @@ def send_mvp_vote_dm(game, players):
             continue
         components = create_mvp_vote_components(len(players), player_choices, game)
         discord_bot.send_dm(player.user.discord_user_id, message, components)
+
+def change_user_rank_role(user, rank):
+    user_discord_data = discord_bot.get_user_guild_info(
+        user.discord_user_id
+    ).json()
+
+    rank_discord_role_ids = []
+    
+    for rank in Rank.objects.all():
+        if rank.discord_role_id:
+            rank_discord_role_ids.append(rank.discord_role_id)
+
+    for rank_discord_role_id in rank_discord_role_ids:
+        if rank_discord_role_id in user_discord_data['roles']:
+            discord_bot.remove_role_from_user(
+                user.discord_user_id,
+                rank_discord_role_id
+            )
+    
+    discord_bot.assign_user_to_role(user.discord_user_id, rank.discord_role_id)
 
 def create_rumble_proposed_elo_components(player):
     elo_choice_increment = 25

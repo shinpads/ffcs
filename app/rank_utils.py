@@ -1,4 +1,4 @@
-from app.discord_utils import send_rumble_promotion_announcement
+from app.discord_utils import change_user_rank_role, send_rumble_promotion_announcement
 from app.models import Rank
 from app.utils import get_rumble_player_games
 
@@ -54,6 +54,7 @@ def adjust_player_lp_and_rank_on_loss(player):
                 value=player.rumble_rank.value-1
             )
             player.rumble_rank = lower_rumble_rank
+            change_user_rank_role(player.user, lower_rumble_rank)
         else:
             player.rumble_lp = lp_loss
     
@@ -74,6 +75,7 @@ def adjust_player_lp_and_rank_on_win(player):
             )
             player.rumble_rank = next_rumble_rank
             send_rumble_promotion_announcement(player, next_rumble_rank)
+            change_user_rank_role(player.user, next_rumble_rank)
             
     player.rumble_lp += lp_gain
     player.rumble_wins += 1
