@@ -3,7 +3,7 @@ from decimal import Decimal
 import os
 import json
 import requests
-from ..models import Game, Player, Match, Season, PlayerStats, PlayerChampionStats
+from ..models import Game, Player, Match, Season, PlayerStats, PlayerChampionStats, User
 from ..utils import get_game
 
 load_dotenv()
@@ -24,11 +24,22 @@ def calculate_player_stats():
             summoner_name = participant['summonerName']
             summoner_icon = participant['profileIcon']
             if not summoner_id in player_stats:
-                players = Player.objects.filter(account_id=summoner_id).select_related('team').filter(team__season=current_season)
-                if not len(players):
+                if current_season.is_rumble:
+                    player_user = User.objects.get(summoner_id=summoner_id)
+                    player = None
+                    for cur_player in player_user.players.all():
+                        if cur_player.is_rumble:
+                            player = cur_player
+                            break
+                else:
+                    players = Player.objects.filter(account_id=summoner_id).select_related('team').filter(team__season=current_season)
+                    if not len(players):
+                        print('cant find player or team for player', summoner_name)
+                        continue
+                    player = players[0]
+                if not player:
                     print('cant find player or team for player', summoner_name)
                     continue
-                player = players[0]
                 if player.profile_icon_id != summoner_icon:
                     print('updaing profile icon for', summoner_name)
                     player.profile_icon_id = summoner_icon

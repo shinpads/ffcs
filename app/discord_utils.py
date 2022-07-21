@@ -158,6 +158,16 @@ def send_rumble_match_announcement(matches):
     discord_bot.send_message(message, channel)
     return
 
+def send_rumble_promotion_announcement(player, rank):
+    channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
+    message = (
+        f"<@{player.user.discord_user_id}> "
+        f"Has just promoted to {rank.name}! 🎉 🎉"
+    )
+    
+    discord_bot.send_message(message, channel)
+    return
+
 def send_rumble_proposed_elo_message(player):
     channel = os.getenv('RUMBLE_ELO_CONFIRMATION_CHANNEL')
     registration_form = RegistrationForm.objects.get(

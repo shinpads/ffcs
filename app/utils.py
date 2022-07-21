@@ -206,21 +206,3 @@ def get_rumble_player_games(player):
     player_games.sort(key=lambda game: game.created_at)
 
     return player_games
-
-def get_win_or_loss_streak(player_games):
-    past_result = 'blank'
-    win_loss_streak = 0
-    streak_type = None
-
-    for i, game in enumerate(player_games):
-        result = game['game'].winner == game['team']
-
-        if past_result == 'blank':
-            streak_type = 'W' if result else 'L'
-        elif past_result != result:
-            return
-        
-        past_result = int(result)
-        win_loss_streak = int(i + 1)
-
-    return win_loss_streak, streak_type

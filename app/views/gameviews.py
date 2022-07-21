@@ -2,8 +2,9 @@ from django.http import JsonResponse
 from django.views import View
 
 from app.discord_utils import send_mvp_vote_dm
-from ..models import Game, Match, Player, Season, User
-from ..utils import get_riot_account_id, get_rumble_player_games, get_win_or_loss_streak
+from ..models import Game, Match, Player, Rank, Season, User
+from ..utils import get_riot_account_id, get_rumble_player_games
+from ..rank_utils import adjust_player_lp_and_rank_on_loss, adjust_player_lp_and_rank_on_win, calculate_lp_loss, get_win_or_loss_streak
 from ..scripts import player_stats
 from ..utils import get_game_timeline
 import json
@@ -54,18 +55,9 @@ class CallbackView(View):
 
             if loser_player == None:
                 continue
-            
 
             try:
-                player_games = get_rumble_player_games(loser_player)
-
-                win_loss_streak, streak_type = get_win_or_loss_streak(player_games)
-
-                lp_loss = 25
-
-                if streak_type == 'L':
-                    if win_loss_streak >= 3:
-                        lp_loss += (win_loss_streak - 2) * 10
+                adjust_player_lp_and_rank_on_loss(loser_player)
                 
             except:
                 print('Error calculating LP for player...')
@@ -115,15 +107,7 @@ class CallbackView(View):
                         break
             
             try:
-                player_games = get_rumble_player_games(loser_player)
-
-                win_loss_streak, streak_type = get_win_or_loss_streak(player_games)
-
-                lp_gain = 25
-
-                if streak_type == 'W':
-                    if win_loss_streak >= 3:
-                        lp_gain += (win_loss_streak - 2) * 15
+                adjust_player_lp_and_rank_on_win(winner_player)
                 
             except:
                 print('Error calculating LP for player...')
