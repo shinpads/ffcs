@@ -56,7 +56,8 @@ def adjust_player_lp_and_rank_on_loss(player):
             player.rumble_rank = lower_rumble_rank
             change_user_rank_role(player.user, lower_rumble_rank)
         else:
-            player.rumble_lp = lp_loss
+            if player.rumble_lp - lp_loss < 100:
+                player.rumble_lp = -100 + lp_loss
     
     player.rumble_lp -= lp_loss
     player.rumble_losses += 1
