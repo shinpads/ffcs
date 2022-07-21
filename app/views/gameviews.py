@@ -3,7 +3,7 @@ from django.views import View
 
 from app.discord_utils import send_mvp_vote_dm
 from ..models import Game, Match, Player, Season, User
-from ..utils import get_riot_account_id
+from ..utils import get_riot_account_id, get_rumble_player_games, get_win_or_loss_streak
 from ..scripts import player_stats
 from ..utils import get_game_timeline
 import json
@@ -33,7 +33,46 @@ class CallbackView(View):
 
         winning_players = []
 
-        for i in range(5):
+        for i in range(len(data["losingTeam"])):
+            loser_acc_username = data["losingTeam"][i]["summonerName"]
+            loser_acc_id = get_riot_account_id(loser_acc_username)
+
+            try:
+                loser_user = User.objects.get(summoner_id=loser_acc_id)
+                loser_player = None
+
+                for player in loser_user.players.all():
+                    if player.is_rumble and current_season.is_rumble:
+                        loser_player = player
+                        break
+                    elif player.team.season.id == current_season.id:
+                        loser_player = player
+                        break
+            except:
+                print('error finding loser player.')
+                continue
+
+            if loser_player == None:
+                continue
+            
+
+            try:
+                player_games = get_rumble_player_games(loser_player)
+
+                win_loss_streak, streak_type = get_win_or_loss_streak(player_games)
+
+                lp_loss = 25
+
+                if streak_type == 'L':
+                    if win_loss_streak >= 3:
+                        lp_loss += (win_loss_streak - 2) * 10
+                
+            except:
+                print('Error calculating LP for player...')
+                continue
+
+
+        for i in range(len(data["winningTeam"])):
             winner_acc_username = data["winningTeam"][i]["summonerName"]
             winner_acc_id = get_riot_account_id(winner_acc_username)
             
@@ -74,6 +113,21 @@ class CallbackView(View):
                     if player in team.players.all():
                         winner_team = team
                         break
+            
+            try:
+                player_games = get_rumble_player_games(loser_player)
+
+                win_loss_streak, streak_type = get_win_or_loss_streak(player_games)
+
+                lp_gain = 25
+
+                if streak_type == 'W':
+                    if win_loss_streak >= 3:
+                        lp_gain += (win_loss_streak - 2) * 15
+                
+            except:
+                print('Error calculating LP for player...')
+                continue
 
         if game.winner != None:
             response = JsonResponse({

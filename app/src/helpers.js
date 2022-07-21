@@ -60,25 +60,15 @@ export function nearestWednesday() {
 
   const now = new Date();
   const day = now.getDay();
-  const daysToTarget = targetDayVal - (day <= targetDayVal ? day : day - 7);
+  let daysToTarget = targetDayVal - (day <= targetDayVal ? day : day - 7);
+
+  if (daysToTarget === 0) {
+    daysToTarget = 7;
+  }
 
   const targetDay = new Date(+now);
   targetDay.setDate(targetDay.getDate() + daysToTarget);
   targetDay.setHours(targetHour, targetMins, 0, 0);
-
-  // const totalMillisecondsToTarget = targetDay - now;
-  // const hoursToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60 * 60)) % 24);
-  // const minutesToTarget = Math.floor((totalMillisecondsToTarget / (1000 * 60)) % 60);
-  // const secondsToTarget = Math.floor((totalMillisecondsToTarget / 1000) % 60);
-  // const millisecondsToTarget = Math.floor(totalMillisecondsToTarget % 1000);
-
-  // const data = {
-  //   daysToTarget,
-  //   hoursToTarget,
-  //   minutesToTarget,
-  //   secondsToTarget,
-  //   millisecondsToTarget,
-  // };
 
   return targetDay;
 }

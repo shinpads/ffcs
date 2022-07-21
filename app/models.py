@@ -1,3 +1,4 @@
+from app.discord_bot import DiscordBot
 from .utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code, get_role_choices_default
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save
@@ -279,6 +280,27 @@ class Match(models.Model):
         )
 
 
+class Rank(models.Model):
+    name = models.CharField(max_length=32)
+    value = models.IntegerField(default=1) # higher = higher rank
+    discord_role_id = models.CharField(max_length=64)
+    color = models.IntegerField(default=16777215)
+
+    def save(self, *args, **kwargs):
+        if self.discord_role_id == '':
+            discord_bot = DiscordBot()
+            data = {
+                'color': self.color,
+                'name': self.name,
+                'hoist': True,
+                'mentionable': True
+            }
+            res = discord_bot.create_role(data)
+            self.discord_role_id = res['id']
+
+        super(Game, self).save(*args, **kwargs)
+
+
 class Player(models.Model):
     TOP = "TOP"
     JG = "JG"
@@ -337,6 +359,13 @@ class Player(models.Model):
     rumble_elo = models.IntegerField(blank=True, null=True)
     proposed_rumble_elo = models.IntegerField(blank=True, null=True)
     has_rumble_priority = models.BooleanField(default=False)
+    rumble_rank = models.ForeignKey(
+        Rank,
+        on_delete=models.CASCADE,
+        blank=True, null=True,
+        related_name='players'
+    )
+    rumble_lp = models.IntegerField(default=0)
 
     profile_icon_id = models.IntegerField(default=0)
 

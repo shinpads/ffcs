@@ -1,3 +1,4 @@
+from itertools import chain
 from dotenv import load_dotenv
 import os
 import json
@@ -176,3 +177,50 @@ def get_role_choices_default():
     ROLE_CHOICES = ["TOP", "JG", "MID", "ADC", "SUPP"]
 
     return list(choice for choice in ROLE_CHOICES)
+
+def get_rumble_player_games(player):
+    teams_as_top = player.teams_as_top.all()
+    teams_as_jg = player.teams_as_jg.all()
+    teams_as_mid = player.teams_as_mid.all()
+    teams_as_adc = player.teams_as_adc.all()
+    teams_as_supp = player.teams_as_supp.all()
+
+    player_teams = list(chain(*[
+        teams_as_top,
+        teams_as_jg,
+        teams_as_mid,
+        teams_as_adc,
+        teams_as_supp
+    ]))
+
+    player_games = [];
+
+    for team in player_teams:
+        for match in team.matches.all():
+            for game in match.games.all():
+                player_games.append({
+                    'game': game,
+                    'team': team
+                })
+    
+    player_games.sort(key=lambda game: game.created_at)
+
+    return player_games
+
+def get_win_or_loss_streak(player_games):
+    past_result = 'blank'
+    win_loss_streak = 0
+    streak_type = None
+
+    for i, game in enumerate(player_games):
+        result = game['game'].winner == game['team']
+
+        if past_result == 'blank':
+            streak_type = 'W' if result else 'L'
+        elif past_result != result:
+            return
+        
+        past_result = int(result)
+        win_loss_streak = int(i + 1)
+
+    return win_loss_streak, streak_type
