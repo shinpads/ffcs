@@ -10,4 +10,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         rank = Rank.objects.get(value=1)
-        adjust_player_lp_and_rank_on_win(Player.objects.get(id=99))
+        adjust_player_lp_and_rank_on_loss(Player.objects.get(id=99))
