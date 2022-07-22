@@ -24,7 +24,7 @@ def get_win_or_loss_streak(player_games, game_is_win):
             return
         
         past_result = bool(result)
-        win_loss_streak = int(i + 1)
+        win_loss_streak += 1
 
     return win_loss_streak
 

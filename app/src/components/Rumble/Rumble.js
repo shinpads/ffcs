@@ -59,8 +59,12 @@ const styles = createUseStyles({
     paddingTop: '0.5rem',
   },
   timerContainer: {
-    marginBottom: '1rem',
     fontSize: '30px',
+  },
+  dateContainer: {
+    marginBottom: '1rem',
+    fontSize: '18px',
+    color: colors.offwhite,
   },
   splitContainer: {
     display: 'grid',
@@ -240,12 +244,17 @@ const Rumble = (props) => {
           <div className={classes.rumbleInfoText}>What is Rumble?</div>
         </HtmlTooltip>
         {showTimer && (
-        <div className={classes.timerContainer}>
-          Signups close in:
-          <span> {days}</span> day{days === 1 ? '' : 's'},
-          <span> {hours}</span> hour{hours === 1 ? '' : 's'},
-          <span> {minutes}</span> minute{minutes === 1 ? '' : 's'},
-          <span> {seconds}</span> second{seconds === 1 ? '' : 's'}
+        <div>
+          <div className={classes.timerContainer}>
+            Signups close in:
+            <span> {days}</span> day{days === 1 ? '' : 's'},
+            <span> {hours}</span> hour{hours === 1 ? '' : 's'},
+            <span> {minutes}</span> minute{minutes === 1 ? '' : 's'},
+            <span> {seconds}</span> second{seconds === 1 ? '' : 's'}
+          </div>
+          <div className={classes.dateContainer}>
+            (Every Wednesday at 5:30 PM EST)
+          </div>
         </div>
         )}
         {

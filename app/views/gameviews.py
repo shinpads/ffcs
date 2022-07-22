@@ -1,3 +1,4 @@
+import sys
 from django.http import JsonResponse
 from django.views import View
 
@@ -49,8 +50,10 @@ class CallbackView(View):
                     elif player.team.season.id == current_season.id:
                         loser_player = player
                         break
-            except:
+            except Exception as e:
                 print('error finding loser player.')
+                print(str(e))
+                sys.stdout.flush()
                 continue
 
             if loser_player == None:
@@ -59,8 +62,10 @@ class CallbackView(View):
             try:
                 adjust_player_lp_and_rank_on_loss(loser_player)
                 
-            except:
+            except Exception as e:
                 print('Error calculating LP for player...')
+                print(str(e))
+                sys.stdout.flush()
                 continue
 
 
@@ -79,8 +84,10 @@ class CallbackView(View):
                     elif player.team.season.id == current_season.id:
                         winner_player = player
                         break
-            except:
+            except Exception as e:
                 print('error finding winner player.')
+                print(str(e))
+                sys.stdout.flush()
                 continue
             
             if winner_player == None:
@@ -109,8 +116,10 @@ class CallbackView(View):
             try:
                 adjust_player_lp_and_rank_on_win(winner_player)
                 
-            except:
+            except Exception as e:
                 print('Error calculating LP for player...')
+                print(str(e))
+                sys.stdout.flush()
                 continue
 
         if game.winner != None:
@@ -133,8 +142,10 @@ class CallbackView(View):
         
         try:
             send_mvp_vote_dm(game, winning_players)
-        except:
+        except Exception as e:
             print('failed sending MVP Vote DM.')
+            print(str(e))
+            sys.stdout.flush()
 
         # update player stats with new data
         player_stats.calculate_player_stats()

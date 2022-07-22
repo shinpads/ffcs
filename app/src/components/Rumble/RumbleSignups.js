@@ -30,6 +30,9 @@ const styles = createUseStyles({
     color: colors.offwhite,
     fontSize: '14px',
   },
+  warning: {
+    color: colors.red,
+  },
 });
 
 const RumbleSignups = (props) => {
@@ -60,7 +63,7 @@ const RumbleSignups = (props) => {
       </div>
       <div className={classes.descriptionContainer}>
         <div>
-          Every 10 players to sign up makes a match*.
+          Every 10 players to sign up makes a match.
           It's first come first serve, so sign up early!
           If you signed up too late this week and didn't get a match, don't worry --
           You will get priority the next week you play.
@@ -74,7 +77,13 @@ const RumbleSignups = (props) => {
           <div className={classes.container}>
             {sortedSignups.map((signup, i) => (
               <div>
-                {!(i % 10 || !i) && <hr />}
+                {(!(i % 10) && sortedSignups.length - 10 < i) && (
+                  <div>
+                    <hr />
+                    <div className={classes.warning}>More signups required for players <strong>below</strong> to enter a match this week!</div>
+                    <hr />
+                  </div>
+                )}
                 <UserName
                   user={signup.player.user}
                   nameClass={signup.player.has_rumble_priority ? classes.priorityPlayerName : ''}
@@ -87,7 +96,7 @@ const RumbleSignups = (props) => {
       <div className={classes.footnote}>
         *The players in each match are randomized. For example, if there are
         20 players, the two matches will each be a random selection of the 20
-        players. The divisions do not indicate the players in each match.
+        players.
       </div>
     </div>
   );
