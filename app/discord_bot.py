@@ -45,7 +45,7 @@ class DiscordBot():
             headers=self.headers,
             json=send_data
         )
-    
+
 
     def create_role(self, data):
         url = self.base_url + '/guilds/{}/roles'.format(self.guild_id)

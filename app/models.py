@@ -294,6 +294,9 @@ class Rank(models.Model):
     color = models.IntegerField(default=16777215)
 
     def save(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
+        print(self)
         if self.discord_role_id == '' or self.discord_role_id == None:
             data = {
                 'color': self.color,
@@ -303,6 +306,13 @@ class Rank(models.Model):
             }
             res = discord_bot.create_role(data)
             self.discord_role_id = res.json()['id']
+        else:
+            data = {
+                'color': self.color,
+                'name': self.name,
+                'hoist': True
+            }
+            discord_bot.edit_role(self.discord_role_id, data)
 
         super(Rank, self).save(*args, **kwargs)
 

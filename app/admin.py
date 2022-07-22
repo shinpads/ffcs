@@ -22,15 +22,14 @@ class PlayerAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'get_summoner_name',
-        'team',
-        'role',
         'account_id',
         'get_id',
         'role_preferences',
         'proposed_rumble_elo',
         'rumble_elo',
         'has_rumble_priority',
-        'rumble_rank'
+        'rumble_rank',
+        'rumble_lp'
     )
 
     fieldsets = (
@@ -40,6 +39,7 @@ class PlayerAdmin(admin.ModelAdmin):
                 'team',
                 'role',
                 'rumble_rank',
+                'rumble_lp',
                 'caster',
                 'rumble_elo',
                 'is_rumble',

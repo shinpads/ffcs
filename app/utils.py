@@ -203,6 +203,6 @@ def get_rumble_player_games(player):
                     'team': team
                 })
     
-    player_games.sort(key=lambda game: game.created_at)
+    player_games.sort(key=lambda game: game['game'].created_at)
 
     return player_games

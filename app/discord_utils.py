@@ -204,9 +204,9 @@ def change_user_rank_role(user, rank):
 
     rank_discord_role_ids = []
     
-    for rank in Rank.objects.all():
-        if rank.discord_role_id:
-            rank_discord_role_ids.append(rank.discord_role_id)
+    for cur_rank in Rank.objects.all():
+        if cur_rank.discord_role_id:
+            rank_discord_role_ids.append(cur_rank.discord_role_id)
 
     for rank_discord_role_id in rank_discord_role_ids:
         if rank_discord_role_id in user_discord_data['roles']:

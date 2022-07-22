@@ -13,17 +13,17 @@ STREAK_GAMES = 3
 
 RANK_MAX = 6
 
-def get_win_or_loss_streak(player_games):
-    past_result = 'blank'
-    win_loss_streak = 0
+def get_win_or_loss_streak(player_games, game_is_win):
+    past_result = game_is_win
+    win_loss_streak = 1
 
     for i, game in enumerate(player_games):
         result = game['game'].winner == game['team']
         
-        if past_result != 'blank' and past_result != result:
+        if past_result != result:
             return
         
-        past_result = int(result)
+        past_result = bool(result)
         win_loss_streak = int(i + 1)
 
     return win_loss_streak
@@ -41,10 +41,12 @@ def calculate_lp_gain(win_loss_streak):
     
     if win_loss_streak >= 3:
         lp_gain += (win_loss_streak - 2) * LP_WIN_STREAK_MULTIPLIER
+    
+    return lp_gain
 
 def adjust_player_lp_and_rank_on_loss(player):
     player_games = get_rumble_player_games(player)
-    win_loss_streak = get_win_or_loss_streak(player_games)
+    win_loss_streak = get_win_or_loss_streak(player_games, False)
     lp_loss = calculate_lp_loss(win_loss_streak)
 
     if player.rumble_lp - lp_loss < 0:
@@ -65,7 +67,7 @@ def adjust_player_lp_and_rank_on_loss(player):
 
 def adjust_player_lp_and_rank_on_win(player):
     player_games = get_rumble_player_games(player)
-    win_loss_streak = get_win_or_loss_streak(player_games)
+    win_loss_streak = get_win_or_loss_streak(player_games, True)
     lp_gain = calculate_lp_gain(win_loss_streak)
 
     if player.rumble_lp + lp_gain > 100:

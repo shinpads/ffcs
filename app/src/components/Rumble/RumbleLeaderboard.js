@@ -10,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import colors from '../../colors';
 import { getPlayers, getRumblePlayers } from '../../api';
 import UserName from '../UserName';
+import { intToHexColorCode } from '../../helpers';
 
 const styles = createUseStyles({
   title: {
@@ -47,7 +48,6 @@ const styles = createUseStyles({
     marginBottom: '0.1rem',
   },
   leaderboardRank: {
-    color: colors.ranks.wench,
   },
   leaderboardColumnTitle: {
     fontSize: '20px',
@@ -63,6 +63,9 @@ const RumbleLeaderboard = () => {
   useEffect(() => {
     const getData = async () => {
       const rumblePlayers = await getRumblePlayers();
+      rumblePlayers.sort((a, b) => a.rumble_lp - b.rumble_lp);
+      rumblePlayers.sort((a, b) => a.rumble_rank?.value - b.rumble_rank?.value);
+      rumblePlayers.reverse();
       setPlayers(rumblePlayers);
     };
     getData();
@@ -105,7 +108,7 @@ const RumbleLeaderboard = () => {
                   {player.rumble_wins} W {player.rumble_losses} L
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <div className={classes.leaderboardRank}>{player.rumble_rank?.name}</div>
+                  <span style={{ color: intToHexColorCode(player.rumble_rank?.color) }}>{player.rumble_rank?.name}</span><span>, {player.rumble_lp} LP</span>
                 </TableCell>
               </TableRow>
             ))}
