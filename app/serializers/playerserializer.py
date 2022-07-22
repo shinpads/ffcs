@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from app.serializers.rankserializer import RankSerializer
 from .userserializer import UserSerializer
 from .playerstatsserializer import PlayerStatsSerializer
 from .playerchampionstatsserializer import PlayerChampionStatsSerializer
@@ -10,6 +12,7 @@ class PlayerSerializer(serializers.ModelSerializer):
     stats = PlayerStatsSerializer(many=False, read_only=True)
     player_champion_stats = PlayerChampionStatsSerializer(many=True)
     team = RawTeamSerializer(many=False)
+    rumble_rank = RankSerializer(many=False)
 
     class Meta:
         model = Player

@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from app.discord_utils import give_user_rumble_role, send_rumble_proposed_elo_message
+from app.discord_utils import change_user_rank_role, give_user_rumble_role, send_rumble_proposed_elo_message
 
 from app.elo_utils import calculate_initial_elo
-from ..models import Player, RegistrationForm, Season
+from ..models import Player, Rank, RegistrationForm, Season
 import json
 
 ROLES = {
@@ -77,14 +77,15 @@ def rumblesignup(request):
     user.save()
 
     if created:
-        print('reached')
         player = Player()
         player.user = user
         player.role_preferences = json_data['rolePreferences']
         player.is_rumble = True
         player.rumble_elo = calculate_initial_elo(rank, highest_rank)
+        default_rumble_rank = Rank.objects.get(value=1)
+        player.rumble_rank = Rank.objects.get(value=1)
+        change_user_rank_role(player.user, default_rumble_rank)
         player.save()
-        print('reached')
         send_rumble_proposed_elo_message(player)
 
     response = JsonResponse({

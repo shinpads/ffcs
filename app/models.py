@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+from app.discord_bot import DiscordBot
 from .utils import get_riot_account_id, register_tournament_provider, register_tournament, generate_tournament_code, get_role_choices_default
 from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed, post_save
@@ -11,6 +13,12 @@ from .managers import DiscordUserOAuthManager
 import json
 import math
 import secrets
+import os
+
+load_dotenv()
+discord_bot_token = os.getenv('DISCORD_BOT_TOKEN')
+guild_id = os.getenv('DISCORD_GUILD_ID')
+discord_bot = DiscordBot(discord_bot_token, guild_id)
 
 class Provider(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -279,6 +287,36 @@ class Match(models.Model):
         )
 
 
+class Rank(models.Model):
+    name = models.CharField(max_length=32)
+    value = models.IntegerField(default=1) # higher = higher rank
+    discord_role_id = models.CharField(max_length=64, null=True, blank=True)
+    color = models.IntegerField(default=16777215)
+
+    def save(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
+        print(self)
+        if self.discord_role_id == '' or self.discord_role_id == None:
+            data = {
+                'color': self.color,
+                'name': self.name,
+                'hoist': True,
+                'mentionable': True
+            }
+            res = discord_bot.create_role(data)
+            self.discord_role_id = res.json()['id']
+        else:
+            data = {
+                'color': self.color,
+                'name': self.name,
+                'hoist': True
+            }
+            discord_bot.edit_role(self.discord_role_id, data)
+
+        super(Rank, self).save(*args, **kwargs)
+
+
 class Player(models.Model):
     TOP = "TOP"
     JG = "JG"
@@ -337,6 +375,15 @@ class Player(models.Model):
     rumble_elo = models.IntegerField(blank=True, null=True)
     proposed_rumble_elo = models.IntegerField(blank=True, null=True)
     has_rumble_priority = models.BooleanField(default=False)
+    rumble_rank = models.ForeignKey(
+        Rank,
+        on_delete=models.CASCADE,
+        blank=True, null=True,
+        related_name='players'
+    )
+    rumble_lp = models.IntegerField(default=0)
+    rumble_wins = models.IntegerField(default=0)
+    rumble_losses = models.IntegerField(default=0)
 
     profile_icon_id = models.IntegerField(default=0)
 

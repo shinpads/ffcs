@@ -2,8 +2,9 @@ from django.http import JsonResponse
 from django.views import View
 
 from app.discord_utils import send_mvp_vote_dm
-from ..models import Game, Match, Player, Season, User
-from ..utils import get_riot_account_id
+from ..models import Game, Match, Player, Rank, Season, User
+from ..utils import get_riot_account_id, get_rumble_player_games
+from ..rank_utils import adjust_player_lp_and_rank_on_loss, adjust_player_lp_and_rank_on_win, calculate_lp_loss, get_win_or_loss_streak
 from ..scripts import player_stats
 from ..utils import get_game_timeline
 import json
@@ -33,7 +34,37 @@ class CallbackView(View):
 
         winning_players = []
 
-        for i in range(5):
+        for i in range(len(data["losingTeam"])):
+            loser_acc_username = data["losingTeam"][i]["summonerName"]
+            loser_acc_id = get_riot_account_id(loser_acc_username)
+
+            try:
+                loser_user = User.objects.get(summoner_id=loser_acc_id)
+                loser_player = None
+
+                for player in loser_user.players.all():
+                    if player.is_rumble and current_season.is_rumble:
+                        loser_player = player
+                        break
+                    elif player.team.season.id == current_season.id:
+                        loser_player = player
+                        break
+            except:
+                print('error finding loser player.')
+                continue
+
+            if loser_player == None:
+                continue
+
+            try:
+                adjust_player_lp_and_rank_on_loss(loser_player)
+                
+            except:
+                print('Error calculating LP for player...')
+                continue
+
+
+        for i in range(len(data["winningTeam"])):
             winner_acc_username = data["winningTeam"][i]["summonerName"]
             winner_acc_id = get_riot_account_id(winner_acc_username)
             
@@ -74,6 +105,13 @@ class CallbackView(View):
                     if player in team.players.all():
                         winner_team = team
                         break
+            
+            try:
+                adjust_player_lp_and_rank_on_win(winner_player)
+                
+            except:
+                print('Error calculating LP for player...')
+                continue
 
         if game.winner != None:
             response = JsonResponse({

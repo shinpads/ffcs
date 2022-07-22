@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import RumbleSignup, RumbleWeek, Season, Team, Match, Player, Game, Provider, User, RegistrationForm, Vote
+from .models import Rank, RumbleSignup, RumbleWeek, Season, Team, Match, Player, Game, Provider, User, RegistrationForm, Vote
 
 class DontLog:
     def log_addition(self, *args):
@@ -22,14 +22,14 @@ class PlayerAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'get_summoner_name',
-        'team',
-        'role',
         'account_id',
         'get_id',
         'role_preferences',
         'proposed_rumble_elo',
         'rumble_elo',
-        'has_rumble_priority'
+        'has_rumble_priority',
+        'rumble_rank',
+        'rumble_lp'
     )
 
     fieldsets = (
@@ -38,6 +38,8 @@ class PlayerAdmin(admin.ModelAdmin):
                 'user',
                 'team',
                 'role',
+                'rumble_rank',
+                'rumble_lp',
                 'caster',
                 'rumble_elo',
                 'is_rumble',
@@ -78,6 +80,22 @@ class SeasonAdmin(admin.ModelAdmin):
             )
         }),
     )
+
+
+@admin.register(Rank)
+class RankAdmin(admin.ModelAdmin):
+    def get_id(self, obj):
+        return obj.pk
+
+    get_id.short_description = 'ID'
+
+    list_display = (
+        'name',
+        'value',
+        'discord_role_id',
+        'color'
+    )
+
 
 class MatchForm(forms.ModelForm):
     class Meta:

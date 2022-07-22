@@ -45,7 +45,7 @@ class DiscordBot():
             headers=self.headers,
             json=send_data
         )
-    
+
 
     def create_role(self, data):
         url = self.base_url + '/guilds/{}/roles'.format(self.guild_id)
@@ -73,6 +73,11 @@ class DiscordBot():
         url = self.base_url + '/guilds/{}/members/{}/roles/{}'.format(self.guild_id, user_id, role_id)
 
         return requests.put(url, headers=self.headers)
+    
+    def remove_role_from_user(self, user_id, role_id):
+        url = self.base_url + f'/guilds/{self.guild_id}/members/{user_id}/roles/{role_id}'
+
+        return requests.delete(url, headers=self.headers)
 
     def overwrite_channel_permissions(self, channel_id, overwrite_id, allow=0, deny=0, overwrite_type=0):
         url = self.base_url + '/channels/{}/permissions/{}'.format(channel_id, overwrite_id)
@@ -87,6 +92,11 @@ class DiscordBot():
     
     def get_user_info(self, user_id):
         url = self.base_url + '/users/{}'.format(user_id)
+
+        return requests.get(url, headers=self.headers)
+    
+    def get_user_guild_info(self, user_id):
+        url = self.base_url + f'/guilds/{self.guild_id}/members/{user_id}'
 
         return requests.get(url, headers=self.headers)
 
