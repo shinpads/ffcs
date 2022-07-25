@@ -158,6 +158,9 @@ const Rumble = (props) => {
 
   useEffect(() => {
     const curWeek = season.current_week;
+    if (curWeek.matches) {
+      curWeek.matches.sort((a, b) => a.id - b.id);
+    }
     setCurrentWeek(curWeek);
     setshowTimer(curWeek.signups_open);
     setIsRegistered(!!curWeek.signups.find(signup => signup.player.user.id === user.id));

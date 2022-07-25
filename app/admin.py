@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django import forms
+from django_object_actions import DjangoObjectActions
+
+from app.scripts.rumble_matches import create_rumble_matches
 from .models import Rank, RumbleSignup, RumbleWeek, Season, Team, Match, Player, Game, Provider, User, RegistrationForm, Vote
 
 class DontLog:
@@ -209,6 +212,10 @@ class RegistrationFormAdmin(admin.ModelAdmin):
 
     list_display = ('created_at', 'season_id', 'summoner_name', 'first_name', 'first_role', 'second_role', 'third_role', 'fourth_role', 'fifth_role', 'current_rank', 'rank_should_be', 'wants_to_be_captain', 'heard_from')
 
+@admin.action(description='Remake matches for this week')
+def remake_matches(modeladmin, request, queryset):
+    create_rumble_matches()
+
 @admin.register(RumbleWeek)
 class RumbleWeekAdmin(admin.ModelAdmin):
     def get_id(self, obj):
@@ -217,6 +224,7 @@ class RumbleWeekAdmin(admin.ModelAdmin):
     get_id.short_description = 'ID'
 
     list_display = ('season', 'signups_open')
+    actions = [remake_matches]
 
 @admin.register(RumbleSignup)
 class RumbleSignupAdmin(admin.ModelAdmin):
@@ -226,4 +234,4 @@ class RumbleSignupAdmin(admin.ModelAdmin):
     get_id.short_description = 'ID'
 
     list_display = ('created_at', 'rumble_week', 'player')
-
+   

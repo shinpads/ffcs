@@ -188,3 +188,5 @@ django_heroku.settings(locals())
 if os.getenv('DEBUG') != 'on':
     del DATABASES['default']['OPTIONS']['sslmode']
 DATABASES['default']['CONN_MAX_AGE'] = 0
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
