@@ -64,7 +64,7 @@ const styles = createUseStyles({
   dateContainer: {
     marginBottom: '1rem',
     fontSize: '18px',
-    color: colors.offwhite,
+    color: colors.somewhatwhite,
   },
   splitContainer: {
     display: 'grid',
@@ -262,7 +262,7 @@ const Rumble = (props) => {
         )}
         {
         user.is_rumble_player
-          ? currentWeek.signups_open && <Button variant="outlined" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
+          ? currentWeek.signups_open && <Button variant="contained" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
           : <div>You must sign up for Rumble in order to register for the week! Sign up above.</div>
         }
         <Modal className={classes.modal} open={open} onClose={handleClose}>

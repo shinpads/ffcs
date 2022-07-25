@@ -343,7 +343,6 @@ class Player(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_rumble = models.BooleanField(default=False)
-    is_rumble_ready = models.BooleanField(default=False)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -372,7 +371,6 @@ class Player(models.Model):
         null=True
     )
     rumble_elo = models.IntegerField(blank=True, null=True)
-    proposed_rumble_elo = models.IntegerField(blank=True, null=True)
     has_rumble_priority = models.BooleanField(default=False)
     rumble_rank = models.ForeignKey(
         Rank,

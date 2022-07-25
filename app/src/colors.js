@@ -7,6 +7,7 @@ const colors = {
   black: '#000',
   white: '#fff',
   almostwhite: '#F5F5F5',
+  somewhatwhite: '#999999',
   offwhite: '#5c6269',
   primary: '#45a2fe',
   secondary: '#9aacb3',

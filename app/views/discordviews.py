@@ -219,8 +219,6 @@ def elo_confirm_response(
             f'Their elo has been changed from **{old_elo}** to '
             f'**{chosen_elo}**. Thank you!'
         )
-    
-    player.is_rumble_ready = True
 
     player.save()
 

@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django import forms
-from django_object_actions import DjangoObjectActions
 
 from app.scripts.rumble_matches import create_rumble_matches
 from .models import Rank, RumbleSignup, RumbleWeek, Season, Team, Match, Player, Game, Provider, User, RegistrationForm, Vote
@@ -28,7 +27,6 @@ class PlayerAdmin(admin.ModelAdmin):
         'account_id',
         'get_id',
         'role_preferences',
-        'proposed_rumble_elo',
         'rumble_elo',
         'has_rumble_priority',
         'rumble_rank',

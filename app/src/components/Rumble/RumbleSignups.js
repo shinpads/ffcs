@@ -25,6 +25,11 @@ const styles = createUseStyles({
   priorityPlayerName: {
     color: colors.gold,
   },
+  date: {
+    textAlign: 'center',
+    color: colors.somewhatwhite,
+    fontSize: '18px',
+  },
   footnote: {
     textAlign: 'center',
     color: colors.offwhite,
@@ -60,6 +65,9 @@ const RumbleSignups = (props) => {
     <div>
       <div className={classes.title}>
         Players registered for this week
+      </div>
+      <div className={classes.date}>
+        Match is played on Friday, at 8:30 PM EST
       </div>
       <div className={classes.descriptionContainer}>
         <div>

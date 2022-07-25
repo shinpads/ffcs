@@ -1,13 +1,7 @@
-from itertools import chain
 from dotenv import load_dotenv
-import datetime
 
-import pytz
-from app.discord_utils import send_rumble_match_announcement
-
-from app.elo_utils import create_teams
-from .models import Match, Player, RumbleWeek, ScheduleTest, Season, Team
-from .utils import generate_tournament_code, get_info_by_account_id
+from .models import Player, RumbleWeek, ScheduleTest, Season, Team
+from .utils import get_info_by_account_id
 from apscheduler.schedulers.background import BackgroundScheduler
 import sys
 import os
