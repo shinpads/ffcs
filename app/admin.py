@@ -198,6 +198,7 @@ class UserAdmin(admin.ModelAdmin):
         'discord_username',
         'email',
         'summoner_name',
+        'is_rumble_player',
         'is_blacklisted'
     )
 
