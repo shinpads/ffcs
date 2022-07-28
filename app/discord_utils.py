@@ -158,13 +158,47 @@ def send_rumble_match_announcement(matches):
     discord_bot.send_message(message, channel)
     return
 
-def send_rumble_promotion_announcement(player, rank):
+def send_rumble_rank_updates(updates):
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
-    message = (
-        f"<@{player.user.discord_user_id}> "
-        f"Has just promoted to {rank.name}! 🎉 🎉"
+    if len(updates) == 0:
+        return
+
+    message = '**Rumble Rank Updates!!!**\n'
+    for update in updates:
+        old_rank = Rank.objects.get(id=update['old_rank_id'])
+        new_rank = Rank.objects.get(id=update['new_rank_id'])
+        player = update['player']
+        player_promoted = new_rank.threshold_percentile > old_rank.threshold_percentile
+        message += (
+            f"\n<@{player.user.discord_user_id}> "
+            f"{'promoted' if player_promoted else 'demoted'}"
+            f" from **{old_rank.name}** to **{new_rank.name}**"
+            f"{'! Congrats 🎉🎉' if player_promoted else '.'}"
+        )
+    
+    message += (
+        '\n\nThe LP required to hit each rank has changed. Here are the new '
+        'values:\n'
     )
     
+    ranks = list(Rank.objects.all())
+    ranks.sort(key=lambda rank: rank.threshold_percentile)
+    ranks = filter(
+        lambda rank: not rank.is_top_rank and not rank.is_default,
+        ranks
+    )
+
+    for i, rank in enumerate(ranks):
+        message += (
+            f'\n**{rank.name}** '
+            '({:g}th percentile): '.format(float(str(rank.threshold_percentile)))
+        )
+        rank_players = list(rank.players.all())
+        rank_players.sort(key=lambda player: player.rumble_lp)
+        message += 'No minimum LP' if i == 0 else (
+            f'{str(rank_players[0].rumble_lp)} LP'
+        )
+
     discord_bot.send_message(message, channel)
     return
 
@@ -209,7 +243,7 @@ def change_user_rank_role(user, rank):
             rank_discord_role_ids.append(cur_rank.discord_role_id)
 
     for rank_discord_role_id in rank_discord_role_ids:
-        if rank_discord_role_id in user_discord_data['roles']:
+        if rank_discord_role_id in user_discord_data.get('roles', []):
             discord_bot.remove_role_from_user(
                 user.discord_user_id,
                 rank_discord_role_id

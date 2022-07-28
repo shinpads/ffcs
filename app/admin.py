@@ -41,12 +41,13 @@ class PlayerAdmin(admin.ModelAdmin):
                 'role',
                 'rumble_rank',
                 'rumble_lp',
+                'rumble_wins',
+                'rumble_losses',
                 'caster',
                 'rumble_elo',
                 'is_rumble',
-                'is_rumble_ready',
                 'role_preferences',
-                'has_rumble_priority'
+                'has_rumble_priority',
             )
         }),
     )
@@ -92,7 +93,8 @@ class RankAdmin(admin.ModelAdmin):
 
     list_display = (
         'name',
-        'value',
+        'discord_role_id',
+        'is_top_rank',
         'discord_role_id',
         'color'
     )

@@ -288,8 +288,15 @@ class Match(models.Model):
 
 class Rank(models.Model):
     name = models.CharField(max_length=32)
-    value = models.IntegerField(default=1) # higher = higher rank
     discord_role_id = models.CharField(max_length=64, null=True, blank=True)
+    threshold_percentile = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+    is_top_rank = models.BooleanField(default=False)
+    is_default = models.BooleanField(default=False)
     color = models.IntegerField(default=16777215)
 
     def save(self, *args, **kwargs):
@@ -314,6 +321,9 @@ class Rank(models.Model):
             discord_bot.edit_role(self.discord_role_id, data)
 
         super(Rank, self).save(*args, **kwargs)
+    
+    def __str__(self):
+        return f'{self.name}, id: {self.id}'
 
 
 class Player(models.Model):
@@ -374,7 +384,7 @@ class Player(models.Model):
     has_rumble_priority = models.BooleanField(default=False)
     rumble_rank = models.ForeignKey(
         Rank,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True, null=True,
         related_name='players'
     )

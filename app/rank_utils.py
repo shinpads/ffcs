@@ -1,5 +1,5 @@
-from app.discord_utils import change_user_rank_role, send_rumble_promotion_announcement
-from app.models import Rank
+from app.discord_utils import change_user_rank_role, send_rumble_rank_updates
+from app.models import Player, Rank
 from app.utils import get_rumble_player_games
 
 
@@ -11,7 +11,7 @@ LP_WIN_STREAK_MULTIPLIER = 15
 
 STREAK_GAMES = 3
 
-RANK_MAX = 6
+MIN_NUM_OF_GAMES_BEFORE_RANK = 4
 
 def get_win_or_loss_streak(player_games, game_is_win):
     past_result = game_is_win
@@ -39,47 +39,83 @@ def calculate_lp_loss(win_loss_streak):
 def calculate_lp_gain(win_loss_streak):
     lp_gain = DEFAULT_LP_GAIN
     
-    if win_loss_streak >= 3:
+    if win_loss_streak >= STREAK_GAMES:
         lp_gain += (win_loss_streak - 2) * LP_WIN_STREAK_MULTIPLIER
     
     return lp_gain
 
-def adjust_player_lp_and_rank_on_loss(player):
+def adjust_player_lp_on_loss(player):
     player_games = get_rumble_player_games(player)
     win_loss_streak = get_win_or_loss_streak(player_games, False)
     lp_loss = calculate_lp_loss(win_loss_streak)
 
-    if player.rumble_lp - lp_loss < 0:
-        if player.rumble_rank.value > 1:
-            player.rumble_lp += 100
-            lower_rumble_rank = Rank.objects.get(
-                value=player.rumble_rank.value-1
-            )
-            player.rumble_rank = lower_rumble_rank
-            change_user_rank_role(player.user, lower_rumble_rank)
-        else:
-            if player.rumble_lp - lp_loss < -100:
-                player.rumble_lp = -100 + lp_loss
+    if player.rumble_lp - lp_loss >= -100:
+        player.rumble_lp -= lp_loss
+    else:
+        player.rumble_lp = -100
     
-    player.rumble_lp -= lp_loss
     player.rumble_losses += 1
     player.save()
 
-def adjust_player_lp_and_rank_on_win(player):
+def adjust_player_lp_on_win(player):
     player_games = get_rumble_player_games(player)
     win_loss_streak = get_win_or_loss_streak(player_games, True)
     lp_gain = calculate_lp_gain(win_loss_streak)
-
-    if player.rumble_lp + lp_gain > 100:
-        if player.rumble_rank.value < RANK_MAX:
-            player.rumble_lp -= 100
-            next_rumble_rank = Rank.objects.get(
-                value=player.rumble_rank.value+1
-            )
-            player.rumble_rank = next_rumble_rank
-            send_rumble_promotion_announcement(player, next_rumble_rank)
-            change_user_rank_role(player.user, next_rumble_rank)
             
     player.rumble_lp += lp_gain
     player.rumble_wins += 1
     player.save()
+
+def update_all_rumble_ranks():
+    updated_player_ranks = []
+
+    rumble_players = list(Player.objects.filter(is_rumble=True).all())
+    rumble_players.sort(
+        key=lambda player: player.rumble_lp
+    )
+
+    ranks = list(Rank.objects.all())
+    ranks.sort(key=lambda rank: rank.threshold_percentile)
+    ranks.reverse()
+
+    for i, player in enumerate(rumble_players):
+        print(player.user.summoner_name)
+        if player.rumble_wins + player.rumble_losses < MIN_NUM_OF_GAMES_BEFORE_RANK:
+            continue
+
+        player_percentile = (i / len(rumble_players)) * 100
+        player_rank_id = int(player.rumble_rank.id)
+
+        if (i+1) == len(rumble_players):
+            if player.rumble_lp != rumble_players[i-1].rumble_lp:
+                if not player.rumble_rank.is_top_rank:
+                    top_rank = Rank.objects.get(is_top_rank=True)
+                    updated_player_ranks.append({
+                        'player': player,
+                        'old_rank_id': player_rank_id,
+                        'new_rank_id': int(top_rank.id)
+                    })
+                    player.rumble_rank = top_rank
+                    player.save()
+                    change_user_rank_role(player.user, top_rank)
+                continue
+
+        for rank in ranks:
+            if rank.is_default or rank.is_top_rank:
+                continue
+            
+            if player_percentile >= rank.threshold_percentile:
+                if rank.id != player_rank_id:
+                    updated_player_ranks.append({
+                        'player': player,
+                        'old_rank_id': player_rank_id,
+                        'new_rank_id': int(rank.id)
+                    })
+                    player.rumble_rank = rank
+                    player.save()
+                    change_user_rank_role(player.user, rank)
+                break
+    
+    send_rumble_rank_updates(updated_player_ranks)
+
+    return
