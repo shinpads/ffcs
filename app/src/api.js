@@ -85,6 +85,12 @@ export async function discordLogin() {
   const response = await axios.get('/oauth2/login/');
 }
 
+export async function getAllRanks() {
+  const response = await axios.get('/api/ranks/');
+
+  return response.data.data;
+}
+
 export async function signup(data) {
   const response = await axios.post('/api/signup/', data);
   return response.data;

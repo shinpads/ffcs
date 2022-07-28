@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import views, rumblesignupviews, teamviews, playerviews, seasonviews, matchviews, gameviews, discordviews, registrationviews, userviews, voteviews
+from .views import views, rumblesignupviews, rankviews, teamviews, playerviews, seasonviews, matchviews, gameviews, discordviews, registrationviews, userviews, voteviews
 
 urlpatterns = [
   path('api/season/', seasonviews.SeasonView.as_view()),
@@ -9,6 +9,7 @@ urlpatterns = [
   path('api/players/current/', playerviews.get_players_current_season),
   path('api/players/rumble/', playerviews.get_players_rumble),
   path('api/matches/', matchviews.MatchesView.as_view()),
+  path('api/ranks/', rankviews.RanksView.as_view()),
   path('api/match/<match_id>', matchviews.get_match),
   path('api/match/proposeschedule/', matchviews.propose_schedule),
   path('api/match/updatecasters/', matchviews.update_casters),

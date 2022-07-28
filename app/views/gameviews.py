@@ -2,10 +2,10 @@ import sys
 from django.http import JsonResponse
 from django.views import View
 
-from app.discord_utils import send_mvp_vote_dm
-from ..models import Game, Match, Player, Rank, Season, User
-from ..utils import get_riot_account_id, get_rumble_player_games
-from ..rank_utils import adjust_player_lp_and_rank_on_loss, adjust_player_lp_and_rank_on_win, calculate_lp_loss, get_win_or_loss_streak
+from app.discord_utils import send_mvp_vote_dm, send_rumble_rank_updates
+from ..models import Game, Season, User
+from ..utils import get_riot_account_id
+from ..rank_utils import adjust_player_lp_on_loss, adjust_player_lp_on_win, update_all_rumble_ranks
 from ..scripts import player_stats
 from ..utils import get_game_timeline
 import json
@@ -60,7 +60,7 @@ class CallbackView(View):
                 continue
 
             try:
-                adjust_player_lp_and_rank_on_loss(loser_player)
+                adjust_player_lp_on_loss(loser_player)
                 
             except Exception as e:
                 print('Error calculating LP for player...')
@@ -114,7 +114,7 @@ class CallbackView(View):
                         break
             
             try:
-                adjust_player_lp_and_rank_on_win(winner_player)
+                adjust_player_lp_on_win(winner_player)
                 
             except Exception as e:
                 print('Error calculating LP for player...')
@@ -136,6 +136,13 @@ class CallbackView(View):
             }, status=500)
             return response
         
+        try:
+            update_all_rumble_ranks()
+        except Exception as e:
+            print('Error calculating LP for player...')
+            print(str(e))
+            sys.stdout.flush()
+
         game.winner = winner_team
         game.game_id = game_id
         game.save()

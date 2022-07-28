@@ -82,8 +82,8 @@ def rumblesignup(request):
         player.role_preferences = json_data['rolePreferences']
         player.is_rumble = True
         player.rumble_elo = calculate_initial_elo(rank, highest_rank)
-        default_rumble_rank = Rank.objects.get(value=1)
-        player.rumble_rank = Rank.objects.get(value=1)
+        default_rumble_rank = Rank.objects.get(is_default=True)
+        player.rumble_rank = default_rumble_rank
         change_user_rank_role(player.user, default_rumble_rank)
         player.save()
         send_rumble_proposed_elo_message(player)
