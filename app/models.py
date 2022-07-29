@@ -187,7 +187,7 @@ class User(AbstractBaseUser):
     summoner_level = models.IntegerField(default=1)
     smurfs = ArrayField(
         models.CharField(max_length=64, default='', blank=True),
-        null=True
+        null=True, blank=True
     )
 
     # last_login = models.DateTimeField(null=True)
