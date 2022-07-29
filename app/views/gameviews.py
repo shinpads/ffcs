@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views import View
 
 from app.discord_utils import send_mvp_vote_dm, send_rumble_rank_updates
+from app.elo_utils import adjust_player_elo
 from ..models import Game, Season, User
 from ..utils import get_riot_account_id
 from ..rank_utils import adjust_player_lp_on_loss, adjust_player_lp_on_win, update_all_rumble_ranks
@@ -59,11 +60,30 @@ class CallbackView(View):
             if loser_player == None:
                 continue
 
+            loser_team = None
+            
+            for team in game.match.teams.all():
+                if player.is_rumble:
+                    if player in [
+                        team.rumble_top,
+                        team.rumble_jg,
+                        team.rumble_mid,
+                        team.rumble_adc,
+                        team.rumble_supp
+                    ]:
+                        loser_team = team
+                        break
+                else:
+                    if player in team.players.all():
+                        loser_team = team
+                        break
+
             try:
-                adjust_player_lp_on_loss(loser_player)
+                loser_player = adjust_player_lp_on_loss(loser_player)
+                loser_player = adjust_player_elo(loser_player, game, loser_team, False)
                 
             except Exception as e:
-                print('Error calculating LP for player...')
+                print('Error calculating LP and elo for player...')
                 print(str(e))
                 sys.stdout.flush()
                 continue
@@ -114,10 +134,11 @@ class CallbackView(View):
                         break
             
             try:
-                adjust_player_lp_on_win(winner_player)
+                winner_player = adjust_player_lp_on_win(winner_player)
+                winner_player = adjust_player_elo(winner_player, game, winner_team, True)
                 
             except Exception as e:
-                print('Error calculating LP for player...')
+                print('Error calculating LP and elo for player...')
                 print(str(e))
                 sys.stdout.flush()
                 continue

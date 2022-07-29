@@ -1,5 +1,8 @@
 from random import shuffle
 from itertools import permutations
+from app.rank_utils import get_win_or_loss_streak
+
+from app.utils import get_rumble_player_games
 
 RANK_VALUES = {
     "unranked": 1100,
@@ -35,6 +38,8 @@ ROLES = ['top', 'jungle', 'mid', 'bot', 'support']
 PREFERRED_ROLE_COEFFICIENTS = [1, 0.5, 0.25, 0.1, 0]
 MIN_ROLE_PREF_COEFFICIENT = 6.5
 
+BASE_ELO_COEFFICIENT = 50
+
 def calculate_initial_elo(current_rank, highest_rank):
     current_rank_weighting = 0.75
     highest_rank_weighting = 0.25
@@ -43,6 +48,34 @@ def calculate_initial_elo(current_rank, highest_rank):
     highest_rank_weighted = highest_rank_weighting * RANK_VALUES[highest_rank]
 
     return int(current_rank_weighted + highest_rank_weighted)
+
+def adjust_player_elo(player, game, player_team, player_win):
+    if not player_team:
+        return
+    enemy_team = [team for team in game.match.teams.all() if team != player_team][0]
+    player_num_games = player.rumble_wins + player.rumble_losses
+    player_games = get_rumble_player_games(player)
+    win_loss_streak = get_win_or_loss_streak(player_games, player_win)
+
+    E = 1/(1 + (10**((enemy_team.avg_rumble_elo - player_team.avg_rumble_elo)/400)))
+
+    S = 1 if player_win else 0
+
+    placement_coefficient = 1
+    if player_num_games < 5:
+        placement_coefficient += (5 - player_num_games)*0.2
+    
+    streak_coefficient = 1
+    if win_loss_streak > 0:
+        streak_coefficient = 1 + ((win_loss_streak - 1) * 0.1)
+    
+    K = BASE_ELO_COEFFICIENT * placement_coefficient * streak_coefficient
+    
+    elo_adjustment = round(float(K) * (float(S) - float(E)))
+    player.rumble_elo += elo_adjustment
+    player.save()
+    return player
+    
 
 def create_teams(players):
     shuffle(players)
