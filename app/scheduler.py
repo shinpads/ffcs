@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
 
+from app.scripts.new_rumble_week import create_rumble_week
+
 from .models import Player, RumbleWeek, ScheduleTest, Season, Team
 from .utils import get_info_by_account_id
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -20,40 +22,25 @@ def start():
         timezone='est'
     )
     scheduler.add_job(
-        test_scheduler,
+        create_new_rumble_week,
         'cron',
-        day_of_week='tue',
-        hour='16',
-        minute='00',
+        day_of_week='sat',
+        hour='0',
+        minute='0',
         timezone='est'
     )
-    # scheduler.add_job(
-    #     create_new_rumble_week,
-    #     'cron',
-    #     day_of_week='sat',
-    #     hour='0',
-    #     minute='0',
-    #     timezone='est'
-    # )
     scheduler.add_job(update_summoner_info, 'interval', minutes=20, max_instances=1)
     scheduler.start()
 
-def test_scheduler():
-    sched_test = ScheduleTest()
-    sched_test.reached = True
-    print('Creating new Rumble week...')
-    sys.stdout.flush()
-    sched_test.save()
-
 def create_new_rumble_week():
+    debug = os.getenv('DEBUG')
+    if debug:
+        return
+
     print('Creating new Rumble week...')
     sys.stdout.flush()
 
-    rumble_season = Season.objects.get(is_rumble=True)
-
-    rumble_week = RumbleWeek()
-    rumble_week.season = rumble_season
-    rumble_week.save()
+    create_rumble_week()
 
 def calculate_teams():
     create_rumble_matches()
@@ -62,6 +49,7 @@ def update_summoner_info():
     debug = os.getenv('DEBUG')
     if debug:
         return
+    
     all_players = Player.objects.all()
     print('updating summoners...')
     sys.stdout.flush()
