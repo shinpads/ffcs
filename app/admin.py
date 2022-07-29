@@ -59,7 +59,7 @@ class TeamAdmin(admin.ModelAdmin):
 
     get_id.short_description = 'ID'
 
-    list_display = ('name', 'season', 'get_id')
+    list_display = ('name', 'season', 'get_id', 'avg_rumble_elo')
 
 @admin.register(Season)
 class SeasonAdmin(admin.ModelAdmin):

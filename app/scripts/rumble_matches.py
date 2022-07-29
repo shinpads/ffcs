@@ -96,6 +96,7 @@ def create_rumble_matches():
         blue_team.rumble_mid = match['blue'][2]
         blue_team.rumble_adc = match['blue'][3]
         blue_team.rumble_supp = match['blue'][4]
+        blue_team.avg_rumble_elo = match['blue_avg_elo']
         blue_team.save()
 
         red_team = Team()
@@ -110,6 +111,7 @@ def create_rumble_matches():
         red_team.rumble_mid = match['red'][2]
         red_team.rumble_adc = match['red'][3]
         red_team.rumble_supp = match['red'][4]
+        red_team.avg_rumble_elo = match['red_avg_elo']
         red_team.save()
 
         new_match = Match()

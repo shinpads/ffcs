@@ -119,6 +119,8 @@ def create_match_permutations(players):
             'blue': list(permutation)[0:5],
             'red': list(permutation)[5:10]
         }
+        teams['blue_avg_elo'] = team_elo_average(teams['blue'])
+        teams['red_avg_elo'] = team_elo_average(teams['red'])
         teams['role_pref_coefficient'] = calculate_role_pref_coefficient(teams)
         teams['elo_difference'] = calculate_elo_difference(teams)
 

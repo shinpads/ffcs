@@ -103,6 +103,12 @@ class Team(models.Model):
     discord_role_id = models.CharField(default=None, null=True, blank=True, max_length=64)
     logo_url = models.CharField(default=None, null=True, blank=True, max_length=200)
     is_rumble = models.BooleanField(default=False)
+    avg_rumble_elo = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
 
     rumble_top = models.ForeignKey(
         'Player',
