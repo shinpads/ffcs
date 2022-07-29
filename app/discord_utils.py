@@ -141,7 +141,7 @@ def send_new_rumble_week_announcement():
     message = (
         f"<@&{rumble_role_id}> "
         "It's a new Rumble week!!!! Register for this week at "
-        "https://ffcsleague.com/!"
+        "https://ffcsleague.com/ !"
     )
     discord_bot.send_message(message, channel)
 
