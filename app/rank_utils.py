@@ -56,6 +56,7 @@ def adjust_player_lp_on_loss(player):
     
     player.rumble_losses += 1
     player.save()
+    return player
 
 def adjust_player_lp_on_win(player):
     player_games = get_rumble_player_games(player)
@@ -65,6 +66,7 @@ def adjust_player_lp_on_win(player):
     player.rumble_lp += lp_gain
     player.rumble_wins += 1
     player.save()
+    return player
 
 def update_all_rumble_ranks():
     updated_player_ranks = []
