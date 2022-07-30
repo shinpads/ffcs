@@ -5,7 +5,7 @@ from app.rank_utils import get_win_or_loss_streak
 from app.utils import get_rumble_player_games
 
 RANK_VALUES = {
-    "unranked": 1100,
+    "Unranked": 1100,
     "Iron 4": 600,
     "Iron 3": 650,
     "Iron 2": 700,
@@ -156,8 +156,16 @@ def create_match_permutations(players):
         teams['red_avg_elo'] = team_elo_average(teams['red'])
         teams['role_pref_coefficient'] = calculate_role_pref_coefficient(teams)
         teams['elo_difference'] = calculate_elo_difference(teams)
+        no_banned_players = True
 
-        if teams['role_pref_coefficient'] >= MIN_ROLE_PREF_COEFFICIENT:
+        for i, player in enumerate(list(permutation)):
+            role = ROLES[i % 5]
+            if role == player.banned_role:
+                no_banned_players = False
+                break
+
+        if teams['role_pref_coefficient'] >= MIN_ROLE_PREF_COEFFICIENT and \
+           no_banned_players:
             match_permutations.append(teams)
     
     return match_permutations

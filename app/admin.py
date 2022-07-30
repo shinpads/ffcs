@@ -45,6 +45,7 @@ class PlayerAdmin(admin.ModelAdmin):
                 'rumble_losses',
                 'caster',
                 'rumble_elo',
+                'banned_role',
                 'is_rumble',
                 'role_preferences',
                 'has_rumble_priority',

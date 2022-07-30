@@ -135,6 +135,24 @@ def give_user_rumble_role(user):
     discord_bot.assign_user_to_role(user.discord_user_id, rumble_role_id)
     return
 
+def send_rumble_registration_reminder():
+    channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
+    message = (
+        "Just a reminder that this week's Rumble registration "
+        "closes in 24 hours! Register at https://ffcsleague.com/"
+    )
+    discord_bot.send_message(message, channel)
+
+def send_rumble_game_reminder():
+    rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
+    channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
+    message = (
+        f"<@&{rumble_role_id}> "
+        "This week's Rumble games start in 1 hour!! Please make sure "
+        "to be in the lobby on time."
+    )
+    discord_bot.send_message(message, channel)
+
 def send_new_rumble_week_announcement():
     rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')

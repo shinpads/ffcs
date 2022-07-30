@@ -146,7 +146,7 @@ const UserProfile = (props) => {
       setAllGames(data.games);
       setSelectedSeason(userMostRecentSeason);
       setGames(data.games.filter(game => game.match.season === userMostRecentSeason));
-      setAllSeasons(seasons.filter(season => allUserSeasons.includes(season.id)));
+      setAllSeasons(seasons.filter(season => allUserSeasons.includes(season.id)).sort((a, b) => a.id - b.id));
       setLoading(false);
     }
     getData();

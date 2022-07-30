@@ -347,6 +347,14 @@ class Player(models.Model):
         (SUPPORT, "Support"),
     ]
 
+    BANNED_ROLE_CHOICES = [
+        ('top', 'top'),
+        ('jungle', 'jungle'),
+        ('mid', 'mid'),
+        ('bot', 'bot'),
+        ('support', 'support')
+    ]
+
     def role_preferences_default():
         return {
             'top': 1,
@@ -375,6 +383,11 @@ class Player(models.Model):
         max_length=10,
         blank=True,
         choices=ROLE_CHOICES
+    )
+    banned_role = models.CharField(
+        max_length=10,
+        blank=True,
+        choices=BANNED_ROLE_CHOICES
     )
     role_preferences = models.JSONField(
         null=True,
