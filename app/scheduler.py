@@ -13,20 +13,20 @@ from .scripts.rumble_matches import create_rumble_matches
 load_dotenv()
 
 DAYS_OF_WEEK = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-TIMEZONE = 'est'
+TIMEZONE = 'utc'
 RUMBLE_GAME_TIME = {
-    'day': 'fri',
-    'hour': '20',
+    'day': 'sat',
+    'hour': '0',
     'minute': '30'
 }
 RUMBLE_SIGNUP_CLOSE_TIME = {
     'day': 'wed',
-    'hour': '17',
+    'hour': '21',
     'minute': '30'
 }
 RUMBLE_SIGNUP_OPEN_TIME = {
     'day': 'sat',
-    'hour': '0',
+    'hour': '4',
     'minute': '0'
 }
 
@@ -38,7 +38,8 @@ def start():
         day_of_week=RUMBLE_SIGNUP_CLOSE_TIME['day'],
         hour=RUMBLE_SIGNUP_CLOSE_TIME['hour'],
         minute=RUMBLE_SIGNUP_CLOSE_TIME['minute'],
-        timezone=TIMEZONE
+        timezone=TIMEZONE,
+        max_instances=1
     )
     scheduler.add_job(
         create_new_rumble_week,
@@ -46,7 +47,8 @@ def start():
         day_of_week=RUMBLE_SIGNUP_OPEN_TIME['day'],
         hour=RUMBLE_SIGNUP_OPEN_TIME['hour'],
         minute=RUMBLE_SIGNUP_OPEN_TIME['minute'],
-        timezone=TIMEZONE
+        timezone=TIMEZONE,
+        max_instances=1
     )
     scheduler.add_job(
         rumble_registration_reminder,
@@ -54,7 +56,8 @@ def start():
         day_of_week=DAYS_OF_WEEK[DAYS_OF_WEEK.index(RUMBLE_SIGNUP_CLOSE_TIME['day'])-1],
         hour=RUMBLE_SIGNUP_CLOSE_TIME['hour'],
         minute=RUMBLE_SIGNUP_CLOSE_TIME['minute'],
-        timezone=TIMEZONE
+        timezone=TIMEZONE,
+        max_instances=1
     )
     scheduler.add_job(
         rumble_game_reminder,
@@ -62,7 +65,8 @@ def start():
         day_of_week=RUMBLE_GAME_TIME['day'],
         hour=str(int(RUMBLE_GAME_TIME['hour'])-1),
         minute=RUMBLE_GAME_TIME['minute'],
-        timezone=TIMEZONE
+        timezone=TIMEZONE,
+        max_instances=1
     )
     scheduler.add_job(update_summoner_info, 'interval', minutes=20, max_instances=1)
     scheduler.start()

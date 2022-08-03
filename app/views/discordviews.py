@@ -183,6 +183,7 @@ def mvp_vote_response(data, interaction_response, voted_player_id):
     if sum(game.mvp_votes.values()) >= num_of_voters:
         mvp_player_id = max(game.mvp_votes, key=game.mvp_votes.get)
         mvp_player = Player.objects.get(id=mvp_player_id)
+        mvp_player.rumble_lp += 5
         game.mvp = mvp_player
         game.save()
 
