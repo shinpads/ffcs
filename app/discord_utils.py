@@ -249,7 +249,8 @@ def send_rumble_proposed_elo_message(player):
 def send_mvp_vote_dm(game, players):
     message = (
         "Congrats on the win! Please vote for the game MVP "
-        "(you cannot vote yourself)."
+        "(you cannot vote yourself). The player with the most votes gets "
+        "the MVP, and 5 extra LP!"
     )
 
     for player in players:
