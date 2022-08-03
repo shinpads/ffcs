@@ -60,11 +60,7 @@ export function nearestWednesday() {
 
   const now = new Date();
   const day = now.getDay();
-  let daysToTarget = targetDayVal - (day <= targetDayVal ? day : day - 7);
-
-  if (daysToTarget === 0) {
-    daysToTarget = 7;
-  }
+  let daysToTarget = (7 + targetDayVal - day) % 7;
 
   const targetDay = new Date(+now);
   targetDay.setDate(targetDay.getDate() + daysToTarget);
