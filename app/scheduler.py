@@ -19,6 +19,11 @@ RUMBLE_GAME_TIME = {
     'hour': '0',
     'minute': '30'
 }
+RUMBLE_GAME_REMINDER_TIME = {
+    'day': 'fri',
+    'hour': '23',
+    'minute': '30'
+}
 RUMBLE_SIGNUP_CLOSE_TIME = {
     'day': 'wed',
     'hour': '21',
@@ -62,9 +67,9 @@ def start():
     scheduler.add_job(
         rumble_game_reminder,
         'cron',
-        day_of_week=RUMBLE_GAME_TIME['day'],
-        hour=str(int(RUMBLE_GAME_TIME['hour'])-1),
-        minute=RUMBLE_GAME_TIME['minute'],
+        day_of_week=RUMBLE_GAME_REMINDER_TIME['day'],
+        hour=RUMBLE_GAME_REMINDER_TIME['hour'],
+        minute=RUMBLE_GAME_REMINDER_TIME['minute'],
         timezone=TIMEZONE,
         max_instances=1
     )
