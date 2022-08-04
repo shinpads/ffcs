@@ -77,7 +77,6 @@ def register_tournament(name, provider_id):
     return str(res.text)
 
 def generate_tournament_code(game, all_players):
-    summoners = []
     map_type = "SUMMONERS_RIFT"
     metadata = {}
     pick_type = "TOURNAMENT_DRAFT"
@@ -97,17 +96,6 @@ def generate_tournament_code(game, all_players):
         return None
     else:
         metadata["key"] = game.meta_key
-
-    for team in game.match.teams.all():
-        for player in team.players.all():
-            summoners.append(player.account_id)
-
-    if len(summoners) < 10:
-        return None
-
-    for user in game.match.casters.all():
-        if user.summoner_id:
-            summoners.append(user.summoner_id)
 
     data = {
         "mapType": map_type,
