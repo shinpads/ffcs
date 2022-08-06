@@ -18,6 +18,7 @@ const styles = createUseStyles({
     borderRadius: '4px',
     flexBasis: '400px',
     boxShadow: `1px 1px 2px ${colors.black}`,
+    height: '',
   },
   casterContainer: {
     backgroundColor: colors.darkerGrey,
@@ -57,6 +58,8 @@ const styles = createUseStyles({
     marginBottom: '1rem',
   },
   bottomContainer: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr',
     padding: '6px 8px',
   },
   winningTeam: {
@@ -69,11 +72,6 @@ const styles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-  },
-  codeContainer: {
-    display: 'grid',
-    float: 'right',
-    gridGap: '8px',
   },
   scheduleContainer: {
     dispaly: 'grid',
@@ -160,21 +158,22 @@ const RumbleMatch = ({ match, user }) => {
         </div>
       </div>
       <div className={classes.bottomContainer}>
-        <div className={classes.codeContainer}>
-          {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (
-            <>
-              <Button style={{ fontSize: '12px', float: 'right' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Game {game.game_in_series} Code</Button>
-            </>
-          ))}
-        </div>
-        {winner && match.twitch_vod && (
-          <a href={match.twitch_vod}>
-            <img alt="Watch on Twitch" target="_blank" width={24} src={getImage(twitchLogo)} />
-          </a>
-        )}
+        {winner && match.twitch_vod
+          ? (
+            <a href={match.twitch_vod}>
+              <img alt="Watch on Twitch" target="_blank" width={24} src={getImage(twitchLogo)} />
+            </a>
+          )
+          : <div />}
+        <div />
         {winner && (
-          <Button href={`/match/${match.id}`} style={{ float: 'right', fontSize: '12px' }} variant="contained">View Results</Button>
+          <Button href={`/match/${match.id}`} style={{ fontSize: '12px' }} variant="contained">View Results</Button>
         )}
+        {!winner && match.games.filter(game => game.tournament_code).map((game, index) => (
+          <>
+            <Button style={{ fontSize: '12px' }} variant="outlined" onClick={() => copyTextToClipboard(game.tournament_code)}>Copy Game {game.game_in_series} Code</Button>
+          </>
+        ))}
       </div>
     </div>
   );
