@@ -9,6 +9,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import sys
 import os
 from .scripts.rumble_matches import create_rumble_matches
+from time import sleep
 
 load_dotenv()
 
@@ -77,28 +78,28 @@ def start():
     scheduler.start()
 
 def rumble_registration_reminder():
+    sleep(5)
     print('Reminding about registration...')
     sys.stdout.flush()
 
     send_rumble_registration_reminder()
 
 def rumble_game_reminder():
+    sleep(5)
     print('Reminding about game...')
     sys.stdout.flush()
 
     send_rumble_game_reminder()
 
 def create_new_rumble_week():
-    debug = os.getenv('DEBUG')
-    if debug:
-        return
-
+    sleep(5)
     print('Creating new Rumble week...')
     sys.stdout.flush()
 
     create_rumble_week()
 
 def calculate_teams():
+    sleep(5)
     print('Calculating teams...')
     sys.stdout.flush()
 
