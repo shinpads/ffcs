@@ -48,9 +48,10 @@ class CallbackView(View):
                     if player.is_rumble and current_season.is_rumble:
                         loser_player = player
                         break
-                    elif player.team.season.id == current_season.id:
-                        loser_player = player
-                        break
+                    elif not current_season.is_rumble:
+                        if player.team.season.id == current_season.id:
+                            loser_player = player
+                            break
             except Exception as e:
                 print('error finding loser player.')
                 print(str(e))
@@ -101,9 +102,10 @@ class CallbackView(View):
                     if player.is_rumble and current_season.is_rumble:
                         winner_player = player
                         break
-                    elif player.team.season.id == current_season.id:
-                        winner_player = player
-                        break
+                    elif not current_season.is_rumble:
+                        if player.team.season.id == current_season.id:
+                            winner_player = player
+                            break
             except Exception as e:
                 print('error finding winner player.')
                 print(str(e))

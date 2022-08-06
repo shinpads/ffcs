@@ -186,6 +186,7 @@ def mvp_vote_response(data, interaction_response, voted_player_id):
         mvp_player.rumble_lp += 5
         game.mvp = mvp_player
         game.save()
+        mvp_player.save()
 
         mvp_message = "**Congrats! You have been voted the Match MVP!** 🥳🎉"
         discord_bot.send_dm(mvp_player.user.discord_user_id, mvp_message)

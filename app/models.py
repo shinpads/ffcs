@@ -10,7 +10,6 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.postgres.fields import ArrayField
 from django.utils.timezone import now
 from .managers import DiscordUserOAuthManager
-import json
 import math
 import secrets
 import os
@@ -534,7 +533,8 @@ class Game(models.Model):
         Team,
         related_name='won_games',
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        blank=True
     )
     match = models.ForeignKey(
         Match,

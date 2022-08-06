@@ -21,7 +21,7 @@ def get_win_or_loss_streak(player_games, game_is_win):
         result = game['game'].winner == game['team']
         
         if past_result != result:
-            return
+            break
         
         past_result = bool(result)
         win_loss_streak += 1
@@ -81,7 +81,6 @@ def update_all_rumble_ranks():
     ranks.reverse()
 
     for i, player in enumerate(rumble_players):
-        print(player.user.summoner_name)
         if player.rumble_wins + player.rumble_losses < MIN_NUM_OF_GAMES_BEFORE_RANK:
             continue
 

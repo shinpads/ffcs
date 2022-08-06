@@ -103,11 +103,22 @@ def calculate_player_stats():
 
             key = (summoner_id, champion_id)
             if not key in player_champion_stats:
-                players = Player.objects.filter(account_id=summoner_id).select_related('team').filter(team__season=current_season)
-                if not len(players):
+                if current_season.is_rumble:
+                    player_user = User.objects.get(summoner_id=summoner_id)
+                    player = None
+                    for cur_player in player_user.players.all():
+                        if cur_player.is_rumble:
+                            player = cur_player
+                            break
+                else:
+                    players = Player.objects.filter(account_id=summoner_id).select_related('team').filter(team__season=current_season)
+                    if not len(players):
+                        print('cant find player or team for player', summoner_name)
+                        continue
+                    player = players[0]
+                if not player:
                     print('cant find player or team for player', summoner_name)
                     continue
-                player = players[0]
                 player_champion_stats[key], created = PlayerChampionStats.objects.get_or_create(player=player, champion_id=champion_id)
                 
                 # set defaults
