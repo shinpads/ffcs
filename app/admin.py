@@ -151,6 +151,7 @@ class GameAdmin(admin.ModelAdmin):
         'game_in_series',
         'winner',
         'mvp',
+        'mvp_votes',
         'tournament_code',
     )
 
