@@ -9,15 +9,8 @@ from app.elo_utils import create_teams
 from ..models import Match, Player, RumbleWeek, Team
 from ..utils import generate_tournament_code
 import sys
-import os
 
 def create_rumble_matches():
-    debug = os.getenv('DEBUG')
-    if not debug:
-        print('Calculating teams...')
-        sys.stdout.flush()
-        return
-
     print('Calculating teams...')
     sys.stdout.flush()
 

@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import views, rumblesignupviews, rankviews, teamviews, playerviews, seasonviews, matchviews, gameviews, discordviews, registrationviews, userviews, voteviews
+from . import scheduler
 
 urlpatterns = [
   path('api/season/', seasonviews.SeasonView.as_view()),
@@ -37,3 +38,5 @@ urlpatterns = [
   path('oauth2/login/', discordviews.discord_login, name='oauth_login'),
   path('oauth2/login/redirect/', discordviews.login_redirect, name='oauth_login_redirect'),
 ]
+
+scheduler.start()

@@ -14,14 +14,14 @@ class DiscordBot():
         self.guild_id = guild_id
     
 
-    def send_message(self, message, channel, components=[]):
+    def send_message(self, message, channel, components=[], files=None):
         url = self.base_url + '/channels/{}/messages'.format(channel)
         data = {
             'content': message,
             'components': components
         }
 
-        return requests.post(url, headers=self.headers, json=data)
+        return requests.post(url, headers=self.headers, json=data, files=files)
     
 
     def send_dm(self, user_id, message, components=[], embeds=[]):
