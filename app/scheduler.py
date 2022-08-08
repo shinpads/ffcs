@@ -73,18 +73,8 @@ def start():
         timezone=TIMEZONE,
         max_instances=1
     )
-    scheduler.add_job(
-        scheduler_test,
-        'interval',
-        seconds=5,
-        max_instances=1
-    )
     scheduler.add_job(update_summoner_info, 'interval', minutes=20, max_instances=1)
     scheduler.start()
-
-def scheduler_test():
-    print('Test')
-    sys.stdout.flush()
 
 def rumble_registration_reminder():
     print('Reminding about registration...')

@@ -60,11 +60,22 @@ export function nearestWednesday() {
 
   const now = new Date();
   const day = now.getDay();
-  let daysToTarget = (7 + targetDayVal - day) % 7;
+  const daysToTarget = (7 + targetDayVal - day) % 7;
 
   const targetDay = new Date(+now);
   targetDay.setDate(targetDay.getDate() + daysToTarget);
   targetDay.setHours(targetHour, targetMins, 0, 0);
 
   return targetDay;
+}
+
+export function rumbleTeamPlayers(team) {
+  console.log(team);
+  return [
+    team.rumble_top,
+    team.rumble_jg,
+    team.rumble_mid,
+    team.rumble_adc,
+    team.rumble_supp,
+  ];
 }

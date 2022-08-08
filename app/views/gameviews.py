@@ -173,9 +173,17 @@ class CallbackView(View):
         try:
             send_mvp_vote_dm(game, winning_players)
         except Exception as e:
-            print('failed sending MVP Vote DM.')
+            print('Failed sending MVP Vote DM.')
             print(str(e))
             sys.stdout.flush()
+        
+        if current_season.is_rumble:
+            try:
+                send_mvp_vote_dm(game, winning_players)
+            except Exception as e:
+                print('Failed sending Rumble game finish message.')
+                print(str(e))
+                sys.stdout.flush()
 
         # update player stats with new data
         player_stats.calculate_player_stats()
