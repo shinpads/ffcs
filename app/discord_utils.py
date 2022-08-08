@@ -1,3 +1,4 @@
+from io import BytesIO
 import json
 from app.models import Game, Match, Player, Rank, RegistrationForm, Team, User
 from django.utils import timezone
@@ -8,6 +9,7 @@ from .discord_constants import ChannelTypes, permissions
 from dotenv import load_dotenv
 from prettytable import PrettyTable
 import os
+from PIL import Image, ImageDraw, ImageFont
 import sys
 
 load_dotenv()
@@ -168,22 +170,20 @@ def send_rumble_match_announcement(matches):
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
     message = (
         f"<@&{rumble_role_id}> "
-        "This week's rumble signups have closed, and teams have been created! "
-        "\n**TEAMS:**"
+        "This week's rumble signups have closed, and matches have been "
+        "created!\n**MATCHES:**"
     )
-
-    for match in matches:
-        table = PrettyTable()
-        table.field_names = ["Blue Side", "Red Side"]
-        for i in range(min(len(match['red']), len(match['blue']))):
-            table.add_row([
-                match['blue'][i].user.summoner_name,
-                match['red'][i].user.summoner_name
-            ])
-        
-        message += f'\n```\n{str(table)}\n```'
-    
     discord_bot.send_message(message, channel)
+
+    for i, match in enumerate(matches):
+        match_image = create_match_image(match, i+1)
+        with BytesIO() as image_binary:
+            match_image.save(image_binary, 'PNG')
+            image_binary.seek(0)
+            files = {
+                "file": (f'match{i+1}.png', image_binary)
+            }
+            discord_bot.send_message('', channel, files=files)
     return
 
 def send_rumble_rank_updates(updates):
@@ -279,6 +279,103 @@ def change_user_rank_role(user, rank):
             )
     
     discord_bot.assign_user_to_role(user.discord_user_id, rank.discord_role_id)
+
+def create_match_image(match, match_num):
+    blue_side = map(
+        lambda player: player.user.summoner_name,
+        match['blue']
+    )
+    red_side = map(
+        lambda player: player.user.summoner_name,
+        match['red']
+    )
+    roles = ['top', 'jg', 'mid', 'adc', 'supp']
+    W, H = (350, 200)
+    header_size = 50
+    header_font_size = 24
+    side_font_size = 20
+    font_size = 16
+    discord_dark_mode_color = '#36393f'
+
+    player_text_top_padding = header_size + int((((H - header_size) / 5) - font_size) / 2)
+    
+    cur_path = os.path.dirname(__file__)
+    player_font = ImageFont.truetype(
+        cur_path + '/../staticfiles/rest_framework/fonts/friz-quadrata-std-medium.otf',
+        size=font_size
+    )
+    header_font = ImageFont.truetype(
+        cur_path + '/../staticfiles/rest_framework/fonts/friz-quadrata-std-bold.otf',
+        size=header_font_size
+    )
+    side_font = ImageFont.truetype(
+        cur_path + '/../staticfiles/rest_framework/fonts/friz-quadrata-std-bold.otf',
+        size=side_font_size
+    )
+    img = Image.new(
+        'RGB',
+        (W, H),
+        discord_dark_mode_color
+    )
+    d = ImageDraw.Draw(img)
+
+    d.text(
+        (int(W / 2), 5),
+        f'MATCH {match_num}',
+        fill=(255, 255, 255),
+        font=header_font,
+        anchor='ma'
+    )
+
+    d.text(
+        (int(W * 0.25), header_font_size + 10),
+        'BLUE SIDE',
+        fill='#16a0d3',
+        font=side_font,
+        anchor='ma'
+    )
+    for i, player in enumerate(blue_side):
+        x_offset = int(W * 0.25)
+        y_offset = int(player_text_top_padding + (i * ((H - header_size) / 5)) + (font_size/8))
+        d.text(
+            (x_offset, y_offset),
+            player,
+            fill=(255,255,255),
+            font=player_font,
+            anchor='ma'
+        )
+    
+    d.text(
+        (int(W * 0.75), header_font_size + 10),
+        'RED SIDE',
+        fill='#f96260',
+        font=side_font,
+        anchor='ma'
+    )
+    for i, player in enumerate(red_side):
+        x_offset = int(W * 0.75)
+        y_offset = int(player_text_top_padding + (i * ((H - header_size) / 5)) + (font_size/8))
+        d.text(
+            (x_offset, y_offset),
+            player,
+            fill=(255,255,255),
+            font=player_font,
+            anchor='ma'
+        )
+    
+    for i, role in enumerate(roles):
+        role_image_raw = Image.open(f'{cur_path}/public/{role}.png').convert('RGBA')
+        role_image_raw.thumbnail((font_size, font_size), Image.ANTIALIAS)
+        background = Image.new(
+            'RGBA',
+            role_image_raw.size,
+            discord_dark_mode_color
+        )
+        role_image = Image.alpha_composite(background, role_image_raw)
+        y_offset = int(player_text_top_padding + (i * ((H - header_size) / 5)))
+        img.paste(role_image, ((int(W / 2) - int(font_size / 2)), y_offset))
+
+    return img
 
 def create_rumble_proposed_elo_components(player):
     elo_choice_increment = 25

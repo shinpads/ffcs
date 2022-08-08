@@ -5,5 +5,6 @@ class AppConfig(AppConfig):
     name = 'app'
 
     def ready(self):
-        from . import scheduler
-        scheduler.start()
+        #from . import scheduler
+        #scheduler.start()
+        return
