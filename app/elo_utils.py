@@ -38,7 +38,7 @@ ROLES = ['top', 'jungle', 'mid', 'bot', 'support']
 PREFERRED_ROLE_COEFFICIENTS = [1, 0.5, 0.25, 0.1, 0]
 MIN_ROLE_PREF_COEFFICIENT = 6.5
 
-BASE_ELO_COEFFICIENT = 50
+BASE_ELO_COEFFICIENT = 20
 
 def calculate_initial_elo(current_rank, highest_rank):
     current_rank_weighting = 0.75
