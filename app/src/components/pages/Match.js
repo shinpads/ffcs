@@ -162,6 +162,7 @@ const Match = (props) => {
   const numTeam1Wins = matchData.match.games.filter(game => game.winner === team1.id).length;
   const numTeam2Wins = matchData.match.games.filter(game => game.winner === team2.id).length;
   const winner = matchData.match.winner.id;
+  const isRumble = matchData.match.is_rumble;
 
   return (
     <>
@@ -256,7 +257,7 @@ const Match = (props) => {
                       return (
                         <TableRow key={index}>
                           <TableCell style={{ width: '25%' }} align="left" component="th" scope="row">
-                            <Participant isSub={!team1Player.id} mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1Participant.player} user={team1Player.user} />
+                            <Participant isSub={!team1Player.id && !isRumble} mvp={game.mvp === team1Player.id} participant={team1Participant} player={team1Participant.player} user={team1Player.user} />
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
                             <div className={classes.damage}>{team1Participant.totalDamageDealtToChampions}</div>
@@ -278,7 +279,7 @@ const Match = (props) => {
                             <ProgressBar variant="determinate" value={team2PlayerDamagePercent} />
                           </TableCell>
                           <TableCell style={{ width: '25%' }} align="right" component="th" scope="row">
-                            <Participant isSub={!team2Player.id} mvp={game.mvp === team2Player.id} reverse participant={team2Participant} player={team1Participant} user={team2Player.user} />
+                            <Participant isSub={!team2Player.id && !isRumble} mvp={game.mvp === team2Player.id} reverse participant={team2Participant} player={team1Participant} user={team2Player.user} />
                           </TableCell>
                         </TableRow>
                       );

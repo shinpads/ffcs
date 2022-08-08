@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import datetime
 
 import pytz
-from app.discord_utils import send_rumble_match_announcement
+from app.discord_utils import create_rumble_voice_channels, delete_team_channel, delete_team_role, send_rumble_match_announcement
 
 from app.elo_utils import create_teams
 from ..models import Match, Player, RumbleWeek, Team
@@ -28,6 +28,8 @@ def create_rumble_matches():
                 for game in current_match.games.all():
                     game.delete()
                 for team in current_match.teams.all():
+                    delete_team_channel(team)
+                    delete_team_role(team)
                     team.delete()
                 current_match.delete()
             except:
@@ -74,9 +76,10 @@ def create_rumble_matches():
         player.save()
 
     matches = create_teams(players)
+
+    teams = []
     
     for i, match in enumerate(matches):
-        print(match)
         blue_team = Team()
         blue_team.name = (
             f'week {current_rumble_week.id}, match {i+1}, blue team'
@@ -91,6 +94,7 @@ def create_rumble_matches():
         blue_team.rumble_supp = match['blue'][4]
         blue_team.avg_rumble_elo = match['blue_avg_elo']
         blue_team.save()
+        teams.append(blue_team)
 
         red_team = Team()
         red_team.name = (
@@ -106,6 +110,7 @@ def create_rumble_matches():
         red_team.rumble_supp = match['red'][4]
         red_team.avg_rumble_elo = match['red_avg_elo']
         red_team.save()
+        teams.append(red_team)
 
         new_match = Match()
         new_match.match_format = 1
@@ -135,6 +140,7 @@ def create_rumble_matches():
                 game.save()
         
     send_rumble_match_announcement(matches)
+    create_rumble_voice_channels(teams)
 
     print('Finished calculating teams.')
     sys.stdout.flush()

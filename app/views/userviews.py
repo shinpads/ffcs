@@ -1,3 +1,4 @@
+from itertools import chain
 from app.discord_utils import update_user_info
 from app.utils import format_user_for_frontend
 from ..models import Player, Team, Season, User, Match, Game
@@ -55,7 +56,16 @@ class UserView(View):
         except AttributeError:
             print("Error updating user info")
         user_data = UserProfileSerializer(user).data
-        matches = Match.objects.filter(teams__in=[player.team for player in user.players.all()]).prefetch_related('teams').prefetch_related('teams__players')
+        rumble_player = user.players.get(is_rumble=True)
+        user_teams = list(chain(*[
+            [player.team for player in user.players.all()],
+            rumble_player.teams_as_top.all(),
+            rumble_player.teams_as_jg.all(),
+            rumble_player.teams_as_mid.all(),
+            rumble_player.teams_as_adc.all(),
+            rumble_player.teams_as_supp.all(),
+        ]))
+        matches = Match.objects.filter(teams__in=user_teams).prefetch_related('teams').prefetch_related('teams__players')
         games = Game.objects.filter(match__in=[match.id for match in matches], winner__isnull=False, game_data__isnull=False).order_by('-match__scheduled_for')
         games_data = GameSerializerWithMatch(games, many=True).data
 

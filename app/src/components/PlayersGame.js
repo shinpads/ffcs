@@ -5,7 +5,7 @@ import { createUseStyles } from 'react-jss';
 import { Paper, Button } from '@material-ui/core';
 import colors from '../colors';
 import TeamName from './TeamName';
-import { getImage } from '../helpers';
+import { getImage, rumbleTeamPlayers } from '../helpers';
 import ChampionIcon from './League/ChampionIcon';
 import { IndividualParticipant, MVPChip } from './League/Participant';
 import ParticipantName from './League/ParticipantName';
@@ -62,8 +62,9 @@ const PlayersGame = ({ game, player }) => {
   const classes = styles();
   const { game_data: gameData } = game;
   const participant = gameData.info.participants.find(curParticipant => curParticipant.summonerId === player.account_id);
+  const isRumble = player.is_rumble;
   if (!participant) return null;
-  const won = game.winner === player.team.id;
+  const won = isRumble ? rumbleTeamPlayers(game.match.teams.find(team => team.id === game.winner)).map(curPlayer => curPlayer.id).includes(player.id) : game.winner === player.team.id;
 
   const [team1, team2] = game.match.teams;
   const team1TeamData = game.winner === team1.id ? gameData.info.teams.find(team => team.win) : gameData.info.teams.find(team => !team.win);
@@ -88,20 +89,23 @@ const PlayersGame = ({ game, player }) => {
       </div>
       <IndividualParticipant mvp={game.mvp === player.id} participant={participant} player={player} user={player.user} gameData={gameData} />
       <div className={classes.participantsContainer}>
-        <TeamPartcipants participants={team1Participants} team={team1} game={game} />
-        <TeamPartcipants participants={team2Participants} team={team2} game={game} />
+        <TeamPartcipants participants={team1Participants} team={team1} game={game} isRumble={isRumble} />
+        <TeamPartcipants participants={team2Participants} team={team2} game={game} isRumble={isRumble} />
       </div>
     </a>
   );
 };
 
-const TeamPartcipants = ({ participants, game, team }) => {
+const TeamPartcipants = ({
+  participants, game, team, isRumble,
+}) => {
   const classes = styles();
   const { game_data: gameData } = game;
   return (
     <div className={classes.teamParticipantsContainer}>
       {participants.map(participant => {
-        const player = team.players.find(curPlayer => curPlayer.account_id === participant.summonerId) || {};
+        const teamPlayers = isRumble ? rumbleTeamPlayers(team) : team.players;
+        const player = teamPlayers.find(curPlayer => curPlayer.account_id === participant.summonerId) || {};
         return (
           <ParticipantName participant={participant} user={player.user} />
         );

@@ -59,6 +59,12 @@ class DiscordBot():
         return requests.patch(url, headers=self.headers, json=changes)
     
 
+    def delete_role(self, role_id):
+        url = self.base_url + '/guilds/{}/roles/{}'.format(self.guild_id, role_id)
+
+        return requests.delete(url, headers=self.headers)
+    
+
     def create_channel(self, data):
         url = self.base_url + '/guilds/{}/channels'.format(self.guild_id)
 
@@ -68,6 +74,11 @@ class DiscordBot():
         url = self.base_url + '/channels/{}'.format(channel_id)
 
         return requests.patch(url, headers=self.headers, json=data)
+    
+    def delete_channel(self, channel_id):
+        url = self.base_url + '/channels/{}'.format(channel_id)
+
+        return requests.delete(url, headers=self.headers)
     
     def assign_user_to_role(self, user_id, role_id):
         url = self.base_url + '/guilds/{}/members/{}/roles/{}'.format(self.guild_id, user_id, role_id)

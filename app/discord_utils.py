@@ -49,23 +49,27 @@ def update_user_info(user):
 
     return
 
-def create_team_discord_role(team, players):
+def create_team_discord_role(team, players, add_color=True, hoist=True):
     data = {
-        'color': team.color,
         'name': team.name,
-        'hoist': True,
+        'hoist': hoist,
         'mentionable': True
     }
+    if add_color:
+        data['color'] = team.color
 
     res = discord_bot.create_role(data).json()
     role_id = res['id']
     team.discord_role_id = str(role_id)
 
     for player in players:
-        player_obj = Player.objects.get(id=player['id'])
+        if isinstance(player, Player):
+            player_obj = player
+        else:
+            player_obj = Player.objects.get(id=player['id'])
         discord_bot.assign_user_to_role(player_obj.user.discord_user_id, role_id)
 
-    return
+    return role_id
 
 def create_team_discord_channel(team):
     everyone_permission_overwrite = {
@@ -186,6 +190,63 @@ def send_rumble_match_announcement(matches):
             discord_bot.send_message('', channel, files=files)
     return
 
+def create_rumble_voice_channels(teams):
+    everyone_permission_overwrite = {
+        'id': discord_bot.guild_id,
+        'type': 0,
+        'allow': '0',
+        'deny': str(permissions['CONNECT'])
+    }
+    ffcs_channel_category = os.getenv('FFCS_CHANNEL_CATEGORY_ID')
+
+    for team in teams:
+        team_name = ', '.join(team.name.split(', ')[1:])
+        players = [
+            team.rumble_top,
+            team.rumble_jg,
+            team.rumble_mid,
+            team.rumble_adc,
+            team.rumble_supp
+        ]
+        team.discord_role_id = create_team_discord_role(
+            team,
+            players,
+            add_color=False,
+            hoist=False
+        )
+
+        team_permission_overwrite = {
+            'id': team.discord_role_id,
+            'type': 0,
+            'allow': str(permissions['CONNECT']),
+            'deny': '0'
+        }
+        
+        channel_data = {
+            'name': team_name,
+            'type': ChannelTypes.GUILD_VOICE,
+            'parent_id': ffcs_channel_category,
+            'permission_overwrites': [
+                everyone_permission_overwrite,
+                team_permission_overwrite
+            ]
+        }
+
+        res = discord_bot.create_channel(channel_data).json()
+        team.discord_channel_id = res['id']
+        team.save()
+    return
+
+def delete_team_channel(team):
+    discord_bot.delete_channel(team.discord_channel_id)
+    team.discord_channel_id = ''
+    team.save()
+
+def delete_team_role(team):
+    discord_bot.delete_role(team.discord_role_id)
+    team.discord_role_id = ''
+    team.save()
+
 def send_rumble_rank_updates(updates):
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
     if len(updates) == 0:
@@ -279,6 +340,24 @@ def change_user_rank_role(user, rank):
             )
     
     discord_bot.assign_user_to_role(user.discord_user_id, rank.discord_role_id)
+
+def send_rumble_game_finish_message(game, winning_players):
+    roles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support']
+    channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
+    match_num = game.winner.name.split(', ')[1]
+    message = (
+        f'This week\'s Rumble {match_num} has finished!\n\n'
+        '**WINNING TEAM:**\n'
+    )
+    for i, player in enumerate(winning_players):
+        message += f'{roles[i]}: {player.user.summoner_name}\n'
+    
+    message += (
+        '\nView more match details at '
+        f'https://ffcsleague.com/match/{game.match.id}'
+    )
+    
+    discord_bot.send_message(message, channel)
 
 def create_match_image(match, match_num):
     blue_side = map(

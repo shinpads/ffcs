@@ -94,7 +94,6 @@ const RumbleMatch = ({ match, user }) => {
 
   const handleCasters = async () => {
     setCasterLoading(true);
-    console.log(user.user.id);
     const data = {
       matchId: match.id,
       userId: user.user.id,
