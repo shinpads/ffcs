@@ -7,7 +7,7 @@ import { createUseStyles } from 'react-jss';
 import { useTimer } from 'react-timer-hook';
 import { signupForRumble, withdrawFromCurrentRumbleWeek } from '../../api';
 import colors from '../../colors';
-import { nearestWednesday } from '../../helpers';
+import { nearestWednesday, range } from '../../helpers';
 import RumbleLeaderboard from './RumbleLeaderboard';
 import RumbleMatch from './RumbleMatch';
 import RumbleSignups from './RumbleSignups';
@@ -27,6 +27,9 @@ const styles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
+  },
+  registerButton: {
+    maxWidth: '300px',
   },
   title: {
     fontSize: '48px',
@@ -54,7 +57,12 @@ const styles = createUseStyles({
     textAlign: 'center',
     color: colors.offwhite,
   },
+  registerContainer: {
+    alignItems: 'center',
+  },
   container: {
+    display: 'flex',
+    flexDirection: 'column',
     textAlign: 'center',
     paddingTop: '0.5rem',
   },
@@ -67,13 +75,14 @@ const styles = createUseStyles({
     color: colors.somewhatwhite,
   },
   splitContainer: {
-    display: 'grid',
+    display: 'inline-grid',
     maxWidth: '1000px',
     marginLeft: 'auto',
     marginRight: 'auto',
     gridTemplateColumns: '1fr 1fr',
     gridGap: '4rem',
     marginTop: '1rem',
+    justifyItems: 'center',
   },
   buttonText: {
     color: colors.black,
@@ -130,8 +139,21 @@ const styles = createUseStyles({
   },
   columnContainer: {
     display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  navContainer: {
+    display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
+  },
+  navButtonContainer: {
+    marginTop: '225px',
+  },
+  bulletContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 });
 
@@ -273,11 +295,11 @@ const Rumble = (props) => {
           </div>
         </div>
         )}
-        {
-        user.is_rumble_player
-          ? currentWeek.signups_open && <Button variant="contained" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
-          : <div>You must sign up for Rumble in order to register for the week! Sign up above.</div>
-        }
+        <div className={classes.registerContainer}>
+          {user.is_rumble_player
+            ? currentWeek.signups_open && <Button className={classes.registerButton} variant="contained" onClick={handleClick}>{isRegistered ? 'Deregister' : 'Register'} for this week's rumble</Button>
+            : <div>You must sign up for Rumble in order to register for the week! Sign up above.</div>}
+        </div>
         <Modal className={classes.modal} open={open} onClose={handleClose}>
           <Paper className={classes.modalContentContainer}>
             <div className={classes.modalText}>
@@ -293,26 +315,53 @@ const Rumble = (props) => {
         <div className={classes.splitContainer}>
           <div>
             <div className={classes.columnContainer}>
-              {selectedWeekIndex > 0 && <button type="button" onClick={() => setSelectedWeekIndex(selectedWeekIndex - 1)}>&lt;</button>}
-              <div>
-                {!allWeeks[selectedWeekIndex]?.signups_open
-                  ? (
-                    <div>
-                      <div className={classes.subtitle}>
-                        {selectedWeekIndex === allWeeks.length - 1 ? 'This week\'s matches' : ` Week ${selectedWeekIndex + 1} matches`}
-                      </div>
-                      <hr />
-                      {allWeeks[selectedWeekIndex]?.matches?.map((match, j) => (
-                        <div>
-                          <div className={classes.subSubtitle}>Match {j + 1}</div>
-                          <RumbleMatch match={match} />
+              <div className={classes.navContainer}>
+                {(selectedWeekIndex > 0) && (
+                <div className={classes.navButtonContainer}>
+                  <Button
+                    style={{
+                      maxWidth: '32px', minWidth: '32px', backgroundColor: colors.darkGrey, color: colors.white,
+                    }}
+                    variant="contained"
+                    onClick={() => setSelectedWeekIndex(selectedWeekIndex - 1)}
+                  >
+                    &lt;
+                  </Button>
+                </div>
+                )}
+                <div>
+                  {!allWeeks[selectedWeekIndex]?.signups_open
+                    ? (
+                      <div>
+                        <div className={classes.subtitle}>
+                          {selectedWeekIndex === allWeeks.length - 1 ? 'This week\'s matches' : ` Week ${selectedWeekIndex + 1} matches`}
                         </div>
-                      ))}
-                    </div>
-                  )
-                  : <RumbleSignups week={allWeeks[selectedWeekIndex]} />}
+                        <hr />
+                        {allWeeks[selectedWeekIndex]?.matches?.map((match, j) => (
+                          <div>
+                            <div className={classes.subSubtitle}>Match {j + 1}</div>
+                            <RumbleMatch match={match} />
+                          </div>
+                        ))}
+                      </div>
+                    )
+                    : <RumbleSignups week={allWeeks[selectedWeekIndex]} />}
+                </div>
+                {(selectedWeekIndex < allWeeks.length - 1) && (
+                <div className={classes.navButtonContainer}>
+                  <Button
+                    style={{
+                      maxWidth: '32px', minWidth: '32px', backgroundColor: colors.darkGrey, color: colors.white,
+                    }}
+                    variant="contained"
+                    onClick={() => setSelectedWeekIndex(selectedWeekIndex + 1)}
+                  >
+                    &gt;
+                  </Button>
+                </div>
+                )}
               </div>
-              {(selectedWeekIndex < allWeeks.length - 1) && <button type="button" onClick={() => setSelectedWeekIndex(selectedWeekIndex + 1)}>&gt;</button>}
+              <div className={classes.bulletContainer} />
             </div>
           </div>
           <div>
