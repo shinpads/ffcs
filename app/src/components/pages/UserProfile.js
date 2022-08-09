@@ -78,12 +78,19 @@ const styles = createUseStyles({
     paddingBottom: '7px',
     paddingLeft: '8px',
     fontSize: '20px',
+  },
+  smurfLink: {
+    color: '#3366BB',
     '&:hover': {
       textDecoration: 'underline',
     },
   },
-  smurfLink: {
-    color: '#3366BB',
+  smurfsContainer: {
+    marginTop: '1rem',
+  },
+  usernameContainer: {
+    display: 'flex',
+    justifyContent: 'center',
   },
   seasonButtonsContainer: {
     marginBottom: '4px',
@@ -179,17 +186,29 @@ const UserProfile = (props) => {
             <SummonerIcon rounded iconId={player.profile_icon_id} />
           </div>
           <div className={classes.userDetailsContainer}>
-            <div>{user.summoner_name}</div>
-            {!selectedSeasonIsRumble && (
-            <div className={classes.teamContainer}>
-              <Role role={player.role} />
-              <div>
-                <a href={`https://ffcsleague.com/team/${player.team.id}`} className={classes.teamName}>
-                  {player.team.name}
-                </a>
-              </div>
+            <div className={classes.usernameContainer}>
+              <div>{user.summoner_name}</div>
+              &nbsp;(<a href={`https://na.op.gg/summoners/na/${user.summoner_name}`} className={classes.smurfLink}>op.gg</a>)
             </div>
-            )}
+            {selectedSeasonIsRumble
+              ? (
+                <div className={classes.teamContainer}>
+                  <span style={{ color: intToHexColorCode(player.rumble_rank.color) }}>
+                    {player.rumble_rank.name}
+                  </span>
+                  <span>, {player.rumble_lp} LP</span>
+                </div>
+              )
+              : (
+                <div className={classes.teamContainer}>
+                  <Role role={player.role} />
+                  <div>
+                    <a href={`https://ffcsleague.com/team/${player.team.id}`} className={classes.teamName}>
+                      {player.team.name}
+                    </a>
+                  </div>
+                </div>
+              )}
           </div>
           {loggedInUser.id === user.id && (
           <div className={classes.manageProfileContainer}>
@@ -197,27 +216,32 @@ const UserProfile = (props) => {
           </div>
           )}
         </Paper>
-        <div className={classes.content}>
-          <div className={classes.leftContainer}>
-            <div className={classes.sectionTitle}>Champion Stats</div>
-            <PlayerChampionStats playerChampionStats={player.player_champion_stats} />
-            {user.smurfs && (
-            <div><div className={classes.sectionTitle}>Smurfs</div>
-              <Paper>
-                {user.smurfs.map(smurf => (
-                  <div className={classes.listContainer}>
-                    <a href={`https://na.op.gg/summoners/na/${smurf}`} className={classes.smurfLink}>{smurf}</a>
-                  </div>
-                ))}
-              </Paper>
+        {games.length > 0
+          ? (
+            <div className={classes.content}>
+              <div className={classes.leftContainer}>
+                <div className={classes.sectionTitle}>Champion Stats</div>
+                <PlayerChampionStats playerChampionStats={player.player_champion_stats} />
+                {user.smurfs?.length > 0 && (
+                <div className={classes.smurfsContainer}>
+                  <div className={classes.sectionTitle}>Smurfs</div>
+                  <Paper>
+                    {user.smurfs.map(smurf => (
+                      <div className={classes.listContainer}>
+                        <a href={`https://na.op.gg/summoners/na/${smurf}`} className={classes.smurfLink}>{smurf}</a>
+                      </div>
+                    ))}
+                  </Paper>
+                </div>
+                )}
+              </div>
+              <div>
+                <div className={classes.sectionTitle}>Games</div>
+                {games.map(game => (game.is_old_data_format ? <OldPlayersGame game={game} player={player} /> : <PlayersGame game={game} player={player} />))}
+              </div>
             </div>
-            )}
-          </div>
-          <div>
-            <div className={classes.sectionTitle}>Games</div>
-            {games.map(game => (game.is_old_data_format ? <OldPlayersGame game={game} player={player} /> : <PlayersGame game={game} player={player} />))}
-          </div>
-        </div>
+          )
+          : <div>No games played this season yet!</div>}
       </div>
     </>
   );
