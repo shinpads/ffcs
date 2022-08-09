@@ -2,6 +2,7 @@ import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import React from 'react';
 import { createUseStyles } from 'react-jss';
 import Role from './Role';
+import Spinner from './Spinner';
 
 const styles = createUseStyles({
   rolesContainer: {
@@ -29,7 +30,7 @@ const RolePreferenceSelector = ({ rolePreferences, changeRolePrefs }) => {
   const classes = styles();
 
   if (!rolePreferences) {
-    return <div />;
+    return <Spinner />;
   }
 
   return (

@@ -2,6 +2,7 @@ import { Button, colors } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { connect } from 'react-redux';
+import { WithContext as ReactTags } from 'react-tag-input';
 import { getUser, updateUser } from '../../api';
 import Header from '../Header';
 import RolePreferenceSelector from '../RolePreferenceSelector';
@@ -42,6 +43,11 @@ const styles = createUseStyles({
     textAlign: 'center',
     marginTop: '0.5rem',
   },
+  smurfInput: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '400px',
+  },
 });
 
 const UserManage = (props) => {
@@ -52,6 +58,7 @@ const UserManage = (props) => {
   const [changesSaved, setChangesSaved] = useState(false);
   const [rumblePlayer, setRumblePlayer] = useState({});
   const [responseMessage, setResponseMessage] = useState('');
+  const [smurfs, setSmurfs] = useState([]);
 
   const { match, user: userObject } = props;
   const { loaded: userLoaded, user } = userObject;
@@ -63,6 +70,10 @@ const UserManage = (props) => {
       const data = await getUser(id);
       const userRumblePlayer = data.user.players.find(curPlayer => curPlayer.is_rumble);
       setRumblePlayer(userRumblePlayer);
+      setSmurfs(data.user.smurfs.map(smurf => ({
+        id: smurf,
+        text: smurf,
+      })));
 
       const rolePrefs = {};
       Object.keys(userRumblePlayer.role_preferences).forEach(rolePrefKey => {
@@ -82,12 +93,19 @@ const UserManage = (props) => {
     setRolePreferences(newRolePrefs);
   };
 
+  const removeSmurf = i => {
+    setSmurfs(smurfs.filter((smurf, index) => index !== i));
+  };
+
+  const addSmurf = smurf => {
+    setSmurfs([...smurfs, smurf]);
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     setButtonLoading(true);
 
     const rolePrefs = {};
-    console.log(rumblePlayer);
     Object.keys(rolePreferences).forEach(rolePrefKey => {
       rolePrefs[rolePrefKey] = parseFloat(rolePreferences[rolePrefKey]);
     });
@@ -100,7 +118,6 @@ const UserManage = (props) => {
     };
 
     const response = await updateUser(data, id);
-    console.log(response);
     setChangesSaved(response.data.data.success);
     setResponseMessage(response.data.message);
     setButtonLoading(false);
@@ -131,10 +148,24 @@ const UserManage = (props) => {
       <Header />
       <div className={classes.formContainer}>
         {rumblePlayer && (
-        <div>
-          <div className={classes.question}>Change role preferences</div>
-          <RolePreferenceSelector rolePreferences={rolePreferences} changeRolePrefs={changeRolePrefs} />
-        </div>
+          <div>
+            <div>
+              <div className={classes.question}>Change role preferences</div>
+              <RolePreferenceSelector rolePreferences={rolePreferences} changeRolePrefs={changeRolePrefs} />
+            </div>
+            <div>
+              <div className={classes.question}>Add/remove smurfs</div>
+              <div className={classes.smurfInput}>
+                <ReactTags
+                  tags={smurfs}
+                  handleDelete={removeSmurf}
+                  handleAddition={addSmurf}
+                  inputFieldPosition="bottom"
+                  allowDragDrop={false}
+                />
+              </div>
+            </div>
+          </div>
         )}
         <div className={classes.submitContainer}>
           <Button disabled={buttonLoading} className={classes.submitButton} fullWidth type="submit" variant="contained" color="secondary" onClick={submit}>

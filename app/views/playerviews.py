@@ -235,7 +235,12 @@ def get_players(request):
 
 def get_players_current_season(request):
     current_season = Season.objects.get(is_current=True)
-    players = Player.objects.filter(team__season=current_season).prefetch_related('user').prefetch_related('stats')
+
+    if current_season.is_rumble:
+        players = Player.objects.filter(is_rumble=True).prefetch_related('user').prefetch_related('stats')
+    
+    else:
+        players = Player.objects.filter(team__season=current_season).prefetch_related('user').prefetch_related('stats')
 
     data = [PlayerSerializer(player).data for player in players]
 
@@ -248,6 +253,8 @@ def get_players_rumble(request):
     players = Player.objects.filter(is_rumble=True).prefetch_related('user').prefetch_related('stats')
 
     data = [PlayerSerializer(player).data for player in players]
+    for i, player in enumerate(players):
+        data[i]['numOfMvps'] = len(player.mvps.all())
 
     return JsonResponse({
         "message": "success",

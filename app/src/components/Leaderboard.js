@@ -31,8 +31,15 @@ import ccIcon from '../../public/leaderboard/cc.svg';
 import damageTakenIcon from '../../public/leaderboard/damage_taken.svg';
 
 const styles = createUseStyles({
-  container: {
-    boxShadow: '1px 1px 2px #000 !important',
+  leaderboardContainer: {
+    padding: '8px',
+    margin: '1rem 4px 1rem 4px',
+    backgroundColor: colors.darkGrey,
+    borderRadius: '4px',
+    flexBasis: '540px',
+    boxShadow: `1px 1px 2px ${colors.black}`,
+    height: '450px',
+    overflowY: 'scroll',
   },
   typeContainer: {
     display: 'flex',
@@ -158,11 +165,9 @@ const Leaderboard = () => {
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center', margin: 0 }}>LEADERBOARDS</h1>
-      <br />
       {loading && <Spinner />}
       {!loading && (
-        <TableContainer classes={{ root: classes.container }} component={Paper}>
+        <TableContainer className={classes.leaderboardContainer} component={Paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>

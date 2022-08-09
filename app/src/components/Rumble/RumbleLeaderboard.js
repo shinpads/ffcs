@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,7 +14,8 @@ import colors from '../../colors';
 import { getAllRanks, getPlayers, getRumblePlayers } from '../../api';
 import UserName from '../UserName';
 import { intToHexColorCode } from '../../helpers';
-import { Tooltip, withStyles } from '@material-ui/core';
+import { AppBar, Box, Tooltip, Typography, withStyles } from '@material-ui/core';
+import Leaderboard from '../Leaderboard';
 
 const styles = createUseStyles({
   title: {
@@ -28,7 +31,7 @@ const styles = createUseStyles({
     borderRadius: '4px',
     flexBasis: '540px',
     boxShadow: `1px 1px 2px ${colors.black}`,
-    height: '540px',
+    height: '450px',
     overflowY: 'scroll',
   },
   descriptionContainer: {
@@ -44,7 +47,7 @@ const styles = createUseStyles({
   },
   leaderboardRow: {
     textAlign: 'left',
-    fontSize: '16px',
+    fontSize: '14px',
     marginTop: '0.1rem',
     marginBottom: '0.1rem',
   },
@@ -76,8 +79,30 @@ const styles = createUseStyles({
   rankInfoText: {
     color: colors.primary,
     fontSize: '16px',
-  }
+  },
+  tabsContainer: {
+    width: '100%',
+    marginTop: '0.25rem',
+  },
 });
+
+const TabPanel = (props) => {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      <Box sx={{ p: 3 }}>
+        <Typography>{children}</Typography>
+      </Box>
+    </div>
+  );
+}
 
 const RumbleLeaderboard = () => {
   const classes = styles();
@@ -85,6 +110,7 @@ const RumbleLeaderboard = () => {
   const [players, setPlayers] = useState([]);
   const [ranks, setRanks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [leaderboardIndex, setLeaderboardIndex] = useState(0);
 
   useEffect(() => {
     const getData = async () => {
@@ -147,45 +173,66 @@ const RumbleLeaderboard = () => {
           What do the ranks mean?
         </div>
       </HtmlTooltip>
-      <TableContainer className={classes.leaderboardContainer} component={Paper}>
-        <Table aria-label="rumble leaderboard table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="left">
-                <div className={classes.leaderboardColumnTitle}>
-                  Player
-                </div>
-              </TableCell>
-              <TableCell align="left">
-                <div className={classes.leaderboardColumnTitle}>
-                  W/L
-                </div>
-              </TableCell>
-              <TableCell align="left">
-                <div className={classes.leaderboardColumnTitle}>
-                  Rank
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {players.map((player, i) => (
-              <TableRow key={player.id}>
-                <TableCell component="th" scope="row">
-                  <span>{i + 1}. </span>
-                  <UserName user={player.user} />
+      <div>
+        <div className={classes.tabsContainer}>
+          <Tabs variant="fullWidth" value={leaderboardIndex} onChange={(e, value) => setLeaderboardIndex(value)}>
+            <Tab label="Ranks" value={0} />
+            <Tab label="Player Stats" value={1} />
+          </Tabs>
+        </div>
+      </div>
+      <TabPanel value={leaderboardIndex} index={0}>
+        <TableContainer className={classes.leaderboardContainer} component={Paper}>
+          <Table aria-label="rumble leaderboard table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">
+                  <div className={classes.leaderboardColumnTitle}>
+                    Player
+                  </div>
                 </TableCell>
-                <TableCell component="th" scope="row">
-                  {player.rumble_wins} W {player.rumble_losses} L
+                <TableCell align="left">
+                  <div className={classes.leaderboardColumnTitle}>
+                    W/L
+                  </div>
                 </TableCell>
-                <TableCell component="th" scope="row">
-                  <span style={{ color: intToHexColorCode(player.rumble_rank?.color) }}>{player.rumble_rank?.name}</span><span>, {player.rumble_lp} LP</span>
+                <TableCell align="left">
+                  <div className={classes.leaderboardColumnTitle}>
+                    MVPs
+                  </div>
+                </TableCell>
+                <TableCell align="left">
+                  <div className={classes.leaderboardColumnTitle}>
+                    Rank
+                  </div>
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {players.map((player, i) => (
+                <TableRow key={player.id}>
+                  <TableCell style={{fontSize: '12px'}} component="th" scope="row">
+                    <span>{i + 1}. </span>
+                    <UserName user={player.user} />
+                  </TableCell>
+                  <TableCell style={{fontSize: '12px'}} component="th" scope="row">
+                    {player.rumble_wins} W {player.rumble_losses} L
+                  </TableCell>
+                  <TableCell style={{fontSize: '12px'}} component="th" scope="row">
+                    {player.numOfMvps}
+                  </TableCell>
+                  <TableCell style={{fontSize: '12px'}} component="th" scope="row">
+                    <span style={{ color: intToHexColorCode(player.rumble_rank?.color) }}>{player.rumble_rank?.name}</span><span>, {player.rumble_lp} LP</span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </TabPanel>
+      <TabPanel value={leaderboardIndex} index={1}>
+        <Leaderboard />
+      </TabPanel>
     </div>
   );
 };
