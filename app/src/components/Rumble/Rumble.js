@@ -312,7 +312,7 @@ const Rumble = (props) => {
                   )
                   : <RumbleSignups week={allWeeks[selectedWeekIndex]} />}
               </div>
-              {(selectedWeekIndex < allWeeks.index - 1) && <button type="button" onClick={() => setSelectedWeekIndex(selectedWeekIndex + 1)}>&gt;</button>}
+              {(selectedWeekIndex < allWeeks.length - 1) && <button type="button" onClick={() => setSelectedWeekIndex(selectedWeekIndex + 1)}>&gt;</button>}
             </div>
           </div>
           <div>
