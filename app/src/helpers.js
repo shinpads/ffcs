@@ -30,6 +30,14 @@ function fallbackCopyTextToClipboard(text) {
   document.body.removeChild(textArea);
 }
 
+export function range(max) {
+  const nums = [];
+  for (let i = 0; i < max; i++) {
+    nums.push(i);
+  }
+  return nums;
+}
+
 export function copyTextToClipboard(text) {
   if (!navigator.clipboard) {
     fallbackCopyTextToClipboard(text);

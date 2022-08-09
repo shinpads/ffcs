@@ -21,12 +21,13 @@ class RumbleSignupView(View):
         rumble_signup.player = rumble_player
         rumble_signup.save()
 
-        new_week = RumbleWeekSerializer(
-            RumbleWeek.objects.get(id=json_data.get('week')['id'])
+        weeks = RumbleWeekSerializer(
+            RumbleWeek.objects.all(),
+            many=True
         ).data
 
         out_data = {
-            'week': new_week
+            'weeks': weeks
         }
 
         response = JsonResponse({
@@ -52,12 +53,13 @@ class RumbleSignupView(View):
         rumble_signup.delete()
 
 
-        new_week = RumbleWeekSerializer(
-            RumbleWeek.objects.get(id=json_data.get('week')['id'])
+        weeks = RumbleWeekSerializer(
+            RumbleWeek.objects.all(),
+            many=True
         ).data
 
         out_data = {
-            'week': new_week
+            'weeks': weeks
         }
 
         response = JsonResponse({
