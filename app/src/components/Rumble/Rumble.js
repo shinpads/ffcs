@@ -128,6 +128,11 @@ const styles = createUseStyles({
     color: colors.offwhite,
     fontSize: '12px',
   },
+  columnContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 const REGISTER_WARNING_MESSAGE = `This week's Rumble occurs at exactly 8:30 PM EST this upcoming Friday.
@@ -141,7 +146,8 @@ const Rumble = (props) => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [currentWeek, setCurrentWeek] = useState(null);
+  const [selectedWeekIndex, setSelectedWeekIndex] = useState(0);
+  const [allWeeks, setAllWeeks] = useState([]);
   const [isRegistered, setIsRegistered] = useState(false);
   const [hideRegisterButton, setHideRegisterButton] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -155,15 +161,22 @@ const Rumble = (props) => {
   } = useTimer({ expiryTimestamp: nearestWednesday(), onExpire: () => setshowTimer(false) });
 
   const { season, user } = props;
+  const currentWeek = season.rumble_weeks[season.rumble_weeks.length - 1];
+
+  const updateWeeks = (weeks) => {
+    weeks.forEach(week => {
+      if (week.matches) {
+        week.matches.sort((a, b) => a.id - b.id);
+      }
+    });
+    setSelectedWeekIndex(season.rumble_weeks.length - 1);
+    setAllWeeks(weeks);
+  };
 
   useEffect(() => {
-    const curWeek = season.current_week;
-    if (curWeek.matches) {
-      curWeek.matches.sort((a, b) => a.id - b.id);
-    }
-    setCurrentWeek(curWeek);
-    setshowTimer(curWeek.signups_open);
-    setIsRegistered(!!curWeek.signups.find(signup => signup.player.user.id === user.id));
+    updateWeeks(season.rumble_weeks);
+    setshowTimer(currentWeek.signups_open);
+    setIsRegistered(!!currentWeek.signups.find(signup => signup.player.user.id === user.id));
   }, []);
 
   const handleClick = () => {
@@ -189,7 +202,7 @@ const Rumble = (props) => {
     if (response.status === 200) {
       setIsRegistered(signingUp);
       setHideRegisterButton(true);
-      setCurrentWeek(response.data.data.week);
+      updateWeeks(response.data.data.weeks);
     }
 
     setLoading(false);
@@ -279,21 +292,28 @@ const Rumble = (props) => {
         </Modal>
         <div className={classes.splitContainer}>
           <div>
-            {!currentWeek.signups_open
-              ? (
-                <div>
-                  <div className={classes.subtitle}>This week's matches</div>
-                  <hr />
-                  {currentWeek.matches.map((match, i) => (
+            <div className={classes.columnContainer}>
+              {selectedWeekIndex > 0 && <button type="button" onClick={() => setSelectedWeekIndex(selectedWeekIndex - 1)}>&lt;</button>}
+              <div>
+                {!allWeeks[selectedWeekIndex]?.signups_open
+                  ? (
                     <div>
-                      <div className={classes.subSubtitle}>Match {i + 1}</div>
-                      <RumbleMatch match={match} />
+                      <div className={classes.subtitle}>
+                        {selectedWeekIndex === allWeeks.length - 1 ? 'This week\'s matches' : ` Week ${selectedWeekIndex + 1} matches`}
+                      </div>
+                      <hr />
+                      {allWeeks[selectedWeekIndex]?.matches?.map((match, j) => (
+                        <div>
+                          <div className={classes.subSubtitle}>Match {j + 1}</div>
+                          <RumbleMatch match={match} />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-
-              )
-              : <RumbleSignups week={currentWeek} />}
+                  )
+                  : <RumbleSignups week={allWeeks[selectedWeekIndex]} />}
+              </div>
+              {(selectedWeekIndex < allWeeks.index - 1) && <button type="button" onClick={() => setSelectedWeekIndex(selectedWeekIndex + 1)}>&gt;</button>}
+            </div>
           </div>
           <div>
             <RumbleLeaderboard />
