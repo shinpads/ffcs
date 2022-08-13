@@ -179,6 +179,9 @@ def mvp_vote_response(data, interaction_response, voted_player_id):
     
     game.mvp_votes[voted_player_id] += 1
     game.save()
+
+    if game.mvp != None or game.mvp != 0 or game.mvp != '':
+        return
     
     if sum(game.mvp_votes.values()) >= num_of_voters:
         mvp_player_id = max(game.mvp_votes, key=game.mvp_votes.get)
