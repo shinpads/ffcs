@@ -179,19 +179,11 @@ class CallbackView(View):
         
         if current_season.is_rumble:
             try:
-                send_mvp_vote_dm(game, winning_players)
+                send_rumble_game_finish_message(game, winning_players)
             except Exception as e:
                 print('Failed sending Rumble game finish message.')
                 print(str(e))
                 sys.stdout.flush()
-            
-        try:
-            send_rumble_game_finish_message(game, winning_players)
-        except Exception as e:
-            print('Failed sending game finish message.')
-            print(str(e))
-            sys.stdout.flush()
-            pass
 
         # update player stats with new data
         try:

@@ -14,6 +14,7 @@ STREAK_GAMES = 3
 MIN_NUM_OF_GAMES_BEFORE_RANK = 4
 
 def get_win_or_loss_streak(player_games, game_is_win):
+    player_games = player_games[1:]
     past_result = game_is_win
     win_loss_streak = 1
 
