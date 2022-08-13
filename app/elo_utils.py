@@ -52,6 +52,7 @@ def calculate_initial_elo(current_rank, highest_rank):
 def adjust_player_elo(player, game, player_team, player_win):
     if not player_team:
         return
+    temp_elo = int(player.rumble_elo)
     enemy_team = [team for team in game.match.teams.all() if team != player_team][0]
     player_num_games = player.rumble_wins + player.rumble_losses
     player_games = get_rumble_player_games(player)
@@ -73,6 +74,7 @@ def adjust_player_elo(player, game, player_team, player_win):
     
     elo_adjustment = round(float(K) * (float(S) - float(E)))
     player.rumble_elo += elo_adjustment
+    player.rumble_old_elo = temp_elo
     player.save()
     return player
     

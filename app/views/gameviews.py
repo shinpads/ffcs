@@ -2,7 +2,7 @@ import sys
 from django.http import JsonResponse
 from django.views import View
 
-from app.discord_utils import send_mvp_vote_dm, send_rumble_rank_updates
+from app.discord_utils import send_mvp_vote_dm, send_rumble_game_finish_message, send_rumble_rank_updates
 from app.elo_utils import adjust_player_elo
 from ..models import Game, Season, User
 from ..utils import get_riot_account_id
@@ -184,9 +184,22 @@ class CallbackView(View):
                 print('Failed sending Rumble game finish message.')
                 print(str(e))
                 sys.stdout.flush()
+            
+        try:
+            send_rumble_game_finish_message(game, winning_players)
+        except Exception as e:
+            print('Failed sending game finish message.')
+            print(str(e))
+            sys.stdout.flush()
+            pass
 
         # update player stats with new data
-        player_stats.calculate_player_stats()
+        try:
+            player_stats.calculate_player_stats()
+        except:
+            print('Failed calculating player stats.')
+            print(str(e))
+            sys.stdout.flush()
 
         response = JsonResponse({
             "message": "Successfully recieved callback.",

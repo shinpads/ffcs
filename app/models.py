@@ -399,6 +399,7 @@ class Player(models.Model):
         null=True
     )
     rumble_elo = models.IntegerField(blank=True, null=True)
+    rumble_old_elo = models.IntegerField(blank=True, null=True)
     has_rumble_priority = models.BooleanField(default=False)
     rumble_rank = models.ForeignKey(
         Rank,
