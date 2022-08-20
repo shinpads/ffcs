@@ -30,174 +30,183 @@ class CallbackView(View):
                 "data": out_data,
             }, status=500)
             return response
+        
+        try:
+            current_season = Season.objects.get(is_current=True)
+            winner_team = None
 
-        current_season = Season.objects.get(is_current=True)
-        winner_team = None
+            winning_players = []
 
-        winning_players = []
+            for i in range(len(data["losingTeam"])):
+                loser_acc_username = data["losingTeam"][i]["summonerName"]
+                loser_acc_id = get_riot_account_id(loser_acc_username)
 
-        for i in range(len(data["losingTeam"])):
-            loser_acc_username = data["losingTeam"][i]["summonerName"]
-            loser_acc_id = get_riot_account_id(loser_acc_username)
+                try:
+                    loser_user = User.objects.get(summoner_id=loser_acc_id)
+                    loser_player = None
 
-            try:
-                loser_user = User.objects.get(summoner_id=loser_acc_id)
-                loser_player = None
-
-                for player in loser_user.players.all():
-                    if player.is_rumble and current_season.is_rumble:
-                        loser_player = player
-                        break
-                    elif not current_season.is_rumble:
-                        if player.team.season.id == current_season.id:
+                    for player in loser_user.players.all():
+                        if player.is_rumble and current_season.is_rumble:
                             loser_player = player
                             break
-            except Exception as e:
-                print('error finding loser player.')
-                print(str(e))
-                sys.stdout.flush()
-                continue
+                        elif not current_season.is_rumble:
+                            if player.team.season.id == current_season.id:
+                                loser_player = player
+                                break
+                except Exception as e:
+                    print('error finding loser player.')
+                    print(str(e))
+                    sys.stdout.flush()
+                    continue
 
-            if loser_player == None:
-                continue
+                if loser_player == None:
+                    continue
 
-            loser_team = None
-            
-            for team in game.match.teams.all():
-                if player.is_rumble:
-                    if player in [
-                        team.rumble_top,
-                        team.rumble_jg,
-                        team.rumble_mid,
-                        team.rumble_adc,
-                        team.rumble_supp
-                    ]:
-                        loser_team = team
-                        break
-                else:
-                    if player in team.players.all():
-                        loser_team = team
-                        break
-
-            try:
-                loser_player = adjust_player_lp_on_loss(loser_player)
-                loser_player = adjust_player_elo(loser_player, game, loser_team, False)
+                loser_team = None
                 
-            except Exception as e:
-                print('Error calculating LP and elo for player...')
-                print(str(e))
-                sys.stdout.flush()
-                continue
+                for team in game.match.teams.all():
+                    if player.is_rumble:
+                        if player in [
+                            team.rumble_top,
+                            team.rumble_jg,
+                            team.rumble_mid,
+                            team.rumble_adc,
+                            team.rumble_supp
+                        ]:
+                            loser_team = team
+                            break
+                    else:
+                        if player in team.players.all():
+                            loser_team = team
+                            break
+
+                try:
+                    loser_player = adjust_player_lp_on_loss(loser_player)
+                    loser_player = adjust_player_elo(loser_player, game, loser_team, False)
+                    
+                except Exception as e:
+                    print('Error calculating LP and elo for player...')
+                    print(str(e))
+                    sys.stdout.flush()
+                    continue
 
 
-        for i in range(len(data["winningTeam"])):
-            winner_acc_username = data["winningTeam"][i]["summonerName"]
-            winner_acc_id = get_riot_account_id(winner_acc_username)
-            
-            try:
-                winner_user = User.objects.get(summoner_id=winner_acc_id)
-                winner_player = None
+            for i in range(len(data["winningTeam"])):
+                winner_acc_username = data["winningTeam"][i]["summonerName"]
+                winner_acc_id = get_riot_account_id(winner_acc_username)
+                
+                try:
+                    winner_user = User.objects.get(summoner_id=winner_acc_id)
+                    winner_player = None
 
-                for player in winner_user.players.all():
-                    if player.is_rumble and current_season.is_rumble:
-                        winner_player = player
-                        break
-                    elif not current_season.is_rumble:
-                        if player.team.season.id == current_season.id:
+                    for player in winner_user.players.all():
+                        if player.is_rumble and current_season.is_rumble:
                             winner_player = player
                             break
-            except Exception as e:
-                print('error finding winner player.')
-                print(str(e))
-                sys.stdout.flush()
-                continue
-            
-            if winner_player == None:
-                continue
-
-            winning_players.append(winner_player)
-            
-            winner_team = None
-            
-            for team in game.match.teams.all():
-                if player.is_rumble:
-                    if player in [
-                        team.rumble_top,
-                        team.rumble_jg,
-                        team.rumble_mid,
-                        team.rumble_adc,
-                        team.rumble_supp
-                    ]:
-                        winner_team = team
-                        break
-                else:
-                    if player in team.players.all():
-                        winner_team = team
-                        break
-            
-            try:
-                winner_player = adjust_player_lp_on_win(winner_player)
-                winner_player = adjust_player_elo(winner_player, game, winner_team, True)
+                        elif not current_season.is_rumble:
+                            if player.team.season.id == current_season.id:
+                                winner_player = player
+                                break
+                except Exception as e:
+                    print('error finding winner player.')
+                    print(str(e))
+                    sys.stdout.flush()
+                    continue
                 
-            except Exception as e:
-                print('Error calculating LP and elo for player...')
-                print(str(e))
-                sys.stdout.flush()
-                continue
+                if winner_player == None:
+                    continue
 
-        if game.winner != None:
-            response = JsonResponse({
-                "message": "That game has already been updated.",
-                "data": out_data,
-            }, status=500)
-            return response
-        
-        if winner_team == None:
-            response = JsonResponse({
-                "message": "Found no winning team!",
-                "data": out_data,
-            }, status=500)
-            return response
-        
-        try:
-            update_all_rumble_ranks()
-        except Exception as e:
-            print('Error calculating LP for player...')
-            print(str(e))
-            sys.stdout.flush()
+                winning_players.append(winner_player)
+                
+                winner_team = None
+                
+                for team in game.match.teams.all():
+                    if player.is_rumble:
+                        if player in [
+                            team.rumble_top,
+                            team.rumble_jg,
+                            team.rumble_mid,
+                            team.rumble_adc,
+                            team.rumble_supp
+                        ]:
+                            winner_team = team
+                            break
+                    else:
+                        if player in team.players.all():
+                            winner_team = team
+                            break
+                
+                try:
+                    winner_player = adjust_player_lp_on_win(winner_player)
+                    winner_player = adjust_player_elo(winner_player, game, winner_team, True)
+                    
+                except Exception as e:
+                    print('Error calculating LP and elo for player...')
+                    print(str(e))
+                    sys.stdout.flush()
+                    continue
 
-        game.winner = winner_team
-        game.game_id = game_id
-        game.save()
-        
-        try:
-            send_mvp_vote_dm(game, winning_players)
-        except Exception as e:
-            print('Failed sending MVP Vote DM.')
-            print(str(e))
-            sys.stdout.flush()
-        
-        if current_season.is_rumble:
+            if game.winner != None:
+                response = JsonResponse({
+                    "message": "That game has already been updated.",
+                    "data": out_data,
+                }, status=500)
+                return response
+            
+            if winner_team == None:
+                response = JsonResponse({
+                    "message": "Found no winning team!",
+                    "data": out_data,
+                }, status=500)
+                return response
+            
             try:
-                send_rumble_game_finish_message(game, winning_players)
+                update_all_rumble_ranks()
             except Exception as e:
-                print('Failed sending Rumble game finish message.')
+                print('Error calculating LP for player...')
                 print(str(e))
                 sys.stdout.flush()
 
-        # update player stats with new data
-        try:
-            player_stats.calculate_player_stats()
-        except:
-            print('Failed calculating player stats.')
-            print(str(e))
-            sys.stdout.flush()
+            game.winner = winner_team
+            game.game_id = game_id
+            game.save()
+            
+            try:
+                send_mvp_vote_dm(game, winning_players)
+            except Exception as e:
+                print('Failed sending MVP Vote DM.')
+                print(str(e))
+                sys.stdout.flush()
+            
+            if current_season.is_rumble:
+                try:
+                    send_rumble_game_finish_message(game, winning_players)
+                except Exception as e:
+                    print('Failed sending Rumble game finish message.')
+                    print(str(e))
+                    sys.stdout.flush()
 
-        response = JsonResponse({
-            "message": "Successfully recieved callback.",
-            "data": out_data,
-        }, status=200)
-        return response
+            # update player stats with new data
+            try:
+                player_stats.calculate_player_stats()
+            except:
+                print('Failed calculating player stats.')
+                print(str(e))
+                sys.stdout.flush()
+
+            response = JsonResponse({
+                "message": "Successfully recieved callback.",
+                "data": out_data,
+            }, status=200)
+            return response
+        
+        except Exception as e:
+            print(e)
+            response = JsonResponse({
+                "message": "Successfully recieved callback.",
+                "data": out_data,
+            }, status=200)
+            return response
 
 
 def get_timeline(request, game_id):
