@@ -16,18 +16,18 @@ DAYS_OF_WEEK = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 TIMEZONE = 'utc'
 RUMBLE_GAME_TIME = {
     'day': 'sat',
-    'hour': '0',
-    'minute': '30'
+    'hour': '2',
+    'minute': '00'
 }
 RUMBLE_GAME_REMINDER_TIME = {
-    'day': 'fri',
-    'hour': '23',
-    'minute': '30'
+    'day': 'sat',
+    'hour': '00',
+    'minute': '00'
 }
 RUMBLE_SIGNUP_CLOSE_TIME = {
-    'day': 'wed',
-    'hour': '21',
-    'minute': '30'
+    'day': 'sat',
+    'hour': '1',
+    'minute': '00'
 }
 RUMBLE_SIGNUP_OPEN_TIME = {
     'day': 'sat',

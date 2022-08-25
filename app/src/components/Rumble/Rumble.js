@@ -7,7 +7,7 @@ import { createUseStyles } from 'react-jss';
 import { useTimer } from 'react-timer-hook';
 import { signupForRumble, withdrawFromCurrentRumbleWeek } from '../../api';
 import colors from '../../colors';
-import { nearestWednesday, range } from '../../helpers';
+import { timeToRumbleSignupClose, range } from '../../helpers';
 import RumbleLeaderboard from './RumbleLeaderboard';
 import RumbleMatch from './RumbleMatch';
 import RumbleSignups from './RumbleSignups';
@@ -180,7 +180,7 @@ const Rumble = (props) => {
     minutes,
     hours,
     days,
-  } = useTimer({ expiryTimestamp: nearestWednesday(), onExpire: () => setshowTimer(false) });
+  } = useTimer({ expiryTimestamp: timeToRumbleSignupClose(), onExpire: () => setshowTimer(false) });
 
   const { season, user } = props;
   const currentWeek = season.rumble_weeks[season.rumble_weeks.length - 1];
@@ -251,7 +251,7 @@ const Rumble = (props) => {
                 <br />
                 <div>
                   Every week, players will sign up to play a Rumble match on
-                  <strong> Friday</strong>, at <strong>8:30 PM EST</strong>.
+                  <strong> Friday</strong>, at <strong>10:00 PM EST</strong>.
                   Players are not required to sign up every week, and can selectively sign up each
                   week as they prefer!
                 </div>
@@ -268,7 +268,7 @@ const Rumble = (props) => {
                 <br />
                 <div>
                   Every week, signups open on <strong>Saturday</strong>, at <strong>12:00 AM EST</strong>,
-                  and close on <strong>Wednesday</strong>, at <strong>5:30 PM EST</strong>.
+                  and close on <strong>Friday</strong>, at <strong>9:00 PM EST</strong> (1 hour before matches begin).
                 </div>
                 <br />
                 <br />
@@ -291,7 +291,7 @@ const Rumble = (props) => {
             <span> {seconds}</span> second{seconds === 1 ? '' : 's'}
           </div>
           <div className={classes.dateContainer}>
-            (Every Wednesday at 5:30 PM EST)
+            (Every Friday at 9:00 PM EST)
           </div>
         </div>
         )}

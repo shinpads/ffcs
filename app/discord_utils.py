@@ -154,8 +154,8 @@ def send_rumble_game_reminder():
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
     message = (
         f"<@&{rumble_role_id}> "
-        "This week's Rumble games start in 1 hour!! Please make sure "
-        "to be in the lobby on time."
+        "Rumble signups close in 1 hour, and games start in 2 hours! "
+        "This is the last chance to sign up if you haven't already."
     )
     discord_bot.send_message(message, channel)
 

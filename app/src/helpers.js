@@ -61,10 +61,10 @@ export function hexColorCodeToInt(hex) {
   return parseInt(hex.substring(1), 16);
 }
 
-export function nearestWednesday() {
-  const targetDayVal = 3; // Sunday - Saturday: 0 - 6
-  const targetHour = 17;
-  const targetMins = 30;
+export function timeToRumbleSignupClose() {
+  const targetDayVal = 5; // Sunday - Saturday: 0 - 6
+  const targetHour = 21;
+  const targetMins = 0;
 
   const now = new Date();
   const day = now.getDay();
