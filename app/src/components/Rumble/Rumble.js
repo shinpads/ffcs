@@ -157,7 +157,7 @@ const styles = createUseStyles({
   },
 });
 
-const REGISTER_WARNING_MESSAGE = `This week's Rumble occurs at exactly 8:30 PM EST this upcoming Friday.
+const REGISTER_WARNING_MESSAGE = `This week's Rumble occurs at exactly 10:00 PM EST this upcoming Friday.
 By signing up, you agree to show up on time. Failure to do so may result
 in a week-long suspension.`;
 

@@ -67,7 +67,7 @@ const RumbleSignups = (props) => {
         Players registered for this week
       </div>
       <div className={classes.date}>
-        Match is played on Friday, at 8:30 PM EST
+        Match is played on Friday, at 10:00 PM EST
       </div>
       <div className={classes.descriptionContainer}>
         <div>
