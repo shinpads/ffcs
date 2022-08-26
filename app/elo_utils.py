@@ -118,10 +118,28 @@ def ensure_best_role_assignment(teams):
     red_coefficients = {}
 
     for permutation in permutations(blue_team):
+        no_banned_players = True
+        for i, player in enumerate(list(permutation)):
+            role = ROLES[i]
+            if role == player.banned_role:
+                no_banned_players = False
+                break
+        if not no_banned_players:
+            continue
+
         coefficient = calculate_team_role_pref_coefficient(list(permutation))
         blue_coefficients[coefficient] = permutation
     
     for permutation in permutations(red_team):
+        no_banned_players = True
+        for i, player in enumerate(list(permutation)):
+            role = ROLES[i]
+            if role == player.banned_role:
+                no_banned_players = False
+                break
+        if not no_banned_players:
+            continue
+        
         coefficient = calculate_team_role_pref_coefficient(list(permutation))
         red_coefficients[coefficient] = permutation
     

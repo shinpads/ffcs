@@ -257,13 +257,20 @@ def send_rumble_rank_updates(updates):
         old_rank = Rank.objects.get(id=update['old_rank_id'])
         new_rank = Rank.objects.get(id=update['new_rank_id'])
         player = update['player']
-        player_promoted = new_rank.threshold_percentile > old_rank.threshold_percentile
-        message += (
-            f"\n<@{player.user.discord_user_id}> "
-            f"{'promoted' if player_promoted else 'demoted'}"
-            f" from **{old_rank.name}** to **{new_rank.name}**"
-            f"{'! Congrats 🎉🎉' if player_promoted else '.'}"
-        )
+        if old_rank.is_default:
+            message += (
+                f"\n<@{player.user.discord_user_id}> "
+                f"finished their placements, and is now **{new_rank.name}**! "
+                f"{'Congrats 🎉🎉'}"
+            )
+        else:
+            player_promoted = new_rank.threshold_percentile > old_rank.threshold_percentile
+            message += (
+                f"\n<@{player.user.discord_user_id}> "
+                f"{'promoted' if player_promoted else 'demoted'}"
+                f" from **{old_rank.name}** to **{new_rank.name}**"
+                f"{'! Congrats 🎉🎉' if player_promoted else '.'}"
+            )
     
     message += (
         '\n\nThe LP required to hit each rank has changed. Here are the new '
@@ -278,16 +285,23 @@ def send_rumble_rank_updates(updates):
     )
 
     for i, rank in enumerate(ranks):
+        rank_players = list(rank.players.all())
+        if len(rank_players) == 0:
+            message += (
+                f'\n**{rank.name}** '
+                '({:g}th percentile): '.format(float(str(rank.threshold_percentile)))
+            )
+            message += 'no players in this rank.'
+            continue
+        
         message += (
             f'\n**{rank.name}** '
             '({:g}th percentile): '.format(float(str(rank.threshold_percentile)))
         )
-        rank_players = list(rank.players.all())
         rank_players.sort(key=lambda player: player.rumble_lp)
         message += 'No minimum LP' if i == 0 else (
             f'{str(rank_players[0].rumble_lp)} LP'
         )
-
     discord_bot.send_message(message, channel)
     return
 

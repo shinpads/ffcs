@@ -209,7 +209,7 @@ const RumbleLeaderboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {players.map((player, i) => (
+              {players.filter(player => !player.rumble_rank?.is_default).map((player, i) => (
                 <TableRow key={player.id}>
                   <TableCell style={{fontSize: '12px'}} component="th" scope="row">
                     <span>{i + 1}. </span>

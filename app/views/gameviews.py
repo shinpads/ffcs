@@ -31,6 +31,16 @@ class CallbackView(View):
             }, status=500)
             return response
         
+        if game.game_id == game_id:
+            response = JsonResponse({
+                "message": "Game already recorded! Thank you.",
+                "data": out_data,
+            }, status=200)
+            return response
+
+        game.game_id = game_id
+        game.save()
+
         if game.winner != None:
             response = JsonResponse({
                 "message": "Winner already recorded! Thank you.",
@@ -100,7 +110,6 @@ class CallbackView(View):
                     continue
             
             game.winner = winner_team
-            game.game_id = game_id
             game.save()
 
             for i in range(len(data["losingTeam"])):
@@ -155,13 +164,6 @@ class CallbackView(View):
                     print(str(e))
                     sys.stdout.flush()
                     continue
-                    
-            if game.winner != None:
-                response = JsonResponse({
-                    "message": "That game has already been updated.",
-                    "data": out_data,
-                }, status=500)
-                return response
             
             if winner_team == None:
                 response = JsonResponse({
@@ -171,13 +173,6 @@ class CallbackView(View):
                 return response
             
             game.save()
-            
-            try:
-                update_all_rumble_ranks()
-            except Exception as e:
-                print('Error calculating LP for player...')
-                print(str(e))
-                sys.stdout.flush()
             
             try:
                 send_mvp_vote_dm(game, winning_players)
@@ -194,10 +189,17 @@ class CallbackView(View):
                     print(str(e))
                     sys.stdout.flush()
 
+            try:
+                update_all_rumble_ranks()
+            except Exception as e:
+                print('Error calculating rumble ranks for players...')
+                print(str(e))
+                sys.stdout.flush()
+
             # update player stats with new data
             try:
                 player_stats.calculate_player_stats()
-            except:
+            except Exception as e:
                 print('Failed calculating player stats.')
                 print(str(e))
                 sys.stdout.flush()
