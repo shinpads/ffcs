@@ -8,6 +8,7 @@ import sys
 
 load_dotenv()
 
+
 def get_riot_account_id(username):
     url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
     url = url + username.strip() + "?api_key=" + os.getenv('RIOT_API_KEY')
@@ -20,6 +21,28 @@ def get_riot_account_id(username):
     account_id = body['id']
 
     return str(account_id)
+
+
+def get_current_game_version():
+    url = "https://ddragon.leagueoflegends.com/api/versions.json"
+    res = requests.get(url)
+    if res.status_code != 200:
+        return None
+
+    body = json.loads(res.text)
+    return body[0]
+
+
+def get_summoner_image(icon_id):
+    url = f"http://ddragon.leagueoflegends.com/cdn/{get_current_game_version()}/img/profileicon/"
+    url = url + str(icon_id) + ".png"
+
+    res = requests.get(url)
+    if res.status_code != 200:
+        return None
+
+    return res.content
+
 
 def get_info_by_account_id(account_id):
     url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/"
@@ -34,6 +57,7 @@ def get_info_by_account_id(account_id):
 
     body = json.loads(res.text)
     return body
+
 
 def register_tournament_provider():
     debug = os.getenv('DEBUG')
@@ -52,6 +76,7 @@ def register_tournament_provider():
         return None
 
     return str(res.text)
+
 
 def register_tournament(name, provider_id):
     try:
@@ -75,6 +100,7 @@ def register_tournament(name, provider_id):
         return None
 
     return str(res.text)
+
 
 def generate_tournament_code(game, all_players):
     map_type = "SUMMONERS_RIFT"
@@ -114,6 +140,7 @@ def generate_tournament_code(game, all_players):
 
     return code
 
+
 def get_game(gameid, tournament_code):
     Game = apps.get_model('app', 'Game')
     game = Game.objects.filter(game_id=gameid).all()[0]
@@ -135,6 +162,7 @@ def get_game(gameid, tournament_code):
 
     return body
 
+
 def get_game_timeline(gameid):
     Game = apps.get_model('app', 'Game')
     game = Game.objects.filter(game_id=gameid).all()[0]
@@ -142,8 +170,9 @@ def get_game_timeline(gameid):
     if game.game_timeline != None:
         print('Using cached game timeline')
         return game.game_timeline
-    
-    url = "https://americas.api.riotgames.com/lol/match/v5/matches/" + 'NA1_' + gameid + "/timeline"
+
+    url = "https://americas.api.riotgames.com/lol/match/v5/matches/" + \
+        'NA1_' + gameid + "/timeline"
     url = url + "?api_key=" + os.getenv('RIOT_API_KEY')
 
     res = requests.get(url)
@@ -156,15 +185,18 @@ def get_game_timeline(gameid):
     game.game_timeline = body
     game.save()
 
-    return body 
+    return body
+
 
 def format_user_for_frontend(data):
     data['discord_user_id'] = str(data['discord_user_id'])
+
 
 def get_role_choices_default():
     ROLE_CHOICES = ["TOP", "JG", "MID", "ADC", "SUPP"]
 
     return list(choice for choice in ROLE_CHOICES)
+
 
 def get_rumble_player_games(player):
     teams_as_top = player.teams_as_top.all()
@@ -181,7 +213,7 @@ def get_rumble_player_games(player):
         teams_as_supp
     ]))
 
-    player_games = [];
+    player_games = []
 
     for team in player_teams:
         for match in team.matches.all():
@@ -190,7 +222,7 @@ def get_rumble_player_games(player):
                     'game': game,
                     'team': team
                 })
-    
+
     player_games.sort(key=lambda game: game['game'].created_at)
 
     return player_games

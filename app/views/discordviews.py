@@ -1,4 +1,5 @@
 from datetime import timedelta
+from io import BytesIO
 from django.http import HttpResponse, JsonResponse, HttpRequest
 from django.views import View
 from django.shortcuts import redirect
@@ -6,6 +7,7 @@ from django.contrib.auth import authenticate, login
 from app.discord_bot import DiscordBot
 
 from app.discord_constants import InteractionCallbackTypes, ScheduledEventEntityType
+from app.image_utils import create_profile_image
 from ..models import Game, Match, Player, Team, User, Season, RegistrationForm
 import json
 import requests
@@ -28,6 +30,7 @@ discord_bot_token = os.getenv('DISCORD_BOT_TOKEN')
 guild_id = os.getenv('DISCORD_GUILD_ID')
 discord_bot = DiscordBot(discord_bot_token, guild_id)
 
+
 class DiscordView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
@@ -46,24 +49,27 @@ class DiscordView(View):
             )
         except BadSignatureError:
             return HttpResponse(401, 'invalid request signature')
-        
+
         if data['type'] == 1:
             return JsonResponse({
                 "type": 1
             }, status=200)
-        
+
+        if data['data']['name'] and data['data']['name'] == 'profile':
+            return profile_slash_command_response(data)
+
         interaction_response = json.loads(data['data']['custom_id'])
-        
+
         if interaction_response['i_type'] == 'match_confirm':
             return game_confirm_response(data, interaction_response)
-        
+
         elif interaction_response['i_type'] == 'mvp_vote':
             return mvp_vote_response(
                 data,
                 interaction_response,
                 data['data']['values'][0]
             )
-        
+
         elif interaction_response['i_type'] == 'proposed_elo_confirm':
             elo_change = False
             return elo_confirm_response(
@@ -71,7 +77,7 @@ class DiscordView(View):
                 interaction_response,
                 elo_change
             )
-        
+
         elif interaction_response['i_type'] == 'proposed_elo_change':
             elo_change = True
             return elo_confirm_response(
@@ -82,8 +88,29 @@ class DiscordView(View):
             )
 
         return JsonResponse({
-                "status": "success"
-            }, status=200)
+            "status": "success"
+        }, status=200)
+
+
+def profile_slash_command_response(data):
+    chosen_profile = data['data']['options'][0]['value']
+    channel_id = data['channel_id']
+    user = User.objects.get(summoner_name__iexact=chosen_profile)
+
+    profile_image = create_profile_image(user)
+    with BytesIO() as image_binary:
+        profile_image.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        files = {'file': (f'{user.summoner_name}.png', image_binary)}
+        discord_bot.send_message('', channel_id, files=files)
+
+    return JsonResponse({
+        "type": InteractionCallbackTypes.CHANNEL_MESSAGE_WITH_SOURCE,
+        "data": {
+            "content": f"{user.summoner_name}'s profile: https://ffcsleague.com/user/{user.id}",
+        }
+    }, status=200)
+
 
 def game_confirm_response(data, interaction_response):
     response_value = interaction_response['val']
@@ -98,7 +125,6 @@ def game_confirm_response(data, interaction_response):
     to_team_captain = to_team.captain.user
     est = pytz.timezone('US/Eastern')
     proposed_time = match.proposed_for.astimezone(est)
-    
 
     if response_value:
         from_captain_message = (
@@ -132,7 +158,7 @@ def game_confirm_response(data, interaction_response):
                 "content": (
                     "{}\n\n"
                     "Game has been successfully confirmed! Thank you :D"
-                    ).format(original_message),
+                ).format(original_message),
                 "components": []
             }
         })
@@ -163,10 +189,11 @@ def game_confirm_response(data, interaction_response):
                     "{}\n\n"
                     "Game will not be scheduled for that time. "
                     "Thank you for your response!"
-                    ).format(original_message),
+                ).format(original_message),
                 "components": []
             }
         })
+
 
 def mvp_vote_response(data, interaction_response, voted_player_id):
     num_of_voters = interaction_response['voters']
@@ -176,22 +203,22 @@ def mvp_vote_response(data, interaction_response, voted_player_id):
 
     if voted_player_id not in game.mvp_votes.keys():
         game.mvp_votes[voted_player_id] = 0
-    
+
     game.mvp_votes[voted_player_id] += 1
     game.save()
 
     if game.mvp != None:
         return JsonResponse({
-        "type": InteractionCallbackTypes.UPDATE_MESSAGE,
-        "data": {
-            "content": (
-                "{}\n\n"
-                "Voting has already concluded. Thank you anyways!"
+            "type": InteractionCallbackTypes.UPDATE_MESSAGE,
+            "data": {
+                "content": (
+                    "{}\n\n"
+                    "Voting has already concluded. Thank you anyways!"
                 ).format(original_message),
-            "components": []
-        }
-    })
-    
+                "components": []
+            }
+        })
+
     if sum(game.mvp_votes.values()) >= num_of_voters:
         mvp_player_id = max(game.mvp_votes, key=game.mvp_votes.get)
         mvp_player = Player.objects.get(id=mvp_player_id)
@@ -202,7 +229,6 @@ def mvp_vote_response(data, interaction_response, voted_player_id):
 
         mvp_message = "**Congrats! You have been voted the Match MVP!** 🥳🎉"
         discord_bot.send_dm(mvp_player.user.discord_user_id, mvp_message)
-    
 
     return JsonResponse({
         "type": InteractionCallbackTypes.UPDATE_MESSAGE,
@@ -210,16 +236,17 @@ def mvp_vote_response(data, interaction_response, voted_player_id):
             "content": (
                 "{}\n\n"
                 "Thank you for voting!"
-                ).format(original_message),
+            ).format(original_message),
             "components": []
         }
     })
 
+
 def elo_confirm_response(
-    data,
-    interaction_response,
-    is_elo_change,
-    chosen_elo=None):
+        data,
+        interaction_response,
+        is_elo_change,
+        chosen_elo=None):
     original_message = data['message']['content']
     player_id = interaction_response['p_id']
     player = Player.objects.get(id=player_id)
@@ -244,11 +271,13 @@ def elo_confirm_response(
         }
     })
 
+
 def discord_login(request: HttpRequest):
     if not request.session.session_key:
         request.session.save()
 
     return redirect(DISCORD_AUTH_URL)
+
 
 def login_redirect(request: HttpRequest):
     code = request.GET['code']
@@ -257,6 +286,7 @@ def login_redirect(request: HttpRequest):
     login(request, user, backend='app.auth.DiscordAuthenticationBackend')
 
     return redirect('/')
+
 
 def exchange_code(code: str):
     data = {
@@ -274,10 +304,10 @@ def exchange_code(code: str):
 
     response = requests.post(
         'https://discord.com/api/oauth2/token',
-        data=data, 
+        data=data,
         headers=headers
     )
-    credentials = response.json();
+    credentials = response.json()
     access_token = credentials['access_token']
 
     headers = {
@@ -290,6 +320,7 @@ def exchange_code(code: str):
     )
 
     return response.json()
+
 
 def set_match_event(match, channel, time, event_id=None):
     end_time = time + timedelta(hours=match.match_format)

@@ -17,6 +17,7 @@ discord_bot_token = os.getenv('DISCORD_BOT_TOKEN')
 guild_id = os.getenv('DISCORD_GUILD_ID')
 discord_bot = DiscordBot(discord_bot_token, guild_id)
 
+
 def update_team_discord_info(team_id, players, updates):
     team = Team.objects.get(id=team_id)
 
@@ -25,21 +26,22 @@ def update_team_discord_info(team_id, players, updates):
 
     if team.discord_channel_id == None:
         create_team_discord_channel(team)
-    
+
     discord_bot.edit_role(team.discord_role_id, updates)
     team.color = updates['color']
     team.save()
 
     return
 
+
 def update_user_info(user):
     now = timezone.now()
     last_updated_discord_info = user.last_updated_discord_info
 
     if (last_updated_discord_info != None and
-        ((now - last_updated_discord_info).total_seconds() / 60) < 10):
+            ((now - last_updated_discord_info).total_seconds() / 60) < 10):
         return
-    
+
     res = discord_bot.get_user_info(user.discord_user_id).json()
     user.discord_username = res['username']
     if res['avatar'] != None:
@@ -48,6 +50,7 @@ def update_user_info(user):
     user.save()
 
     return
+
 
 def create_team_discord_role(team, players, add_color=True, hoist=True):
     data = {
@@ -67,9 +70,11 @@ def create_team_discord_role(team, players, add_color=True, hoist=True):
             player_obj = player
         else:
             player_obj = Player.objects.get(id=player['id'])
-        discord_bot.assign_user_to_role(player_obj.user.discord_user_id, role_id)
+        discord_bot.assign_user_to_role(
+            player_obj.user.discord_user_id, role_id)
 
     return role_id
+
 
 def create_team_discord_channel(team):
     everyone_permission_overwrite = {
@@ -92,13 +97,14 @@ def create_team_discord_channel(team):
         'permission_overwrites': [
             everyone_permission_overwrite,
             team_permission_overwrite
-            ]
+        ]
     }
 
     res = discord_bot.create_channel(data).json()
     team.discord_channel_id = res['id']
 
     return
+
 
 def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
     from_team = Team.objects.get(id=from_team_id)
@@ -117,7 +123,7 @@ def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
         from_team.name,
         from_team_captain.summoner_name,
         proposed_time.strftime('%a, %B %d, %Y, at %I:%M %p EST')
-        )
+    )
 
     embeds = [
         create_team_embed(from_team)
@@ -136,10 +142,12 @@ def send_game_confirmation_dm(from_team_id, to_team_id, match_id):
 
     return res.json()
 
+
 def give_user_rumble_role(user):
     rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
     discord_bot.assign_user_to_role(user.discord_user_id, rumble_role_id)
     return
+
 
 def send_rumble_registration_reminder():
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
@@ -148,6 +156,7 @@ def send_rumble_registration_reminder():
         "closes in 24 hours! Register at https://ffcsleague.com/"
     )
     discord_bot.send_message(message, channel)
+
 
 def send_rumble_game_reminder():
     rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
@@ -159,6 +168,7 @@ def send_rumble_game_reminder():
     )
     discord_bot.send_message(message, channel)
 
+
 def send_new_rumble_week_announcement():
     rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
@@ -168,6 +178,7 @@ def send_new_rumble_week_announcement():
         "https://ffcsleague.com/ !"
     )
     discord_bot.send_message(message, channel)
+
 
 def send_rumble_match_announcement(matches):
     rumble_role_id = os.getenv('RUMBLE_ROLE_ID')
@@ -189,6 +200,7 @@ def send_rumble_match_announcement(matches):
             }
             discord_bot.send_message('', channel, files=files)
     return
+
 
 def create_rumble_voice_channels(teams):
     everyone_permission_overwrite = {
@@ -221,7 +233,7 @@ def create_rumble_voice_channels(teams):
             'allow': str(permissions['CONNECT']),
             'deny': '0'
         }
-        
+
         channel_data = {
             'name': team_name,
             'type': ChannelTypes.GUILD_VOICE,
@@ -237,15 +249,18 @@ def create_rumble_voice_channels(teams):
         team.save()
     return
 
+
 def delete_team_channel(team):
     discord_bot.delete_channel(team.discord_channel_id)
     team.discord_channel_id = ''
     team.save()
 
+
 def delete_team_role(team):
     discord_bot.delete_role(team.discord_role_id)
     team.discord_role_id = ''
     team.save()
+
 
 def send_rumble_rank_updates(updates):
     channel = os.getenv('DISCORD_ANNOUNCEMENTS_CHANNEL')
@@ -271,12 +286,12 @@ def send_rumble_rank_updates(updates):
                 f" from **{old_rank.name}** to **{new_rank.name}**"
                 f"{'! Congrats 🎉🎉' if player_promoted else '.'}"
             )
-    
+
     message += (
         '\n\nThe LP required to hit each rank has changed. Here are the new '
         'values:\n'
     )
-    
+
     ranks = list(Rank.objects.all())
     ranks.sort(key=lambda rank: rank.threshold_percentile)
     ranks = filter(
@@ -289,14 +304,16 @@ def send_rumble_rank_updates(updates):
         if len(rank_players) == 0:
             message += (
                 f'\n**{rank.name}** '
-                '({:g}th percentile): '.format(float(str(rank.threshold_percentile)))
+                '({:g}th percentile): '.format(
+                    float(str(rank.threshold_percentile)))
             )
             message += 'no players in this rank.'
             continue
-        
+
         message += (
             f'\n**{rank.name}** '
-            '({:g}th percentile): '.format(float(str(rank.threshold_percentile)))
+            '({:g}th percentile): '.format(
+                float(str(rank.threshold_percentile)))
         )
         rank_players.sort(key=lambda player: player.rumble_lp)
         message += 'No minimum LP' if i == 0 else (
@@ -304,6 +321,7 @@ def send_rumble_rank_updates(updates):
         )
     discord_bot.send_message(message, channel)
     return
+
 
 def send_rumble_proposed_elo_message(player):
     channel = os.getenv('RUMBLE_ELO_CONFIRMATION_CHANNEL')
@@ -321,6 +339,7 @@ def send_rumble_proposed_elo_message(player):
     components = create_rumble_proposed_elo_components(player)
     print(discord_bot.send_message(message, channel, components).json())
 
+
 def send_mvp_vote_dm(game, players):
     message = (
         "Congrats on the win! Please vote for the game MVP "
@@ -332,8 +351,10 @@ def send_mvp_vote_dm(game, players):
         player_choices = [p for p in players if p != player]
         if len(player_choices) == 0:
             continue
-        components = create_mvp_vote_components(len(players), player_choices, game)
+        components = create_mvp_vote_components(
+            len(players), player_choices, game)
         discord_bot.send_dm(player.user.discord_user_id, message, components)
+
 
 def change_user_rank_role(user, rank):
     user_discord_data = discord_bot.get_user_guild_info(
@@ -341,7 +362,7 @@ def change_user_rank_role(user, rank):
     ).json()
 
     rank_discord_role_ids = []
-    
+
     for cur_rank in Rank.objects.all():
         if cur_rank.discord_role_id:
             rank_discord_role_ids.append(cur_rank.discord_role_id)
@@ -352,8 +373,9 @@ def change_user_rank_role(user, rank):
                 user.discord_user_id,
                 rank_discord_role_id
             )
-    
+
     discord_bot.assign_user_to_role(user.discord_user_id, rank.discord_role_id)
+
 
 def send_rumble_game_finish_message(game, winning_players):
     roles = ['Top', 'Jungle', 'Mid', 'ADC', 'Support']
@@ -365,13 +387,14 @@ def send_rumble_game_finish_message(game, winning_players):
     )
     for i, player in enumerate(winning_players):
         message += f'{roles[i]}: {player.user.summoner_name}\n'
-    
+
     message += (
         '\nView more match details at '
         f'https://ffcsleague.com/match/{game.match.id}'
     )
-    
+
     discord_bot.send_message(message, channel)
+
 
 def create_match_image(match, match_num):
     blue_side = map(
@@ -390,8 +413,9 @@ def create_match_image(match, match_num):
     font_size = 16
     discord_dark_mode_color = '#36393f'
 
-    player_text_top_padding = header_size + int((((H - header_size) / 5) - font_size) / 2)
-    
+    player_text_top_padding = header_size + \
+        int((((H - header_size) / 5) - font_size) / 2)
+
     cur_path = os.path.dirname(__file__)
     player_font = ImageFont.truetype(
         cur_path + '/../staticfiles/rest_framework/fonts/friz-quadrata-std-medium.otf',
@@ -429,15 +453,16 @@ def create_match_image(match, match_num):
     )
     for i, player in enumerate(blue_side):
         x_offset = int(W * 0.25)
-        y_offset = int(player_text_top_padding + (i * ((H - header_size) / 5)) + (font_size/8))
+        y_offset = int(player_text_top_padding +
+                       (i * ((H - header_size) / 5)) + (font_size/8))
         d.text(
             (x_offset, y_offset),
             player,
-            fill=(255,255,255),
+            fill=(255, 255, 255),
             font=player_font,
             anchor='ma'
         )
-    
+
     d.text(
         (int(W * 0.75), header_font_size + 10),
         'RED SIDE',
@@ -447,17 +472,19 @@ def create_match_image(match, match_num):
     )
     for i, player in enumerate(red_side):
         x_offset = int(W * 0.75)
-        y_offset = int(player_text_top_padding + (i * ((H - header_size) / 5)) + (font_size/8))
+        y_offset = int(player_text_top_padding +
+                       (i * ((H - header_size) / 5)) + (font_size/8))
         d.text(
             (x_offset, y_offset),
             player,
-            fill=(255,255,255),
+            fill=(255, 255, 255),
             font=player_font,
             anchor='ma'
         )
-    
+
     for i, role in enumerate(roles):
-        role_image_raw = Image.open(f'{cur_path}/public/{role}.png').convert('RGBA')
+        role_image_raw = Image.open(
+            f'{cur_path}/public/{role}.png').convert('RGBA')
         role_image_raw.thumbnail((font_size, font_size), Image.ANTIALIAS)
         background = Image.new(
             'RGBA',
@@ -469,6 +496,7 @@ def create_match_image(match, match_num):
         img.paste(role_image, ((int(W / 2) - int(font_size / 2)), y_offset))
 
     return img
+
 
 def create_rumble_proposed_elo_components(player):
     elo_choice_increment = 25
@@ -515,6 +543,7 @@ def create_rumble_proposed_elo_components(player):
 
     return components
 
+
 def create_mvp_vote_components(num_of_voters, players, game):
     components = [
         {
@@ -541,10 +570,11 @@ def create_mvp_vote_components(num_of_voters, players, game):
 
     return components
 
+
 def create_message_confirmation_components(
-    from_team_id,
-    to_team_id,
-    match_id):
+        from_team_id,
+        to_team_id,
+        match_id):
     components = [
         {
             "type": 1,
@@ -578,6 +608,7 @@ def create_message_confirmation_components(
     ]
 
     return components
+
 
 def create_team_embed(team):
     role_sorting = {

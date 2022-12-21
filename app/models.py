@@ -19,6 +19,7 @@ discord_bot_token = os.getenv('DISCORD_BOT_TOKEN')
 guild_id = os.getenv('DISCORD_GUILD_ID')
 discord_bot = DiscordBot(discord_bot_token, guild_id)
 
+
 class Provider(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -50,7 +51,8 @@ class Season(models.Model):
     is_mock = models.BooleanField(default=False)
     is_current = models.BooleanField(default=False)
     is_rumble = models.BooleanField(default=False)
-    provider = models.ForeignKey(Provider, on_delete=models.SET_NULL, null=True)
+    provider = models.ForeignKey(
+        Provider, on_delete=models.SET_NULL, null=True)
     tournament_id = models.CharField(max_length=70, blank=True)
 
     @property
@@ -96,11 +98,15 @@ class Team(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=100)
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
-    captain = models.ForeignKey('Player', on_delete=models.CASCADE, null=True, blank=True, related_name="captain_of")
+    captain = models.ForeignKey(
+        'Player', on_delete=models.CASCADE, null=True, blank=True, related_name="captain_of")
     color = models.IntegerField(default=16777215)
-    discord_channel_id = models.CharField(default=None, null=True, blank=True, max_length=64)
-    discord_role_id = models.CharField(default=None, null=True, blank=True, max_length=64)
-    logo_url = models.CharField(default=None, null=True, blank=True, max_length=200)
+    discord_channel_id = models.CharField(
+        default=None, null=True, blank=True, max_length=64)
+    discord_role_id = models.CharField(
+        default=None, null=True, blank=True, max_length=64)
+    logo_url = models.CharField(
+        default=None, null=True, blank=True, max_length=200)
     is_rumble = models.BooleanField(default=False)
     avg_rumble_elo = models.DecimalField(
         max_digits=10,
@@ -152,7 +158,7 @@ class Team(models.Model):
         blank=True,
         related_name='teams'
     )
-    
+
     class Meta:
         indexes = [
             models.Index(fields=['name'])
@@ -237,20 +243,24 @@ class Match(models.Model):
         blank=True,
         related_name='matches'
     )
-    elo_difference = models.DecimalField(max_digits=6, decimal_places=2, default=0, null=True, blank=True)
-    role_pref_coefficient = models.DecimalField(max_digits=4, decimal_places=2, default=0, null=True, blank=True)
+    elo_difference = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0, null=True, blank=True)
+    role_pref_coefficient = models.DecimalField(
+        max_digits=4, decimal_places=2, default=0, null=True, blank=True)
 
-    teams           = models.ManyToManyField(Team, related_name="matches")
-    week            = models.IntegerField(default=1)
-    scheduled_for   = models.DateTimeField(null=True, blank=True)
-    proposed_for    = models.DateTimeField(null=True, blank=True, default=None)
-    twitch_vod      = models.CharField(max_length=120, blank=True)
-    blue_side       = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
-    casters         = models.ManyToManyField(User, related_name="caster_of", blank=True)
+    teams = models.ManyToManyField(Team, related_name="matches")
+    week = models.IntegerField(default=1)
+    scheduled_for = models.DateTimeField(null=True, blank=True)
+    proposed_for = models.DateTimeField(null=True, blank=True, default=None)
+    twitch_vod = models.CharField(max_length=120, blank=True)
+    blue_side = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
+    casters = models.ManyToManyField(
+        User, related_name="caster_of", blank=True)
 
-    event_id = models.CharField(max_length=120, default=None, null=True, blank=True)
+    event_id = models.CharField(
+        max_length=120, default=None, null=True, blank=True)
 
-    # 4 for quarter finals, 2 for semi-finbals, 1 for finals, etc (null for non-playoff)
+    # 4 for quarter finals, 2 for semi-finals, 1 for finals, etc (null for non-playoff)
     playoff_fraction = models.IntegerField(null=True, blank=True)
 
     @property
@@ -285,8 +295,8 @@ class Match(models.Model):
 
     def __str__(self):
         return (
-            " VS ".join([team.name for team in self.teams.all()]) + \
-            ", week " + str(self.week) + \
+            " VS ".join([team.name for team in self.teams.all()]) +
+            ", week " + str(self.week) +
             ", " + self.season.__str__()
         )
 
@@ -326,7 +336,7 @@ class Rank(models.Model):
             discord_bot.edit_role(self.discord_role_id, data)
 
         super(Rank, self).save(*args, **kwargs)
-    
+
     def __str__(self):
         return f'{self.name}, id: {self.id}'
 
@@ -471,40 +481,52 @@ class PlayerStats(models.Model):
     )
 
     # stats from game data
-    games_played    = models.IntegerField(default=0)
-    kills           = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    deaths          = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    assists         = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    kda_per_game    = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    vision_per_min  = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    cc_per_game     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    cs_per_min      = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    kp_per_game     = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    damage_per_min  = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-    damage_taken    = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    games_played = models.IntegerField(default=0)
+    kills = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    deaths = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    assists = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    kda_per_game = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+    vision_per_min = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+    cc_per_game = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+    cs_per_min = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    kp_per_game = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+    damage_per_min = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0)
+    damage_taken = models.DecimalField(
+        max_digits=8, decimal_places=2, default=0)
+
 
 class PlayerChampionStats(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player_champion_stats')
+    player = models.ForeignKey(
+        Player, on_delete=models.CASCADE, related_name='player_champion_stats')
 
     # stats from game data
-    champion_id     = models.IntegerField()
+    champion_id = models.IntegerField()
     # stats represent data for specific champion
-    games_played    = models.IntegerField(default=0)
-    wins            = models.IntegerField(default=0)
-    losses          = models.IntegerField(default=0)
-    kills           = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    deaths          = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    assists         = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    kda             = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    vision_per_min  = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    cc              = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    cs_per_min      = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    kp              = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    damage_per_min  = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-    damage_taken    = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    games_played = models.IntegerField(default=0)
+    wins = models.IntegerField(default=0)
+    losses = models.IntegerField(default=0)
+    kills = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    deaths = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    assists = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    kda = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    vision_per_min = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0)
+    cc = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    cs_per_min = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    kp = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    damage_per_min = models.DecimalField(
+        max_digits=6, decimal_places=2, default=0)
+    damage_taken = models.DecimalField(
+        max_digits=8, decimal_places=2, default=0)
 
     class Meta:
         unique_together = ('player', 'champion_id')
+
 
 class Vote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -576,8 +598,10 @@ class Game(models.Model):
             models.Index(fields=['meta_key'])
         ]
 
+
 class ScheduleTest(models.Model):
     reached = models.BooleanField(default=False)
+
 
 class RegistrationForm(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -609,10 +633,10 @@ class RegistrationForm(models.Model):
 
     is_rumble = models.BooleanField(default=False)
 
-
     def clean(self):
         if len(Set([self.first_role, self.second_role, self.third_role, self.fourth_role, self.fifth_role])) < 5:
             raise ValidationError(_('Must rank roles 1-5'))
+
 
 @receiver(post_save, sender=Match)
 def match_handler(sender, instance, **kwargs):
@@ -629,6 +653,7 @@ def match_handler(sender, instance, **kwargs):
                 if tournament_code != None:
                     game.tournament_code = tournament_code
                     game.save()
+
 
 @receiver(post_save, sender=Game)
 def game_handler(sender, instance, **kwargs):
