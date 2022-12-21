@@ -17,6 +17,8 @@ import { intToHexColorCode } from '../../helpers';
 import { AppBar, Box, Tooltip, Typography, withStyles } from '@material-ui/core';
 import Leaderboard from '../Leaderboard';
 
+const NUM_OF_GAMES_IN_PLACEMENTS = 4;
+
 const styles = createUseStyles({
   title: {
     textAlign: 'center',
@@ -118,8 +120,9 @@ const RumbleLeaderboard = () => {
       let allRanks = await getAllRanks();
       allRanks = allRanks.ranks;
       allRanks.sort((a, b) => a.threshold_percentile - b.threshold_percentile);
-      rumblePlayers.sort((a, b) => a.rumble_lp - b.rumble_lp);
-      rumblePlayers.sort((a, b) => parseFloat(a.rumble_rank?.threshold_percentile) - parseFloat(b.rumble_rank?.threshold_percentile));
+      rumblePlayers.sort((a, b) => b.rumble_lp - a.rumble_lp);
+      rumblePlayers.sort((a, b) => parseFloat(b.rumble_rank?.threshold_percentile) - parseFloat(a.rumble_rank?.threshold_percentile));
+      rumblePlayers.sort((a, b) => (b.rumble_rank?.is_default ? 1 : -1));
       rumblePlayers.reverse();
       setPlayers(rumblePlayers);
       setRanks(allRanks);
@@ -208,7 +211,7 @@ const RumbleLeaderboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {players.filter(player => !player.rumble_rank?.is_default).map((player, i) => (
+              {players.map((player, i) => (
                 <TableRow key={player.id}>
                   <TableCell style={{fontSize: '12px'}} component="th" scope="row">
                     <span>{i + 1}. </span>
@@ -221,7 +224,11 @@ const RumbleLeaderboard = () => {
                     {player.numOfMvps}
                   </TableCell>
                   <TableCell style={{fontSize: '12px'}} component="th" scope="row">
-                    <span style={{ color: intToHexColorCode(player.rumble_rank?.color) }}>{player.rumble_rank?.name}</span><span>, {player.rumble_lp} LP</span>
+                    {player.rumble_rank?.is_default 
+                      ? `Placed in ${(NUM_OF_GAMES_IN_PLACEMENTS - (player.rumble_wins + player.rumble_losses))} game${(NUM_OF_GAMES_IN_PLACEMENTS - (player.rumble_wins + player.rumble_losses)) === 1 ? '' : 's'}`
+                      : <div><span style={{ color: intToHexColorCode(player.rumble_rank?.color) }}>{player.rumble_rank?.name}</span><span>, {player.rumble_lp} LP</span></div>
+                    }
+                    
                   </TableCell>
                 </TableRow>
               ))}
