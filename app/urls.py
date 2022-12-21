@@ -37,4 +37,3 @@ urlpatterns = [
   path('oauth2/login/', discordviews.discord_login, name='oauth_login'),
   path('oauth2/login/redirect/', discordviews.login_redirect, name='oauth_login_redirect'),
 ]
-

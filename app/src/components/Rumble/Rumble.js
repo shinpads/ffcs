@@ -157,7 +157,7 @@ const styles = createUseStyles({
   },
 });
 
-const REGISTER_WARNING_MESSAGE = `This week's Rumble occurs at exactly 10:00 PM EST this upcoming Friday.
+const REGISTER_WARNING_MESSAGE = `This week's Rumble occurs at exactly 9:00 PM EST this upcoming Thursday.
 By signing up, you agree to show up on time. Failure to do so may result
 in a week-long suspension.`;
 
@@ -291,7 +291,7 @@ const Rumble = (props) => {
             <span> {seconds}</span> second{seconds === 1 ? '' : 's'}
           </div>
           <div className={classes.dateContainer}>
-            (Every Friday at 9:00 PM EST)
+            (Every Thursday at 8:00 PM EST)
           </div>
         </div>
         )}

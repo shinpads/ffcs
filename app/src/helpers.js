@@ -62,8 +62,8 @@ export function hexColorCodeToInt(hex) {
 }
 
 export function timeToRumbleSignupClose() {
-  const targetDayVal = 5; // Sunday - Saturday: 0 - 6
-  const targetHour = 21;
+  const targetDayVal = 4; // Sunday - Saturday: 0 - 6
+  const targetHour = 20;
   const targetMins = 0;
 
   const now = new Date();
