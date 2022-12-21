@@ -116,9 +116,10 @@ const RumbleLeaderboard = () => {
     const getData = async () => {
       const rumblePlayers = await getRumblePlayers();
       let allRanks = await getAllRanks();
+      allRanks = allRanks.ranks;
       allRanks.sort((a, b) => a.threshold_percentile - b.threshold_percentile);
       rumblePlayers.sort((a, b) => a.rumble_lp - b.rumble_lp);
-      // rumblePlayers.sort((a, b) => parseFloat(a.rumble_rank?.threshold_percentile) - parseFloat(b.rumble_rank?.threshold_percentile));
+      rumblePlayers.sort((a, b) => parseFloat(a.rumble_rank?.threshold_percentile) - parseFloat(b.rumble_rank?.threshold_percentile));
       rumblePlayers.reverse();
       setPlayers(rumblePlayers);
       setRanks(allRanks);
@@ -214,7 +215,7 @@ const RumbleLeaderboard = () => {
                     <UserName user={player.user} />
                   </TableCell>
                   <TableCell style={{fontSize: '12px'}} component="th" scope="row">
-                    {player.rumble_wins} W {player.rumble_losses} L
+                    {player.rumble_wins} - {player.rumble_losses}
                   </TableCell>
                   <TableCell style={{fontSize: '12px'}} component="th" scope="row">
                     {player.numOfMvps}
