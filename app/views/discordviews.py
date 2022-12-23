@@ -55,7 +55,7 @@ class DiscordView(View):
                 "type": 1
             }, status=200)
 
-        if data['data']['name'] and data['data']['name'] == 'profile':
+        if data['data'].get('name', False) and data['data']['name'] == 'profile':
             return profile_slash_command_response(data)
 
         interaction_response = json.loads(data['data']['custom_id'])
