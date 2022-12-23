@@ -17,7 +17,7 @@ import { intToHexColorCode } from '../../helpers';
 import { AppBar, Box, Tooltip, Typography, withStyles } from '@material-ui/core';
 import Leaderboard from '../Leaderboard';
 
-const NUM_OF_GAMES_IN_PLACEMENTS = 4;
+const NUM_OF_GAMES_IN_PLACEMENTS = 2;
 
 const styles = createUseStyles({
   title: {
@@ -146,7 +146,7 @@ const RumbleLeaderboard = () => {
         title={(
           <div>
             <div className={classes.descriptionContainer}>
-              Your LP changes as you win and lose games, down to -100 LP and up to infinity. After playing 4 games,
+              Your LP changes as you win and lose games, down to -100 LP and up to infinity. After playing 2 games,
               you will be ranked. Ranks are percentile based -- meaning you may demote/promote even if you missed
               the game! Below are the rank percentiles and minimum LP required to reach the rank:
             </div>
