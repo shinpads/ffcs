@@ -7,23 +7,18 @@ import json
 def index(request):
   return render(request, 'index.html')
 
-@login_required(login_url="/")
 def signup_index(request):
     return render(request, 'index.html')
 
-@login_required(login_url="/")
 def rumblesignup_index(request):
     return render(request, 'index.html')
 
-@login_required(login_url="/")
 def match_index(request, match_id):
     return render(request, 'index.html')
 
-@login_required(login_url="/")
 def user_index(request, user_id):
     return render(request, 'index.html')
 
-@login_required(login_url="/")
 def team_index(request, team_id):
     return render(request, 'index.html')
 

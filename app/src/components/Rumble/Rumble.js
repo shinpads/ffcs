@@ -186,13 +186,13 @@ const Rumble = (props) => {
   const currentWeek = season.rumble_weeks[season.rumble_weeks.length - 1];
 
   const updateWeeks = (weeks) => {
-    weeks.forEach(week => {
-      if (week.matches) {
-        week.matches.sort((a, b) => a.id - b.id);
-      }
+    const newWeeks = weeks.filter(week => week.matches && week.matches.length > 0);
+    newWeeks.forEach(week => {
+      week.matches.sort((a, b) => a.id - b.id);
     });
-    setSelectedWeekIndex(season.rumble_weeks.length - 1);
-    setAllWeeks(weeks);
+    newWeeks.push(weeks[weeks.length - 1])
+    setSelectedWeekIndex(newWeeks.length - 1);
+    setAllWeeks(newWeeks);
   };
 
   useEffect(() => {
@@ -234,11 +234,11 @@ const Rumble = (props) => {
     <>
       {currentWeek && (
       <div className={classes.container}>
-        {!user.is_rumble_player && (
+        {/* {!user.is_rumble_player && (
         <Button variant="contained" color="primary" href="/rumblesignup" size="large">
           ⚡ Sign up for FFCS Rumble! ⚡
         </Button>
-        )}
+        )} */}
         <div className={classes.title}>FFCS Rumble</div>
         <HtmlTooltip
           title={(
@@ -334,7 +334,7 @@ const Rumble = (props) => {
                     ? (
                       <div>
                         <div className={classes.subtitle}>
-                          {selectedWeekIndex === allWeeks.length - 1 ? 'This week\'s matches' : ` Week ${selectedWeekIndex + 1} matches`}
+                          {selectedWeekIndex === allWeeks.length - 1 ? 'This week\'s matches' : ` Week ${allWeeks[selectedWeekIndex]?.id} matches`}
                         </div>
                         <hr />
                         {allWeeks[selectedWeekIndex]?.matches?.map((match, j) => (

@@ -10,5 +10,5 @@ class AppConfig(AppConfig):
             return
         os.environ['SCHED_RUN_ONCE'] = 'True'
         
-        from . import scheduler
-        scheduler.start()
+        # from . import scheduler
+        # scheduler.start()

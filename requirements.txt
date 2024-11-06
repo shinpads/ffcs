@@ -1,7 +1,6 @@
 APScheduler==3.9.1
 asgiref==3.5.2
 astroid==2.11.5
-backports.zoneinfo==0.2.1
 black==22.6.0
 boto3==1.23.1
 botocore==1.26.1

@@ -15,6 +15,7 @@
     "babel-polyfill": "^6.26.0",
     "chart.js": "^3.4.1",
     "classnames": "^2.2.6",
+    "cross-env": "^7.0.3",
     "moment": "^2.29.1",
     "node": "15.4.0",
     "react": "^17.0.2",
@@ -70,7 +71,7 @@
   },
   "scripts": {
     "start:dev": "NODE_ENV=development yarn run build:dev & python3 manage.py runserver",
-    "start:windows": "run-p start:django build:dev",
+    "start:windows": "cross-env NODE_ENV=development run-p start:django build:dev",
     "start:django": "python manage.py runserver",
     "start": "yarn run build",
     "build": "webpack --mode production --config webpack.prod.config.js",
