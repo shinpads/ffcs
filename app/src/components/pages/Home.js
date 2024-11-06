@@ -78,17 +78,17 @@ const Home = (props) => {
 
   const { loaded: userLoaded, user } = props.user;
 
-  if (userLoaded && !user.id) {
-    return (
-      <>
-        <Header />
-        <div className={classes.container}>
-          <div className={classes.title}>Sign-in to proceed</div>
-          <SignIn user={user} />
-        </div>
-      </>
-    );
-  }
+  // if (userLoaded && !user.id) {
+  //   return (
+  //     <>
+  //       <Header />
+  //       <div className={classes.container}>
+  //         <div className={classes.title}>Sign-in to proceed</div>
+  //         <SignIn user={user} />
+  //       </div>
+  //     </>
+  //   );
+  // }
 
   if (!userLoaded || loading) {
     return (
