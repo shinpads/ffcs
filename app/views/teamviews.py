@@ -83,7 +83,9 @@ class TeamView(View):
                 out_data['is_captain'] = (team.captain.user.id == user_id)
             else:
                 out_data['is_captain'] = False
-            out_data['is_captain'] |= request.user.is_admin
+            # out_data['is_captain'] |= request.user.is_admin
+            # TODO: uncomment this if we ever add admins back
+            out_data['is_admin'] = False
 
         response = JsonResponse({
             "message": "successfully retrieved team from database.",
